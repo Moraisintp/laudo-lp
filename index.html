@@ -17,20 +17,10 @@
 
   <style>
     @media screen and (max-width: 768px) {
-      input, select, textarea {
-        font-size: 16px !important;
-      }
+      input, select, textarea { font-size: 16px !important; }
     }
-
-    .touch-target {
-      min-height: 42px;
-    }
-
-    @page {
-      size: A4 portrait;
-      margin: 5mm;
-    }
-
+    .touch-target { min-height: 42px; }
+    @page { size: A4 portrait; margin: 5mm; }
     @media print {
       html, body {
         width: 100% !important;
@@ -45,15 +35,7 @@
       }
       .no-print { display: none !important; }
       .print-only { display: block !important; }
-
-      #printArea {
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        box-sizing: border-box !important;
-      }
-
+      #printArea { width: 100% !important; max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
       .report-container {
         border: 2px solid #000 !important;
         width: 100% !important;
@@ -70,21 +52,9 @@
         overflow: hidden !important;
         margin: 0 !important;
       }
-
-      .report-container:last-child {
-        page-break-after: auto !important;
-        break-after: auto !important;
-      }
-
-      table {
-        width: 100% !important;
-        border-collapse: collapse !important;
-      }
-
-      table, th, td {
-        border: 1px solid #000 !important;
-      }
-
+      .report-container:last-child { page-break-after: auto !important; break-after: auto !important; }
+      table { width: 100% !important; border-collapse: collapse !important; }
+      table, th, td { border: 1px solid #000 !important; }
       .diagonal-fill-area {
         flex-grow: 1 !important;
         min-height: 35mm !important;
@@ -93,7 +63,6 @@
         border-bottom: 2px solid #000 !important;
       }
     }
-
     .print-only { display: none; }
   </style>
 </head>
@@ -103,10 +72,10 @@
   <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-md no-print">
     <div class="max-w-5xl mx-auto px-3 sm:px-4 py-2.5 flex items-center justify-between">
       <div class="flex items-center space-x-2 sm:space-x-3">
-        <div class="w-8 h-8 rounded-lg bg-red-600 flex items-center justify-center font-black text-white text-base shadow">Ω</div>
+        <div class="w-8 h-8 rounded-lg bg-red-600 flex items-center justify-center font-black text-white text-base shadow">&Omega;</div>
         <div>
           <h1 class="font-bold text-xs sm:text-base leading-tight">Laudo LP Digital</h1>
-          <p class="text-[10px] sm:text-xs text-slate-400">Omega Service • Campo</p>
+          <p class="text-[10px] sm:text-xs text-slate-400" id="headerUserTxt">Carregando perfil...</p>
         </div>
       </div>
       <div class="flex items-center space-x-1.5 sm:space-x-2">
@@ -123,47 +92,47 @@
   <!-- Main Container -->
   <main class="max-w-5xl mx-auto p-2.5 sm:p-6 no-print">
 
-    <!-- Indicador de Edição Ativa (Aparece quando você está editando um laudo antigo) -->
+    <!-- Banner Modo Edição Ativo -->
     <div id="bannerEdicaoAtiva" class="hidden bg-amber-500 text-white px-4 py-2 rounded-xl mb-3 flex items-center justify-between shadow-sm">
       <div class="flex items-center gap-2 text-xs font-bold">
         <i data-lucide="edit-3" class="w-4 h-4"></i>
         <span>Modo Edição Ativo: <span id="txtEditandoRlp" class="underline"></span></span>
       </div>
-      <button type="button" onclick="cancelarEdicao()" class="text-xs bg-amber-700 hover:bg-amber-800 px-2 py-1 rounded font-semibold">
-        Cancelar Edição
+      <button type="button" onclick="cancelarEdicao()" class="text-xs bg-amber-700 hover:bg-amber-800 px-2.5 py-1 rounded-lg font-semibold">
+        Cancelar
       </button>
     </div>
 
-    <!-- Status / Quick Actions -->
+    <!-- Status & Painel de Sincronização -->
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-3 mb-3 sm:mb-4">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
         <div class="flex items-center gap-2">
           <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-100 text-emerald-800 shrink-0">
-            <span class="w-1.5 h-1.5 mr-1 bg-emerald-500 rounded-full animate-pulse"></span> Offline
+            <span class="w-1.5 h-1.5 mr-1 bg-emerald-500 rounded-full animate-pulse"></span> Offline Ready
           </span>
-          <span id="saveStatus" class="text-xs text-slate-500 italic truncate">Pronto para preenchimento</span>
+          <span id="saveStatus" class="text-xs text-slate-500 italic truncate">Pronto</span>
         </div>
         <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 pt-1 border-t sm:border-0 border-slate-100">
           <button type="button" id="btnSyncDrive" onclick="sincronizarComDrive()" class="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 px-2.5 py-1.5 rounded-lg font-medium flex items-center gap-1 touch-target">
-            <i data-lucide="cloud-upload" class="w-3.5 h-3.5 text-emerald-600"></i> Drive
+            <i data-lucide="cloud-upload" class="w-3.5 h-3.5 text-emerald-600"></i> Sincronizar Nuvem
           </button>
-          <button type="button" onclick="abrirConfigDrive()" title="Configurar URL do Drive" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 border px-2 py-1.5 rounded-lg touch-target">
+          <button type="button" onclick="abrirConfigDrive()" title="Configurar URL da Planilha" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 border px-2 py-1.5 rounded-lg touch-target">
             <i data-lucide="settings" class="w-3.5 h-3.5"></i>
           </button>
           <button type="button" onclick="abrirModalHistorico()" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 px-2.5 py-1.5 rounded-lg font-bold flex items-center gap-1 touch-target">
-            <i data-lucide="folder-open" class="w-3.5 h-3.5 text-blue-600"></i> Laudos Salvos / Editar
+            <i data-lucide="folder-open" class="w-3.5 h-3.5 text-blue-600"></i> Histórico / Editar
           </button>
-          <button type="button" onclick="prepararProximoLaudo()" title="Mantém cabeçalho e consumíveis, limpa juntas" class="text-xs bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 px-2.5 py-1.5 rounded-lg font-medium flex items-center gap-1 touch-target">
+          <button type="button" onclick="abrirModalAuth()" class="text-xs bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-200 px-2 py-1.5 rounded-lg font-semibold flex items-center gap-1 touch-target">
+            <i data-lucide="user" class="w-3.5 h-3.5"></i> Perfil
+          </button>
+          <button type="button" onclick="prepararProximoLaudo()" class="text-xs bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 px-2.5 py-1.5 rounded-lg font-medium flex items-center gap-1 touch-target">
             <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i> Novo Laudo
-          </button>
-          <button type="button" onclick="limparFormularioTotal()" class="text-xs text-red-600 hover:bg-red-50 px-2 py-1.5 rounded-lg font-medium ml-auto sm:ml-0">
-            Limpar
           </button>
         </div>
       </div>
     </div>
 
-    <!-- Form -->
+    <!-- Form Principal -->
     <form id="lpForm" class="space-y-4 sm:space-y-6">
 
       <!-- 1. Dados Gerais -->
@@ -189,8 +158,8 @@
           </div>
           <div>
             <div class="flex justify-between items-center mb-1">
-              <label class="block text-xs font-semibold text-slate-600">Nº RLP (Auto)</label>
-              <button type="button" onclick="gerarProximoRLP()" title="Gerar Próximo Número" class="text-[11px] text-red-600 hover:underline font-bold">↻ Auto</button>
+              <label class="block text-xs font-semibold text-slate-600">Nº RLP</label>
+              <button type="button" onclick="gerarProximoRLP()" title="Sincronizar Contador" class="text-[11px] text-red-600 hover:underline font-bold">↻ Auto</button>
             </div>
             <input type="text" id="num_rlp" value="OMG-RLP-Q-001" class="w-full border border-slate-300 rounded-lg p-2 text-sm font-semibold text-red-700 bg-red-50/50 focus:ring-2 focus:ring-red-500 focus:outline-none">
           </div>
@@ -255,7 +224,7 @@
           <div>
             <label class="block text-xs font-semibold text-slate-600 mb-1">Procedimento / Rev.</label>
             <div class="flex gap-1.5">
-              <select id="procedimento" class="w-3/4 border border-slate-300 rounded-lg p-2 text-xs sm:text-sm bg-white focus:ring-2 focus:ring-red-500 focus:outline-none">
+              <select id="procedimento" class="w-3/4 border border-slate-300 rounded-lg p-2 text-xs sm:text-sm bg-white">
                 <option value="" selected>-- Selecione --</option>
                 <option value="PR-SGI-026">PR-SGI-026 (LP)</option>
                 <option value="PR-SGI-025">PR-SGI-025 (EVS/Dim)</option>
@@ -268,15 +237,13 @@
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
               </select>
             </div>
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-600 mb-1">Desenho Ref. / Rev.</label>
             <div class="flex gap-1.5">
-              <select id="desenho_ref" class="w-3/4 border border-slate-300 rounded-lg p-2 text-xs sm:text-sm bg-white focus:ring-2 focus:ring-red-500 focus:outline-none">
+              <select id="desenho_ref" class="w-3/4 border border-slate-300 rounded-lg p-2 text-xs sm:text-sm bg-white">
                 <option value="" selected>-- Selecione --</option>
                 <option value="CROQUI DE CAMPO">CROQUI DE CAMPO</option>
                 <option value="ISOMÉTRICO">ISOMÉTRICO</option>
@@ -289,78 +256,34 @@
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
               </select>
             </div>
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-600 mb-1">Metal Base</label>
-            <select id="metal_base" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white focus:ring-2 focus:ring-red-500 focus:outline-none">
+            <select id="metal_base" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
               <option value="" selected>-- Selecione --</option>
               <option value="AÇO CARBONO">AÇO CARBONO</option>
               <option value="AÇO CARBONO BAIXA LIGA">AÇO CARBONO BAIXA LIGA</option>
               <option value="AÇOS INOXIDAVEIS AUSTENITICOS">AÇOS INOX AUSTENÍTICOS</option>
               <option value="AÇOS INOXIDAVEIS FERRITICOS">AÇOS INOX FERRÍTICOS</option>
-              <option value="AÇOS INOXIDAVEIS MARTENSÍTICOS">AÇOS INOX MARTENSÍTICOS</option>
               <option value="ALUMÍNIO E LIGAS DE ALUMÍNIO">ALUMÍNIO E LIGAS</option>
-              <option value="BRONZE E LIGAS DE BRONZE">BRONZE E LIGAS</option>
-              <option value="NÍQUEL E LIGAS DE NÍQUEL">NÍQUEL E LIGAS</option>
-              <option value="TITÂNIO">TITÂNIO</option>
             </select>
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-600 mb-1">Metal de Adição</label>
-            <select id="metal_adicao" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white focus:ring-2 focus:ring-red-500 focus:outline-none">
+            <select id="metal_adicao" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
               <option value="" selected>-- Selecione --</option>
-              <optgroup label="ELETRODO REVESTIDO (SMAW)">
-                <option value="E-6010 (Raiz / Penetração)">E-6010 (Raiz / Penetração)</option>
-                <option value="E-6013">E-6013</option>
-                <option value="E-7018">E-7018</option>
-                <option value="E-7018-1 (Impacto / Baixa Temp.)">E-7018-1 (Impacto / Baixa Temp.)</option>
-                <option value="E-8018-B2 (Baixa Liga / Cr-Mo)">E-8018-B2 (Baixa Liga / Cr-Mo)</option>
-                <option value="E-308L-16 (Inox Austenítico)">E-308L-16 (Inox Austenítico)</option>
-                <option value="E-309L-16 (Inox / Dissimilar)">E-309L-16 (Inox / Dissimilar)</option>
-                <option value="E-316L-16 (Inox Mo)">E-316L-16 (Inox Mo)</option>
-                <option value="E-NiCrMo-3 (Inconel 625 / Níquel)">E-NiCrMo-3 (Inconel 625)</option>
-              </optgroup>
-              <optgroup label="TIG / GTAW (Varetas)">
-                <option value="ER70S-3">ER70S-3</option>
-                <option value="ER70S-6">ER70S-6</option>
-                <option value="ER80S-B2 (Cr-Mo)">ER80S-B2 (Cr-Mo)</option>
-                <option value="ER308L (Inox 304/304L)">ER308L (Inox 304/304L)</option>
-                <option value="ER309L (Dissimilar / Inox-Carbono)">ER309L (Dissimilar)</option>
-                <option value="ER316L (Inox 316/316L)">ER316L (Inox 316/316L)</option>
-                <option value="ER2209 (Duplex)">ER2209 (Duplex)</option>
-                <option value="ERNiCrMo-3 (Inconel 625)">ERNiCrMo-3 (Inconel 625)</option>
-                <option value="ER4043 (Alumínio Al-Si)">ER4043 (Alumínio Al-Si)</option>
-                <option value="ER5356 (Alumínio Al-Mg)">ER5356 (Alumínio Al-Mg)</option>
-              </optgroup>
-              <optgroup label="MIG/MAG / GMAW (Arames)">
-                <option value="ER70S-6 (MIG/MAG Carbono)">ER70S-6 (MIG Carbono)</option>
-                <option value="ER80S-D2">ER80S-D2</option>
-                <option value="ER308LSi (MIG Inox)">ER308LSi (MIG Inox)</option>
-                <option value="ER309LSi (MIG Dissimilar)">ER309LSi (MIG Dissimilar)</option>
-                <option value="ER316LSi (MIG Inox Mo)">ER316LSi (MIG Inox Mo)</option>
-              </optgroup>
-              <optgroup label="TUBULAR / FCAW">
-                <option value="E71T-1M / E71T-1C (Aço Carbono)">E71T-1M / E71T-1C (Carbono)</option>
-                <option value="E71T8-Ni1 (Innershield)">E71T8-Ni1 (Innershield)</option>
-                <option value="E308LT1-1 (Tubular Inox)">E308LT1-1 (Tubular Inox)</option>
-                <option value="E309LT1-1 (Tubular Dissimilar)">E309LT1-1 (Tubular Dissimilar)</option>
-              </optgroup>
-              <optgroup label="QUALIDADE RAIO X (COMBINAÇÕES)">
-                <option value="TIG ER70S-6 (Raiz) + SMAW E-7018 (Enchimento)">TIG ER70S-6 + SMAW E-7018</option>
-                <option value="TIG ER70S-3 (Raiz) + SMAW E-7018 (Enchimento)">TIG ER70S-3 + SMAW E-7018</option>
-                <option value="SMAW E-6010 (Raiz) + SMAW E-7018 (Enchimento)">SMAW E-6010 + SMAW E-7018</option>
-                <option value="TIG ER308L (Raiz) + SMAW E-308L (Enchimento)">TIG ER308L + SMAW E-308L</option>
-                <option value="TIG ER316L (Raiz) + SMAW E-316L (Enchimento)">TIG ER316L + SMAW E-316L</option>
-              </optgroup>
+              <option value="E-7018">E-7018</option>
+              <option value="ER70S-6">ER70S-6</option>
+              <option value="E-308L-16 (Inox Austenítico)">E-308L-16 (Inox Austenítico)</option>
+              <option value="ER308L (Inox 304/304L)">ER308L (Inox 304/304L)</option>
+              <option value="TIG ER70S-6 (Raiz) + SMAW E-7018 (Enchimento)">TIG ER70S-6 + SMAW E-7018</option>
             </select>
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-600 mb-1">Espessura / Diâmetro</label>
-            <select id="espessura" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white focus:ring-2 focus:ring-red-500 focus:outline-none">
+            <select id="espessura" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
               <option value="" selected>-- Selecione --</option>
               <option value='4"'>4"</option>
               <option value='6"'>6"</option>
@@ -371,8 +294,6 @@
               <option value='16"'>16"</option>
               <option value='18"'>18"</option>
               <option value='20"'>20"</option>
-              <option value='22"'>22"</option>
-              <option value='24"'>24"</option>
             </select>
           </div>
         </div>
@@ -387,161 +308,74 @@
         </div>
         <div class="p-3 sm:p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
           <!-- Solvente -->
-          <div class="bg-slate-50 p-2.5 sm:p-3 rounded-lg border border-slate-200">
-            <div class="font-bold text-xs text-slate-700 mb-2 border-b border-slate-200 pb-1 flex items-center justify-between">
-              <span>SOLVENTE</span>
-              <span class="text-[10px] text-slate-400 font-normal">Limpeza</span>
-            </div>
+          <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+            <div class="font-bold text-xs text-slate-700 mb-2 border-b border-slate-200 pb-1">SOLVENTE</div>
             <div class="space-y-1.5">
-              <div>
-                <label class="block text-[10px] text-slate-500">Fabricante</label>
-                <select id="solv_fab" class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
-                  <option value="" selected>-- Selecione --</option>
-                  <option value="N/A">N/A</option>
-                  <option value="-">-</option>
-                  <option value="METAL-CHEK">METAL-CHEK</option>
-                  <option value="MAGNAFLUX">MAGNAFLUX</option>
-                  <option value="CARBOCHEM">CARBOCHEM</option>
-                  <option value="SHERWIN">SHERWIN</option>
-                  <option value="OUTRO">OUTRO</option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-[10px] text-slate-500">Modelo</label>
-                <select id="solv_mod" class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
-                  <option value="" selected>-- Selecione --</option>
-                  <option value="N/A">N/A</option>
-                  <option value="-">-</option>
-                  <option value="E-59">E-59</option>
-                  <option value="SKC-S">SKC-S</option>
-                  <option value="DR-60">DR-60</option>
-                  <option value="OUTRO">OUTRO</option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-[10px] text-slate-500">Nº Lote</label>
-                <input type="text" id="solv_lote" placeholder="Lote..." class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
-              </div>
+              <select id="solv_fab" class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
+                <option value="METAL-CHEK" selected>METAL-CHEK</option>
+                <option value="MAGNAFLUX">MAGNAFLUX</option>
+                <option value="CARBOCHEM">CARBOCHEM</option>
+              </select>
+              <select id="solv_mod" class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
+                <option value="E-59" selected>E-59</option>
+                <option value="SKC-S">SKC-S</option>
+                <option value="DR-60">DR-60</option>
+              </select>
+              <input type="text" id="solv_lote" placeholder="Lote..." class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
             </div>
           </div>
 
           <!-- Penetrante -->
-          <div class="bg-red-50/40 p-2.5 sm:p-3 rounded-lg border border-red-200">
-            <div class="font-bold text-xs text-red-800 mb-2 border-b border-red-200 pb-1 flex items-center justify-between">
-              <span>PENETRANTE</span>
-              <span class="text-[10px] text-red-400 font-normal">Tipo II</span>
-            </div>
+          <div class="bg-red-50/40 p-2.5 rounded-lg border border-red-200">
+            <div class="font-bold text-xs text-red-800 mb-2 border-b border-red-200 pb-1">PENETRANTE</div>
             <div class="space-y-1.5">
-              <div>
-                <label class="block text-[10px] text-red-700">Fabricante</label>
-                <select id="pen_fab" class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
-                  <option value="" selected>-- Selecione --</option>
-                  <option value="METAL-CHEK">METAL-CHEK</option>
-                  <option value="MAGNAFLUX">MAGNAFLUX</option>
-                  <option value="CARBOCHEM">CARBOCHEM</option>
-                  <option value="SHERWIN">SHERWIN</option>
-                  <option value="OUTRO">OUTRO</option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-[10px] text-red-700">Modelo</label>
-                <select id="pen_mod" class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
-                  <option value="" selected>-- Selecione --</option>
-                  <option value="VP-30">VP-30 (Lavável a água)</option>
-                  <option value="VP-31">VP-31</option>
-                  <option value="SKL-WP2">SKL-WP2</option>
-                  <option value="SKL-SP2">SKL-SP2 (Por solvente)</option>
-                  <option value="DP-50">DP-50</option>
-                  <option value="FP-923">FP-923 (Fluorescente)</option>
-                  <option value="OUTRO">OUTRO</option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-[10px] text-red-700">Nº Lote</label>
-                <input type="text" id="pen_lote" placeholder="Lote..." class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
-              </div>
+              <select id="pen_fab" class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
+                <option value="METAL-CHEK" selected>METAL-CHEK</option>
+                <option value="MAGNAFLUX">MAGNAFLUX</option>
+              </select>
+              <select id="pen_mod" class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
+                <option value="VP-30" selected>VP-30 (Lavável a água)</option>
+                <option value="SKL-SP2">SKL-SP2 (Por solvente)</option>
+              </select>
+              <input type="text" id="pen_lote" placeholder="Lote..." class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
             </div>
           </div>
 
           <!-- Removedor -->
-          <div class="bg-slate-50 p-2.5 sm:p-3 rounded-lg border border-slate-200">
-            <div class="font-bold text-xs text-slate-700 mb-2 border-b border-slate-200 pb-1 flex items-center justify-between">
-              <span>REMOVEDOR</span>
-              <span class="text-[10px] text-slate-400 font-normal">Remoção</span>
-            </div>
+          <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+            <div class="font-bold text-xs text-slate-700 mb-2 border-b border-slate-200 pb-1">REMOVEDOR</div>
             <div class="space-y-1.5">
-              <div>
-                <label class="block text-[10px] text-slate-500">Fabricante</label>
-                <select id="rem_fab" class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
-                  <option value="" selected>-- Selecione --</option>
-                  <option value="-">-</option>
-                  <option value="N/A">N/A</option>
-                  <option value="METAL-CHEK">METAL-CHEK</option>
-                  <option value="MAGNAFLUX">MAGNAFLUX</option>
-                  <option value="CARBOCHEM">CARBOCHEM</option>
-                  <option value="OUTRO">OUTRO</option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-[10px] text-slate-500">Modelo</label>
-                <select id="rem_mod" class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
-                  <option value="" selected>-- Selecione --</option>
-                  <option value="ÁGUA">ÁGUA</option>
-                  <option value="-">-</option>
-                  <option value="N/A">N/A</option>
-                  <option value="E-59">E-59</option>
-                  <option value="SKC-S">SKC-S</option>
-                  <option value="ZR-10E">ZR-10E</option>
-                  <option value="OUTRO">OUTRO</option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-[10px] text-slate-500">Nº Lote</label>
-                <input type="text" id="rem_lote" placeholder="Lote..." class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
-              </div>
+              <select id="rem_fab" class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
+                <option value="N/A" selected>N/A</option>
+                <option value="METAL-CHEK">METAL-CHEK</option>
+              </select>
+              <select id="rem_mod" class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
+                <option value="ÁGUA" selected>ÁGUA</option>
+                <option value="E-59">E-59</option>
+              </select>
+              <input type="text" id="rem_lote" placeholder="Lote..." class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
             </div>
           </div>
 
           <!-- Revelador -->
-          <div class="bg-slate-50 p-2.5 sm:p-3 rounded-lg border border-slate-200">
-            <div class="font-bold text-xs text-slate-700 mb-2 border-b border-slate-200 pb-1 flex items-center justify-between">
-              <span>REVELADOR</span>
-              <span class="text-[10px] text-slate-400 font-normal">Tipo D</span>
-            </div>
+          <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+            <div class="font-bold text-xs text-slate-700 mb-2 border-b border-slate-200 pb-1">REVELADOR</div>
             <div class="space-y-1.5">
-              <div>
-                <label class="block text-[10px] text-slate-500">Fabricante</label>
-                <select id="rev_fab" class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
-                  <option value="" selected>-- Selecione --</option>
-                  <option value="METAL CHEK">METAL CHEK</option>
-                  <option value="MAGNAFLUX">MAGNAFLUX</option>
-                  <option value="CARBOCHEM">CARBOCHEM</option>
-                  <option value="SHERWIN">SHERWIN</option>
-                  <option value="OUTRO">OUTRO</option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-[10px] text-slate-500">Modelo</label>
-                <select id="rev_mod" class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
-                  <option value="" selected>-- Selecione --</option>
-                  <option value="D70">D70 (Não aquoso tipo D)</option>
-                  <option value="D-70">D-70</option>
-                  <option value="SKD-S2">SKD-S2</option>
-                  <option value="ZP-9F">ZP-9F</option>
-                  <option value="D-100">D-100</option>
-                  <option value="OUTRO">OUTRO</option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-[10px] text-slate-500">Nº Lote</label>
-                <input type="text" id="rev_lote" placeholder="Lote..." class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
-              </div>
+              <select id="rev_fab" class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
+                <option value="METAL CHEK" selected>METAL CHEK</option>
+                <option value="MAGNAFLUX">MAGNAFLUX</option>
+              </select>
+              <select id="rev_mod" class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
+                <option value="D70" selected>D70 (Tipo D)</option>
+                <option value="SKD-S2">SKD-S2</option>
+              </select>
+              <input type="text" id="rev_lote" placeholder="Lote..." class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
             </div>
           </div>
         </div>
       </section>
 
-      <!-- 3. Registro de Juntas e Descontinuidades -->
+      <!-- 3. Registro de Juntas -->
       <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <div class="bg-slate-800 text-white px-3 sm:px-4 py-2.5 flex items-center justify-between">
           <h2 class="font-semibold text-xs sm:text-sm flex items-center gap-2">
@@ -569,15 +403,11 @@
                   <th class="p-2 border text-center w-12">Ação</th>
                 </tr>
               </thead>
-              <tbody id="corpoJuntasDesktop">
-                <!-- Injetado via JS -->
-              </tbody>
+              <tbody id="corpoJuntasDesktop"></tbody>
             </table>
           </div>
 
-          <div class="md:hidden space-y-3" id="corpoJuntasMobile">
-            <!-- Injetado via JS -->
-          </div>
+          <div class="md:hidden space-y-3" id="corpoJuntasMobile"></div>
         </div>
       </section>
 
@@ -587,7 +417,7 @@
           <h2 class="font-semibold text-xs sm:text-sm text-slate-800 mb-2 flex items-center gap-2">
             <i data-lucide="message-square" class="w-4 h-4 text-blue-500"></i> Observações Gerais
           </h2>
-          <textarea id="obs_gerais" rows="3" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Observações do ensaio..."></textarea>
+          <textarea id="obs_gerais" rows="3" class="w-full border border-slate-300 rounded-lg p-2 text-sm" placeholder="Observações..."></textarea>
         </section>
 
         <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-3 sm:p-4">
@@ -600,7 +430,7 @@
               <input type="text" id="inst_1" placeholder="Ex: Trena Métrica" class="w-full border border-slate-300 rounded p-1.5">
             </div>
             <div>
-              <label class="text-[10px] text-slate-500">TAG / Nº Série 1</label>
+              <label class="text-[10px] text-slate-500">TAG 1</label>
               <input type="text" id="tag_1" placeholder="Ex: TR-004" class="w-full border border-slate-300 rounded p-1.5">
             </div>
             <div>
@@ -608,55 +438,43 @@
               <input type="text" id="inst_2" placeholder="Ex: Luxímetro" class="w-full border border-slate-300 rounded p-1.5">
             </div>
             <div>
-              <label class="text-[10px] text-slate-500">TAG / Nº Série 2</label>
+              <label class="text-[10px] text-slate-500">TAG 2</label>
               <input type="text" id="tag_2" placeholder="Ex: LUX-012" class="w-full border border-slate-300 rounded p-1.5">
             </div>
           </div>
         </section>
       </div>
 
-      <!-- 5. Inspetor e Carimbo -->
+      <!-- 5. Inspetor Responsável -->
       <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-3 sm:p-4">
-        <h2 class="font-semibold text-xs sm:text-sm text-slate-800 mb-2 sm:mb-3 flex items-center gap-2">
+        <h2 class="font-semibold text-xs sm:text-sm text-slate-800 mb-2 flex items-center gap-2">
           <i data-lucide="award" class="w-4 h-4 text-amber-500"></i> 5. Inspetor Responsável
         </h2>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
             <label class="block text-xs font-semibold text-slate-600 mb-1">Nome do Inspetor</label>
-            <select id="inspetor_nome" onchange="selecionarInspetor(this.value)" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white focus:ring-2 focus:ring-red-500 focus:outline-none">
-              <option value="" selected>-- Selecione --</option>
-              <option value="Diego Morais">Diego Morais</option>
-              <option value="OUTRO">OUTRO</option>
-            </select>
+            <input type="text" id="inspetor_nome" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-slate-50 font-bold" readonly>
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-600 mb-1">Qualificações</label>
-            <input type="text" id="inspetor_qualif" placeholder="Automático ou manual" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-slate-50 focus:ring-2 focus:ring-red-500 focus:outline-none">
+            <input type="text" id="inspetor_qualif" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-slate-50" readonly>
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-600 mb-1">Registro / SNQC</label>
-            <input type="text" id="inspetor_snqc" placeholder="Automático ou manual" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-slate-50 focus:ring-2 focus:ring-red-500 focus:outline-none">
+            <input type="text" id="inspetor_snqc" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-slate-50 font-semibold" readonly>
           </div>
         </div>
       </section>
 
-      <!-- 6. Registro Fotográfico -->
+      <!-- 6. Fotos das Juntas -->
       <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <div class="bg-slate-800 text-white px-3 sm:px-4 py-2.5 flex items-center justify-between">
-          <div>
-            <h2 class="font-semibold text-xs sm:text-sm flex items-center gap-2">
-              <i data-lucide="camera" class="w-4 h-4 text-amber-400"></i> 6. Fotos das Juntas
-            </h2>
-            <p class="text-[10px] text-slate-300 sm:hidden">3 fotos por junta • Câmera ou Galeria</p>
-          </div>
-          <span class="hidden sm:inline text-xs text-slate-300">Visual • Penetrante • Revelação</span>
+          <h2 class="font-semibold text-xs sm:text-sm flex items-center gap-2">
+            <i data-lucide="camera" class="w-4 h-4 text-amber-400"></i> 6. Fotos das Juntas (Visual, Penetrante, Revelação)
+          </h2>
         </div>
-
         <div class="p-3 sm:p-4 bg-slate-50/50">
-          <div id="containerFotosPorJunta" class="space-y-4">
-            <!-- Cards de fotos gerados aqui -->
-          </div>
-
+          <div id="containerFotosPorJunta" class="space-y-4"></div>
           <div class="mt-4 pt-3 border-t text-center">
             <button type="button" onclick="adicionarLinhaJunta()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold px-4 py-2.5 rounded-lg flex items-center gap-2 mx-auto shadow touch-target">
               <i data-lucide="plus-circle" class="w-4 h-4 text-red-500"></i> Adicionar Junta com Fotos
@@ -664,23 +482,10 @@
           </div>
         </div>
       </section>
-
-      <!-- Botões de Ação Final (Desktop) -->
-      <div class="hidden sm:flex flex-wrap justify-end gap-3 pb-8">
-        <button type="button" onclick="prepararProximoLaudo()" class="bg-amber-600 hover:bg-amber-700 text-white font-medium px-4 py-2.5 rounded-lg text-sm shadow flex items-center gap-1.5">
-          <i data-lucide="rotate-cw" class="w-4 h-4"></i> Novo Laudo
-        </button>
-        <button type="button" onclick="salvarLaudoLocal(true)" class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-5 py-2.5 rounded-lg text-sm shadow flex items-center gap-1.5">
-          <i data-lucide="save" class="w-4 h-4"></i> Salvar Laudo
-        </button>
-        <button type="button" onclick="gerarVisualizacaoImpressao()" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2.5 rounded-lg text-sm shadow flex items-center gap-1.5">
-          <i data-lucide="printer" class="w-4 h-4"></i> Gerar PDF / Imprimir
-        </button>
-      </div>
     </form>
   </main>
 
-  <!-- Bottom Floating Action Bar (Exclusivo Mobile) -->
+  <!-- Bottom Floating Bar (Mobile) -->
   <div class="sm:hidden fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur border-t border-slate-800 p-2 z-30 flex items-center gap-2 no-print">
     <button type="button" onclick="salvarLaudoLocal(true)" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 rounded-lg flex items-center justify-center gap-1.5 shadow">
       <i data-lucide="save" class="w-4 h-4"></i> Salvar
@@ -690,35 +495,66 @@
     </button>
   </div>
 
+  <!-- MODAL DE AUTENTICAÇÃO / LOGIN OFFLINE -->
+  <div id="modalAuth" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-6 no-print">
+    <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden border border-slate-200">
+      <div class="bg-slate-800 text-white px-4 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <i data-lucide="user-check" class="w-5 h-5 text-amber-400"></i>
+          <h2 class="font-bold text-sm" id="modalAuthTitle">Perfil do Inspetor</h2>
+        </div>
+        <button type="button" onclick="fecharModalAuth()" class="text-slate-400 hover:text-white p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="p-4 space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Nome Completo</label>
+          <input type="text" id="auth_nome" placeholder="Ex: Diego Morais" class="w-full p-2 border rounded-lg text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Nº Registro / SNQC</label>
+          <input type="text" id="auth_snqc" placeholder="Ex: 20251437" class="w-full p-2 border rounded-lg text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Qualificações</label>
+          <input type="text" id="auth_qualif" placeholder="Ex: EVS / LP / ME" class="w-full p-2 border rounded-lg text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Senha (Opcional p/ Sincronização)</label>
+          <input type="password" id="auth_senha" placeholder="******" class="w-full p-2 border rounded-lg text-sm">
+        </div>
+
+        <div class="pt-2 flex flex-col gap-2">
+          <button type="button" onclick="salvarPerfilLocalECloud()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 rounded-lg shadow">
+            Confirmar e Salvar Perfil
+          </button>
+          <p class="text-[10px] text-slate-400 text-center">Salvo localmente no aparelho para uso 100% offline em campo.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL DE HISTÓRICO E EDIÇÃO DE LAUDOS -->
   <div id="modalHistorico" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-6 no-print">
     <div class="bg-white w-full max-w-3xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden border border-slate-200">
-      
-      <!-- Cabeçalho do Modal -->
       <div class="bg-slate-800 text-white px-4 py-3 flex items-center justify-between">
         <div class="flex items-center gap-2">
           <i data-lucide="folder-open" class="w-5 h-5 text-amber-400"></i>
-          <h2 class="font-bold text-sm sm:text-base">Laudos Salvos no Aparelho</h2>
+          <h2 class="font-bold text-sm sm:text-base">Histórico de Laudos (Offline & Nuvem)</h2>
         </div>
         <button type="button" onclick="fecharModalHistorico()" class="text-slate-400 hover:text-white p-1">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
 
-      <!-- Barra de Busca -->
       <div class="p-3 bg-slate-50 border-b border-slate-200">
-        <div class="relative">
-          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-3"></i>
-          <input type="text" id="buscaHistorico" oninput="filtrarHistorico(this.value)" placeholder="Buscar por RLP, cliente ou equipamento..." class="w-full pl-9 pr-3 py-2 border border-slate-300 rounded-lg text-xs sm:text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
-        </div>
+        <input type="text" id="buscaHistorico" oninput="filtrarHistorico(this.value)" placeholder="Buscar por RLP, cliente ou equipamento..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs sm:text-sm bg-white">
       </div>
 
-      <!-- Lista de Laudos Salvos -->
-      <div class="p-3 sm:p-4 overflow-y-auto flex-1 space-y-2.5" id="listaLaudosContainer">
-        <!-- Renderizado dinamicamente via JS -->
-      </div>
+      <div class="p-3 sm:p-4 overflow-y-auto flex-1 space-y-2.5" id="listaLaudosContainer"></div>
 
-      <!-- Rodapé do Modal -->
       <div class="p-3 bg-slate-100 border-t border-slate-200 flex justify-end">
         <button type="button" onclick="fecharModalHistorico()" class="bg-slate-700 hover:bg-slate-800 text-white text-xs font-semibold px-4 py-2 rounded-lg">
           Fechar
@@ -727,10 +563,8 @@
     </div>
   </div>
 
-  <!-- Printable Report Template (Full A4 Page 100%) -->
+  <!-- Printable Report Template -->
   <div id="printArea" class="print-only">
-
-    <!-- PÁGINA 1: RELATÓRIO TÉCNICO DE JUNTAS -->
     <div class="report-container border-2 border-black" id="paginaLaudoPrincipal">
       <div class="flex-grow-0" id="headerBlocoClone">
         <table class="w-full border-collapse text-[10px]">
@@ -746,7 +580,7 @@
           </tr>
         </table>
 
-        <!-- Bloco 1: Identificação -->
+        <!-- Identificação -->
         <table class="w-full border-collapse text-[9px] font-sans">
           <tr class="bg-slate-100 font-bold border-b border-black">
             <td class="p-1 border-r border-black w-1/2">EMPREENDIMENTO / <span class="italic font-normal">ENTERPRISE</span></td>
@@ -792,7 +626,7 @@
       </div>
 
       <div class="flex-grow-0" id="consumiveisBloco">
-        <!-- Bloco 2: Consumíveis -->
+        <!-- Consumíveis -->
         <table class="w-full border-collapse text-[8.5px] border-b-2 border-black">
           <tr class="bg-slate-200 font-bold text-center border-b border-black">
             <td class="p-0.5 border-r border-black w-1/4">SOLVENTE / SOLVENT</td>
@@ -824,7 +658,7 @@
           </tr>
         </table>
 
-        <!-- Bloco 3: Tabela de Juntas -->
+        <!-- Tabela de Juntas Impressão -->
         <table class="w-full border-collapse text-[9px] border-b-2 border-black" id="tabelaPrintJuntas">
           <thead>
             <tr class="bg-slate-200 text-center font-bold border-b border-black">
@@ -833,22 +667,20 @@
               <th rowspan="2" class="p-0.5 border-r border-black w-10">Laudo result</th>
               <th rowspan="2" class="p-0.5 border-r border-black w-10">Laudo pós reparo</th>
               <th rowspan="2" class="p-0.5 border-r border-black w-10">Laudo Final</th>
-              <th rowspan="2" class="p-1 w-44">OBSERVAÇÕES / CROQUI / REMARKS</th>
+              <th rowspan="2" class="p-1 w-44">OBSERVAÇÕES / REMARKS</th>
             </tr>
             <tr class="bg-slate-100 text-center font-bold border-b border-black text-[8px]">
               <th class="p-0.5 border-r border-black w-8">Nº</th>
-              <th class="p-0.5 border-r border-black w-14">TIPO / KIND</th>
-              <th class="p-0.5 border-r border-black w-12">COTA / COTE</th>
-              <th class="p-0.5 border-r border-black w-12">COMP. / LENGTH</th>
+              <th class="p-0.5 border-r border-black w-14">TIPO</th>
+              <th class="p-0.5 border-r border-black w-12">COTA</th>
+              <th class="p-0.5 border-r border-black w-12">COMP.</th>
             </tr>
           </thead>
-          <tbody id="p_corpo_juntas">
-            <!-- Linhas impressas geradas dinamicamente -->
-          </tbody>
+          <tbody id="p_corpo_juntas"></tbody>
         </table>
       </div>
 
-      <!-- Diagonal Slash Area / Inutilização -->
+      <!-- Inutilização -->
       <div class="diagonal-fill-area border-b-2 border-black p-2 flex flex-col justify-end">
         <svg style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;">
           <line x1="0" y1="100%" x2="100%" y2="0" stroke="#000" stroke-width="1.2" />
@@ -857,7 +689,7 @@
       </div>
 
       <div class="flex-grow-0" id="footerBlocoClone">
-        <!-- Bloco 4: Instrumentos Utilizados -->
+        <!-- Instrumentos -->
         <div class="border-b-2 border-black">
           <div class="bg-slate-200 text-center font-bold text-[8.5px] py-0.5 border-b border-black">
             INSTRUMENTOS UTILIZADOS / USED INSTRUMENTS
@@ -882,26 +714,23 @@
           </table>
         </div>
 
-        <!-- Bloco 5: Legenda -->
+        <!-- Legenda -->
         <div class="p-1 text-[7.5px] border-b-2 border-black bg-slate-50 leading-tight">
           <div class="font-bold mb-0.5">LEGENDA</div>
           <div class="grid grid-cols-3 gap-x-2">
-            <div><strong>A</strong> - APROVADO / APPROVED</div>
+            <div><strong>A</strong> - APROVADO</div>
             <div><strong>TL</strong> - TRINCA LONGITUDINAL</div>
             <div><strong>FP</strong> - FALTA DE PENETRAÇÃO</div>
-            <div><strong>R</strong> - REPROVADO / REPROVED</div>
+            <div><strong>R</strong> - REPROVADO</div>
             <div><strong>TT</strong> - TRINCA TRANSVERSAL</div>
             <div><strong>MO / M</strong> - MORDEDURA</div>
             <div><strong>FF</strong> - FALTA DE FUSÃO</div>
             <div><strong>TR</strong> - TRINCA RAMIFICADA</div>
             <div><strong>SP / SB</strong> - SOBREPOSIÇÃO</div>
-            <div><strong>REC</strong> - RECOMENDAÇÃO COMPL.</div>
-            <div></div>
-            <div><strong>PO</strong> - PORO OU POROSIDADE</div>
           </div>
         </div>
 
-        <!-- Bloco 6: Assinaturas / Carimbos -->
+        <!-- Assinaturas -->
         <table class="w-full border-collapse text-[9px] text-center">
           <tr class="bg-slate-200 font-bold border-b border-black">
             <td class="p-1 border-r border-black w-1/3">INSPETOR / INSPECTOR</td>
@@ -919,106 +748,29 @@
             </td>
             <td class="p-1 border-r border-black align-bottom">
               <div class="text-[8px] text-slate-400">Assinatura / Carimbo</div>
-              <div class="text-[7.5px] text-slate-500 mt-4">Data / Date: ____/____/________</div>
+              <div class="text-[7.5px] text-slate-500 mt-4">Data: ____/____/________</div>
             </td>
             <td class="p-1 align-bottom">
               <div class="text-[8px] text-slate-400">Assinatura / Carimbo</div>
-              <div class="text-[7.5px] text-slate-500 mt-4">Data / Date: ____/____/________</div>
+              <div class="text-[7.5px] text-slate-500 mt-4">Data: ____/____/________</div>
             </td>
           </tr>
         </table>
       </div>
     </div>
 
-    <!-- PÁGINAS SEGUINTES: ANEXOS FOTOGRÁFICOS DINÂMICOS -->
     <div id="areaPaginasFotosPrint"></div>
-
   </div>
 
   <script>
     let driveScriptUrl = localStorage.getItem('omega_drive_url') || '';
-    let idLaudoEmEdicao = null; // Guarda o ID quando estiver editando um laudo salvo
-
-    function abrirConfigDrive() {
-      const urlAtual = localStorage.getItem('omega_drive_url') || '';
-      const novaUrl = prompt("Cole a URL do seu Google Apps Script (Web App):", urlAtual);
-      if (novaUrl !== null) {
-        localStorage.setItem('omega_drive_url', novaUrl.trim());
-        driveScriptUrl = novaUrl.trim();
-        atualizarStatusConexao();
-        if (driveScriptUrl) {
-          sincronizarComDrive();
-        }
-      }
-    }
-
-    async function atualizarStatusConexao() {
-      const statusEl = document.getElementById('saveStatus');
-      const pendentes = await db.laudosLP.where('sincronizado').equals(0).count();
-
-      if (!navigator.onLine) {
-        statusEl.innerHTML = `<span class="text-amber-600 font-semibold">● Offline</span> (${pendentes} pendente${pendentes === 1 ? '' : 's'})`;
-      } else {
-        if (pendentes > 0) {
-          statusEl.innerHTML = `<span class="text-blue-600 font-semibold">● Conectado</span> (${pendentes} para sincronizar)`;
-        } else {
-          statusEl.innerHTML = `<span class="text-emerald-600 font-semibold">● 100% Sincronizado</span>`;
-        }
-      }
-    }
-
-    async function sincronizarComDrive(silencioso = false) {
-      if (!driveScriptUrl) {
-        if (!silencioso) abrirConfigDrive();
-        return;
-      }
-      if (!navigator.onLine) {
-        if (!silencioso) alert("Sem conexão no momento. Os laudos estão salvos no aparelho.");
-        return;
-      }
-
-      const pendentes = await db.laudosLP.where('sincronizado').equals(0).toArray();
-      if (pendentes.length === 0) {
-        if (!silencioso) alert("Todos os laudos já estão sincronizados!");
-        atualizarStatusConexao();
-        return;
-      }
-
-      const statusEl = document.getElementById('saveStatus');
-      statusEl.innerHTML = `<span class="text-amber-600 font-semibold animate-pulse">Sincronizando ${pendentes.length} laudo(s)...</span>`;
-
-      try {
-        for (const laudo of pendentes) {
-          await fetch(driveScriptUrl, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify(laudo)
-          });
-          await db.laudosLP.update(laudo.id, { sincronizado: 1 });
-        }
-        if (!silencioso) alert("Sincronizado com sucesso no Google Drive!");
-        atualizarStatusConexao();
-      } catch (err) {
-        console.error("Erro na sincronização:", err);
-        if (!silencioso) alert("Erro ao conectar com o Google Drive.");
-        atualizarStatusConexao();
-      }
-    }
-
-    window.addEventListener('online', () => {
-      atualizarStatusConexao();
-      if (driveScriptUrl) sincronizarComDrive(true);
-    });
-
-    window.addEventListener('offline', () => {
-      atualizarStatusConexao();
-    });
+    let idLaudoEmEdicao = null;
+    let usuarioLogado = JSON.parse(localStorage.getItem('omega_user') || 'null');
 
     // Inicialização Dexie DB
     const db = new Dexie('OmegaInspectionDB');
-    db.version(2).stores({
-      laudosLP: '++id, num_rlp, empreendimento, cliente, data_ensaio, sincronizado'
+    db.version(3).stores({
+      laudosLP: '++id, num_rlp, empreendimento, cliente, data_ensaio, sincronizado, usuario_id'
     });
 
     const opcoesDescontinuidades = [
@@ -1037,6 +789,113 @@
       { junta: "JUNTA - 01", num: "", tipo: "-", cota: "", comp: "", result: "-", pos: "-", final: "-", obs: "", fotos: ["", "", ""] }
     ];
 
+    // ==========================================
+    // AUTENTICAÇÃO E PERFIL OFFLINE-FIRST
+    // ==========================================
+    function checarPerfilInicial() {
+      if (!usuarioLogado) {
+        // Usuário Padrão Inicial caso abra sem login
+        usuarioLogado = {
+          id: 'USR-DEFAULT',
+          nome: 'Diego Morais',
+          snqc: '20251437',
+          qualif: 'EVS / LP / ME'
+        };
+        localStorage.setItem('omega_user', JSON.stringify(usuarioLogado));
+      }
+      aplicarPerfilNaInterface();
+    }
+
+    function aplicarPerfilNaInterface() {
+      if (!usuarioLogado) return;
+      document.getElementById('headerUserTxt').innerText = `${usuarioLogado.nome} (SNQC: ${usuarioLogado.snqc})`;
+      document.getElementById('inspetor_nome').value = usuarioLogado.nome;
+      document.getElementById('inspetor_snqc').value = `SNQC: ${usuarioLogado.snqc}`;
+      document.getElementById('inspetor_qualif').value = usuarioLogado.qualif;
+    }
+
+    function abrirModalAuth() {
+      if (usuarioLogado) {
+        document.getElementById('auth_nome').value = usuarioLogado.nome || '';
+        document.getElementById('auth_snqc').value = usuarioLogado.snqc || '';
+        document.getElementById('auth_qualif').value = usuarioLogado.qualif || '';
+      }
+      document.getElementById('modalAuth').classList.remove('hidden');
+    }
+
+    function fecharModalAuth() {
+      document.getElementById('modalAuth').classList.add('hidden');
+    }
+
+    async function salvarPerfilLocalECloud() {
+      const nome = document.getElementById('auth_nome').value.trim();
+      const snqc = document.getElementById('auth_snqc').value.trim();
+      const qualif = document.getElementById('auth_qualif').value.trim();
+      const senha = document.getElementById('auth_senha').value.trim();
+
+      if (!nome || !snqc) {
+        alert('Nome e SNQC são obrigatórios!');
+        return;
+      }
+
+      usuarioLogado = {
+        id: usuarioLogado?.id || ('USR-' + new Date().getTime()),
+        nome: nome,
+        snqc: snqc,
+        qualif: qualif
+      };
+
+      localStorage.setItem('omega_user', JSON.stringify(usuarioLogado));
+      aplicarPerfilNaInterface();
+      fecharModalAuth();
+
+      // Sincroniza o usuário com a planilha se estiver online
+      if (navigator.onLine && driveScriptUrl) {
+        try {
+          fetch(driveScriptUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({
+              action: 'cadastrarUsuario',
+              nome: nome,
+              snqc: snqc,
+              qualificacoes: qualif,
+              senha: senha
+            })
+          });
+        } catch(e) {}
+      }
+
+      alert('Perfil do inspetor salvo no aparelho!');
+    }
+
+    // ==========================================
+    // CONTROLE SEQUENCIAL DE RLP (OFFLINE & NUVEM)
+    // ==========================================
+    async function gerarProximoRLP() {
+      if (navigator.onLine && driveScriptUrl) {
+        try {
+          const resp = await fetch(`${driveScriptUrl}?action=getProximoRLP`);
+          const json = await resp.json();
+          if (json && json.success && json.proximo_rlp) {
+            document.getElementById('num_rlp').value = json.proximo_rlp;
+            return;
+          }
+        } catch(err) {
+          console.warn("Sem resposta da nuvem, gerando offline local...");
+        }
+      }
+
+      // Fallback Offline Local
+      const total = await db.laudosLP.count();
+      const padNumero = String(total + 1).padStart(3, '0');
+      document.getElementById('num_rlp').value = `OMG-RLP-Q-${padNumero}`;
+    }
+
+    // ==========================================
+    // RENDERIZADOR DE JUNTAS E FOTOS
+    // ==========================================
     function renderizarFotosPorJunta() {
       const container = document.getElementById('containerFotosPorJunta');
       if (!container) return;
@@ -1044,24 +903,20 @@
 
       dadosJuntas.forEach((juntaItem, jIndex) => {
         if (!juntaItem.fotos) juntaItem.fotos = ["", "", ""];
-
         const cardJunta = document.createElement('div');
         cardJunta.className = 'border border-slate-200 rounded-xl p-3 bg-white shadow-sm';
 
         const labelEtapas = ['1. Visual', '2. Penetrante', '3. Revelação'];
-
         let slotsHtml = `
           <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-100">
             <span class="font-bold text-xs sm:text-sm text-red-700 uppercase flex items-center gap-1.5">
               <i data-lucide="camera" class="w-4 h-4 text-red-600"></i> ${juntaItem.junta || `JUNTA - 0${jIndex + 1}`}
             </span>
-            <div class="flex items-center gap-2">
-              ${dadosJuntas.length > 1 ? `
-                <button type="button" onclick="removerLinhaJunta(${jIndex})" class="text-xs text-red-600 hover:text-red-800 font-semibold flex items-center gap-1">
-                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Excluir
-                </button>
-              ` : ''}
-            </div>
+            ${dadosJuntas.length > 1 ? `
+              <button type="button" onclick="removerLinhaJunta(${jIndex})" class="text-xs text-red-600 hover:text-red-800 font-semibold flex items-center gap-1">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Excluir
+              </button>
+            ` : ''}
           </div>
           <div class="grid grid-cols-3 gap-2 sm:gap-3">
         `;
@@ -1071,7 +926,6 @@
           slotsHtml += `
             <div class="border border-slate-200 rounded-lg p-1.5 sm:p-2 bg-slate-50 flex flex-col items-center justify-between text-center relative">
               <div class="text-[10px] sm:text-xs font-bold text-slate-700 mb-1 truncate w-full">${labelEtapas[slotIdx]}</div>
-
               <div class="w-full h-20 sm:h-28 bg-white rounded border border-slate-200 flex items-center justify-center overflow-hidden mb-1.5 relative">
                 ${fotoAtual ? `
                   <img src="${fotoAtual}" class="w-full h-full object-cover" />
@@ -1080,20 +934,16 @@
                   </button>
                 ` : `
                   <span class="text-slate-400 text-[10px] flex flex-col items-center gap-1">
-                    <i data-lucide="camera" class="w-5 h-5 text-slate-300"></i>
-                    Sem foto
+                    <i data-lucide="camera" class="w-5 h-5 text-slate-300"></i> Sem foto
                   </span>
                 `}
               </div>
-
-              <!-- Botões de Ação: Câmera Direta e Upload de Arquivo -->
               <div class="grid grid-cols-2 gap-1 w-full">
-                <label class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-[9px] sm:text-[11px] font-semibold py-1.5 rounded cursor-pointer flex items-center justify-center gap-0.5 shadow-sm touch-target" title="Tirar foto com a câmera">
+                <label class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-[9px] sm:text-[11px] font-semibold py-1.5 rounded cursor-pointer flex items-center justify-center gap-0.5 shadow-sm touch-target">
                   <i data-lucide="camera" class="w-3 h-3 text-red-600"></i> Câmera
                   <input type="file" accept="image/*" capture="environment" class="hidden" onchange="carregarFotoJunta(${jIndex}, ${slotIdx}, this.files[0])">
                 </label>
-
-                <label class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 text-[9px] sm:text-[11px] font-semibold py-1.5 rounded cursor-pointer flex items-center justify-center gap-0.5 shadow-sm touch-target" title="Escolher arquivo ou foto da galeria">
+                <label class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 text-[9px] sm:text-[11px] font-semibold py-1.5 rounded cursor-pointer flex items-center justify-center gap-0.5 shadow-sm touch-target">
                   <i data-lucide="folder" class="w-3 h-3 text-slate-600"></i> Arquivo
                   <input type="file" accept="image/*" class="hidden" onchange="carregarFotoJunta(${jIndex}, ${slotIdx}, this.files[0])">
                 </label>
@@ -1107,9 +957,7 @@
         container.appendChild(cardJunta);
       });
 
-      if (window.lucide) {
-        lucide.createIcons();
-      }
+      if (window.lucide) lucide.createIcons();
     }
 
     function carregarFotoJunta(jIndex, slotIdx, file) {
@@ -1130,36 +978,8 @@
       }
     }
 
-    async function gerarProximoRLP() {
-      try {
-        const total = await db.laudosLP.count();
-        const proximo = total + 1;
-        const padNumero = String(proximo).padStart(3, '0');
-        document.getElementById('num_rlp').value = `OMG-RLP-Q-${padNumero}`;
-      } catch (err) {
-        console.error('Erro ao contar laudos:', err);
-      }
-    }
-
-    function selecionarInspetor(nome) {
-      const qualifEl = document.getElementById('inspetor_qualif');
-      const snqcEl = document.getElementById('inspetor_snqc');
-
-      if (nome === 'Diego Morais') {
-        qualifEl.value = 'EVS / LP / ME';
-        snqcEl.value = 'SNQC: 20251437';
-      } else if (nome === '') {
-        qualifEl.value = '';
-        snqcEl.value = '';
-      } else {
-        qualifEl.value = '';
-        snqcEl.value = '';
-        qualifEl.focus();
-      }
-    }
-
     function renderizarTabelaForm() {
-      // 1. Render Desktop Table
+      // Desktop Table
       const tbody = document.getElementById('corpoJuntasDesktop');
       if (tbody) {
         tbody.innerHTML = '';
@@ -1170,13 +990,6 @@
           let descOptions = opcoesDescontinuidades.map(opt => 
             `<option value="${opt.val}" ${item.tipo === opt.val ? 'selected' : ''}>${opt.label}</option>`
           ).join('');
-
-          const renderLaudoOptions = (selectedVal) => `
-            <option value="-" ${selectedVal === '-' ? 'selected' : ''}>-</option>
-            <option value="A" ${selectedVal === 'A' ? 'selected' : ''}>A (Aprovado)</option>
-            <option value="R" ${selectedVal === 'R' ? 'selected' : ''}>R (Reprovado)</option>
-            <option value="N/A" ${selectedVal === 'N/A' ? 'selected' : ''}>N/A</option>
-          `;
 
           tr.innerHTML = `
             <td class="p-1 border"><input type="text" value="${item.junta}" onchange="atualizarJunta(${index}, 'junta', this.value)" class="w-full p-1 border rounded text-xs font-semibold"></td>
@@ -1190,17 +1003,26 @@
             <td class="p-1 border"><input type="text" value="${item.comp}" placeholder="Comp." onchange="atualizarJunta(${index}, 'comp', this.value)" class="w-full p-1 border rounded text-xs text-center"></td>
             <td class="p-1 border">
               <select onchange="atualizarJunta(${index}, 'result', this.value)" class="w-full p-1 border rounded text-xs font-bold ${item.result === 'R' ? 'text-red-600 bg-red-50' : item.result === 'A' ? 'text-emerald-700' : ''}">
-                ${renderLaudoOptions(item.result)}
+                <option value="-" ${item.result === '-' ? 'selected' : ''}>-</option>
+                <option value="A" ${item.result === 'A' ? 'selected' : ''}>A</option>
+                <option value="R" ${item.result === 'R' ? 'selected' : ''}>R</option>
+                <option value="N/A" ${item.result === 'N/A' ? 'selected' : ''}>N/A</option>
               </select>
             </td>
             <td class="p-1 border">
               <select onchange="atualizarJunta(${index}, 'pos', this.value)" class="w-full p-1 border rounded text-xs font-semibold">
-                ${renderLaudoOptions(item.pos)}
+                <option value="-" ${item.pos === '-' ? 'selected' : ''}>-</option>
+                <option value="A" ${item.pos === 'A' ? 'selected' : ''}>A</option>
+                <option value="R" ${item.pos === 'R' ? 'selected' : ''}>R</option>
+                <option value="N/A" ${item.pos === 'N/A' ? 'selected' : ''}>N/A</option>
               </select>
             </td>
             <td class="p-1 border">
               <select onchange="atualizarJunta(${index}, 'final', this.value)" class="w-full p-1 border rounded text-xs font-bold ${item.final === 'R' ? 'text-red-600 bg-red-50' : item.final === 'A' ? 'text-emerald-700' : ''}">
-                ${renderLaudoOptions(item.final)}
+                <option value="-" ${item.final === '-' ? 'selected' : ''}>-</option>
+                <option value="A" ${item.final === 'A' ? 'selected' : ''}>A</option>
+                <option value="R" ${item.final === 'R' ? 'selected' : ''}>R</option>
+                <option value="N/A" ${item.final === 'N/A' ? 'selected' : ''}>N/A</option>
               </select>
             </td>
             <td class="p-1 border"><input type="text" value="${item.obs}" placeholder="Obs" onchange="atualizarJunta(${index}, 'obs', this.value)" class="w-full p-1 border rounded text-xs"></td>
@@ -1214,21 +1036,21 @@
         });
       }
 
-      // 2. Render Mobile Cards
+      // Mobile Cards
       const containerMobile = document.getElementById('corpoJuntasMobile');
       if (containerMobile) {
         containerMobile.innerHTML = '';
         dadosJuntas.forEach((item, index) => {
           const card = document.createElement('div');
-          card.className = 'border border-slate-200 rounded-xl p-3 bg-slate-50/50 space-y-2.5 shadow-sm';
+          card.className = 'border border-slate-200 rounded-xl p-3 bg-slate-50/50 space-y-2 shadow-sm';
 
           let descOptions = opcoesDescontinuidades.map(opt => 
             `<option value="${opt.val}" ${item.tipo === opt.val ? 'selected' : ''}>${opt.label}</option>`
           ).join('');
 
           card.innerHTML = `
-            <div class="flex items-center justify-between pb-1.5 border-b border-slate-200">
-              <input type="text" value="${item.junta}" onchange="atualizarJunta(${index}, 'junta', this.value)" class="font-bold text-sm text-red-700 bg-transparent border-b border-dashed border-red-300 w-2/3">
+            <div class="flex items-center justify-between pb-1 border-b border-slate-200">
+              <input type="text" value="${item.junta}" onchange="atualizarJunta(${index}, 'junta', this.value)" class="font-bold text-sm text-red-700 bg-transparent w-2/3">
               ${dadosJuntas.length > 1 ? `
                 <button type="button" onclick="removerLinhaJunta(${index})" class="text-xs text-red-600 flex items-center gap-1 font-semibold">
                   <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Excluir
@@ -1237,13 +1059,13 @@
             </div>
 
             <div class="grid grid-cols-3 gap-2">
-              <div class="col-span-1">
-                <label class="text-[10px] text-slate-500">Nº Defeito</label>
-                <input type="text" value="${item.num}" placeholder="Nº" onchange="atualizarJunta(${index}, 'num', this.value)" class="w-full p-2 border border-slate-300 rounded bg-white text-xs">
+              <div>
+                <label class="text-[10px] text-slate-500">Nº</label>
+                <input type="text" value="${item.num}" placeholder="Nº" onchange="atualizarJunta(${index}, 'num', this.value)" class="w-full p-1.5 border rounded bg-white text-xs">
               </div>
               <div class="col-span-2">
                 <label class="text-[10px] text-slate-500">Descontinuidade</label>
-                <select onchange="atualizarJunta(${index}, 'tipo', this.value)" class="w-full p-2 border border-slate-300 rounded bg-white text-xs font-medium">
+                <select onchange="atualizarJunta(${index}, 'tipo', this.value)" class="w-full p-1.5 border rounded bg-white text-xs">
                   ${descOptions}
                 </select>
               </div>
@@ -1251,48 +1073,46 @@
 
             <div class="grid grid-cols-2 gap-2">
               <div>
-                <label class="text-[10px] text-slate-500">Cota (mm / pos)</label>
-                <input type="text" value="${item.cota}" placeholder="Ex: 120mm" onchange="atualizarJunta(${index}, 'cota', this.value)" class="w-full p-2 border border-slate-300 rounded bg-white text-xs">
+                <label class="text-[10px] text-slate-500">Cota</label>
+                <input type="text" value="${item.cota}" placeholder="Cota" onchange="atualizarJunta(${index}, 'cota', this.value)" class="w-full p-1.5 border rounded bg-white text-xs">
               </div>
               <div>
                 <label class="text-[10px] text-slate-500">Comprimento</label>
-                <input type="text" value="${item.comp}" placeholder="Ex: 15mm" onchange="atualizarJunta(${index}, 'comp', this.value)" class="w-full p-2 border border-slate-300 rounded bg-white text-xs">
+                <input type="text" value="${item.comp}" placeholder="Comp." onchange="atualizarJunta(${index}, 'comp', this.value)" class="w-full p-1.5 border rounded bg-white text-xs">
               </div>
             </div>
 
             <div class="grid grid-cols-3 gap-2 pt-1 border-t border-slate-100">
               <div>
-                <label class="text-[10px] font-semibold text-slate-600">Resultado</label>
-                <select onchange="atualizarJunta(${index}, 'result', this.value)" class="w-full p-2 border border-slate-300 rounded bg-white text-xs font-bold ${item.result === 'R' ? 'text-red-600' : item.result === 'A' ? 'text-emerald-700' : ''}">
+                <label class="text-[10px] font-semibold text-slate-600">Result.</label>
+                <select onchange="atualizarJunta(${index}, 'result', this.value)" class="w-full p-1.5 border rounded bg-white text-xs font-bold ${item.result === 'R' ? 'text-red-600' : 'text-emerald-700'}">
                   <option value="-" ${item.result === '-' ? 'selected' : ''}>-</option>
-                  <option value="A" ${item.result === 'A' ? 'selected' : ''}>Aprovado</option>
-                  <option value="R" ${item.result === 'R' ? 'selected' : ''}>Reprovado</option>
+                  <option value="A" ${item.result === 'A' ? 'selected' : ''}>A</option>
+                  <option value="R" ${item.result === 'R' ? 'selected' : ''}>R</option>
                   <option value="N/A" ${item.result === 'N/A' ? 'selected' : ''}>N/A</option>
                 </select>
               </div>
               <div>
-                <label class="text-[10px] font-semibold text-slate-600">Pós Reparo</label>
-                <select onchange="atualizarJunta(${index}, 'pos', this.value)" class="w-full p-2 border border-slate-300 rounded bg-white text-xs font-semibold">
+                <label class="text-[10px] font-semibold text-slate-600">Pós Rep.</label>
+                <select onchange="atualizarJunta(${index}, 'pos', this.value)" class="w-full p-1.5 border rounded bg-white text-xs">
                   <option value="-" ${item.pos === '-' ? 'selected' : ''}>-</option>
-                  <option value="A" ${item.pos === 'A' ? 'selected' : ''}>Aprovado</option>
-                  <option value="R" ${item.pos === 'R' ? 'selected' : ''}>Reprovado</option>
-                  <option value="N/A" ${item.pos === 'N/A' ? 'selected' : ''}>N/A</option>
+                  <option value="A" ${item.pos === 'A' ? 'selected' : ''}>A</option>
+                  <option value="R" ${item.pos === 'R' ? 'selected' : ''}>R</option>
                 </select>
               </div>
               <div>
                 <label class="text-[10px] font-semibold text-slate-600">Final</label>
-                <select onchange="atualizarJunta(${index}, 'final', this.value)" class="w-full p-2 border border-slate-300 rounded bg-white text-xs font-bold ${item.final === 'R' ? 'text-red-600' : item.final === 'A' ? 'text-emerald-700' : ''}">
+                <select onchange="atualizarJunta(${index}, 'final', this.value)" class="w-full p-1.5 border rounded bg-white text-xs font-bold ${item.final === 'R' ? 'text-red-600' : 'text-emerald-700'}">
                   <option value="-" ${item.final === '-' ? 'selected' : ''}>-</option>
-                  <option value="A" ${item.final === 'A' ? 'selected' : ''}>Aprovado</option>
-                  <option value="R" ${item.final === 'R' ? 'selected' : ''}>Reprovado</option>
-                  <option value="N/A" ${item.final === 'N/A' ? 'selected' : ''}>N/A</option>
+                  <option value="A" ${item.final === 'A' ? 'selected' : ''}>A</option>
+                  <option value="R" ${item.final === 'R' ? 'selected' : ''}>R</option>
                 </select>
               </div>
             </div>
 
             <div>
-              <label class="text-[10px] text-slate-500">Observação da Junta</label>
-              <input type="text" value="${item.obs}" placeholder="Ex: Trinca na ZTA" onchange="atualizarJunta(${index}, 'obs', this.value)" class="w-full p-2 border border-slate-300 rounded bg-white text-xs">
+              <label class="text-[10px] text-slate-500">Observações</label>
+              <input type="text" value="${item.obs}" placeholder="Obs da junta..." onchange="atualizarJunta(${index}, 'obs', this.value)" class="w-full p-1.5 border rounded bg-white text-xs">
             </div>
           `;
           containerMobile.appendChild(card);
@@ -1300,9 +1120,7 @@
       }
 
       renderizarFotosPorJunta();
-      if (window.lucide) {
-        lucide.createIcons();
-      }
+      if (window.lucide) lucide.createIcons();
     }
 
     function atualizarJunta(index, campo, valor) {
@@ -1311,9 +1129,7 @@
         dadosJuntas[index]['final'] = 'R';
         renderizarTabelaForm();
       }
-      if (campo === 'junta') {
-        renderizarFotosPorJunta();
-      }
+      if (campo === 'junta') renderizarFotosPorJunta();
     }
 
     function adicionarLinhaJunta() {
@@ -1339,6 +1155,399 @@
         dadosJuntas.splice(index, 1);
         renderizarTabelaForm();
       }
+    }
+
+    // ==========================================
+    // SALVAMENTO OFFLINE E SINCRONIZAÇÃO NUVEM
+    // ==========================================
+    async function salvarLaudoLocal(perguntarLimpeza = false) {
+      const laudo = {
+        num_rlp: document.getElementById('num_rlp').value,
+        empreendimento: document.getElementById('empreendimento').value,
+        num_contrato: document.getElementById('num_contrato').value,
+        cliente: document.getElementById('cliente').value,
+        local_ensaio: document.getElementById('local_ensaio').value,
+        data_ensaio: document.getElementById('data_ensaio').value,
+        norma_ref: document.getElementById('norma_ref').value,
+        procedimento: document.getElementById('procedimento').value,
+        procedimento_rev: document.getElementById('procedimento_rev').value,
+        desenho_ref: document.getElementById('desenho_ref').value,
+        desenho_rev: document.getElementById('desenho_rev').value,
+        metal_base: document.getElementById('metal_base').value,
+        metal_adicao: document.getElementById('metal_adicao').value,
+        espessura: document.getElementById('espessura').value,
+        solvente: { fab: document.getElementById('solv_fab').value, mod: document.getElementById('solv_mod').value, lote: document.getElementById('solv_lote').value },
+        penetrante: { fab: document.getElementById('pen_fab').value, mod: document.getElementById('pen_mod').value, lote: document.getElementById('pen_lote').value },
+        removedor: { fab: document.getElementById('rem_fab').value, mod: document.getElementById('rem_mod').value, lote: document.getElementById('rem_lote').value },
+        revelador: { fab: document.getElementById('rev_fab').value, mod: document.getElementById('rev_mod').value, lote: document.getElementById('rev_lote').value },
+        juntas: dadosJuntas,
+        obs_gerais: document.getElementById('obs_gerais').value,
+        instrumentos: [
+          { inst: document.getElementById('inst_1').value, tag: document.getElementById('tag_1').value },
+          { inst: document.getElementById('inst_2').value, tag: document.getElementById('tag_2').value }
+        ],
+        inspetor: {
+          nome: document.getElementById('inspetor_nome').value,
+          qualif: document.getElementById('inspetor_qualif').value,
+          snqc: document.getElementById('inspetor_snqc').value
+        },
+        usuario_id: usuarioLogado?.id || 'USR-DEFAULT',
+        atualizadoEm: new Date().toISOString(),
+        sincronizado: 0
+      };
+
+      if (idLaudoEmEdicao !== null) {
+        laudo.id = idLaudoEmEdicao;
+      }
+
+      const idSalvo = await db.laudosLP.put(laudo);
+      idLaudoEmEdicao = idSalvo;
+
+      const statusEl = document.getElementById('saveStatus');
+      statusEl.innerText = `Salvo localmente às ${new Date().toLocaleTimeString()}`;
+      statusEl.classList.add('text-emerald-600', 'font-semibold');
+      atualizarStatusConexao();
+
+      if (navigator.onLine && driveScriptUrl) {
+        sincronizarComDrive(true);
+      }
+
+      if (perguntarLimpeza) {
+        setTimeout(() => {
+          if (confirm("Laudo gravado no aparelho com sucesso! Deseja preparar o formulário para a próxima inspeção?")) {
+            prepararProximoLaudo();
+          }
+        }, 300);
+      }
+    }
+
+    async function sincronizarComDrive(silencioso = false) {
+      if (!driveScriptUrl) {
+        if (!silencioso) abrirConfigDrive();
+        return;
+      }
+      if (!navigator.onLine) {
+        if (!silencioso) alert("Sem conexão no momento. Os laudos estão seguros e serão enviados ao reconectar.");
+        return;
+      }
+
+      const pendentes = await db.laudosLP.where('sincronizado').equals(0).toArray();
+      const statusEl = document.getElementById('saveStatus');
+      statusEl.innerHTML = `<span class="text-amber-600 font-semibold animate-pulse">Sincronizando com a Nuvem...</span>`;
+
+      try {
+        for (const laudo of pendentes) {
+          await fetch(driveScriptUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({
+              action: 'salvarLaudo',
+              usuario_id: laudo.usuario_id,
+              laudo: laudo
+            })
+          });
+          await db.laudosLP.update(laudo.id, { sincronizado: 1 });
+        }
+        if (!silencioso) alert("Sincronização concluída com sucesso!");
+        atualizarStatusConexao();
+      } catch (err) {
+        console.error("Erro na sincronização:", err);
+        if (!silencioso) alert("Erro ao conectar com a planilha/Drive.");
+        atualizarStatusConexao();
+      }
+    }
+
+    // ==========================================
+    // HISTÓRICO & EDIÇÃO COMPLETA
+    // ==========================================
+    let listaLaudosCache = [];
+
+    async function abrirModalHistorico() {
+      listaLaudosCache = await db.laudosLP.toArray();
+      listaLaudosCache.sort((a, b) => (b.id || 0) - (a.id || 0));
+
+      // Se estiver online, mescla com o histórico da nuvem
+      if (navigator.onLine && driveScriptUrl) {
+        try {
+          const resp = await fetch(`${driveScriptUrl}?action=getHistorico`);
+          const json = await resp.json();
+          if (json && json.success && json.laudos) {
+            json.laudos.forEach(laudoCloud => {
+              const existe = listaLaudosCache.find(l => l.num_rlp === laudoCloud.num_rlp);
+              if (!existe) {
+                laudoCloud.sincronizado = 1;
+                listaLaudosCache.push(laudoCloud);
+              }
+            });
+            listaLaudosCache.sort((a, b) => (b.id || 0) - (a.id || 0));
+          }
+        } catch(e) {}
+      }
+
+      document.getElementById('buscaHistorico').value = '';
+      renderizarListaHistorico(listaLaudosCache);
+      document.getElementById('modalHistorico').classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function fecharModalHistorico() {
+      document.getElementById('modalHistorico').classList.add('hidden');
+    }
+
+    function filtrarHistorico(termo) {
+      const t = termo.toLowerCase().trim();
+      if (!t) {
+        renderizarListaHistorico(listaLaudosCache);
+        return;
+      }
+      const filtrados = listaLaudosCache.filter(l => 
+        (l.num_rlp && l.num_rlp.toLowerCase().includes(t)) ||
+        (l.empreendimento && l.empreendimento.toLowerCase().includes(t)) ||
+        (l.cliente && l.cliente.toLowerCase().includes(t))
+      );
+      renderizarListaHistorico(filtrados);
+    }
+
+    function renderizarListaHistorico(laudos) {
+      const container = document.getElementById('listaLaudosContainer');
+      container.innerHTML = '';
+
+      if (laudos.length === 0) {
+        container.innerHTML = `<div class="text-center py-8 text-slate-400 text-xs">Nenhum laudo encontrado.</div>`;
+        return;
+      }
+
+      laudos.forEach(laudo => {
+        const item = document.createElement('div');
+        item.className = 'border border-slate-200 rounded-xl p-3 bg-white shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3';
+
+        item.innerHTML = `
+          <div class="space-y-1 flex-1">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="font-bold text-sm text-red-700">${laudo.num_rlp || 'Sem RLP'}</span>
+              <span class="text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-700">${laudo.cliente || 'Sem cliente'}</span>
+              ${laudo.sincronizado === 1 ? 
+                `<span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded">Nuvem Sincronizada</span>` : 
+                `<span class="text-[10px] bg-amber-100 text-amber-800 font-bold px-1.5 py-0.5 rounded">Apenas no Aparelho</span>`
+              }
+            </div>
+            <p class="text-xs font-medium text-slate-800">${laudo.empreendimento || 'Equipamento não informado'}</p>
+            <div class="text-[11px] text-slate-500">Inspetor: ${laudo.inspetor?.nome || '-'} • Data: ${formatarData(laudo.data_ensaio)}</div>
+          </div>
+
+          <div class="flex items-center gap-1.5 self-end sm:self-center">
+            <button type="button" onclick="carregarLaudoParaEdicao('${laudo.num_rlp}')" class="bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold px-3 py-2 rounded-lg flex items-center gap-1 touch-target">
+              <i data-lucide="edit-3" class="w-3.5 h-3.5 text-amber-700"></i> Editar
+            </button>
+            <button type="button" onclick="imprimirLaudoDireto('${laudo.num_rlp}')" class="bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-300 text-xs font-bold px-3 py-2 rounded-lg flex items-center gap-1 touch-target">
+              <i data-lucide="printer" class="w-3.5 h-3.5 text-blue-700"></i> PDF
+            </button>
+            <button type="button" onclick="excluirLaudoHistorico(${laudo.id})" class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs p-2 rounded-lg touch-target">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    async function carregarLaudoParaEdicao(numRlp) {
+      let laudo = await db.laudosLP.where('num_rlp').equals(numRlp).first();
+      if (!laudo) {
+        laudo = listaLaudosCache.find(l => l.num_rlp === numRlp);
+      }
+      if (!laudo) {
+        alert('Erro ao carregar os dados do laudo.');
+        return;
+      }
+
+      idLaudoEmEdicao = laudo.id || null;
+
+      document.getElementById('empreendimento').value = laudo.empreendimento || '';
+      document.getElementById('num_contrato').value = laudo.num_contrato || '';
+      document.getElementById('num_rlp').value = laudo.num_rlp || '';
+      document.getElementById('cliente').value = laudo.cliente || '';
+      document.getElementById('local_ensaio').value = laudo.local_ensaio || '';
+      document.getElementById('data_ensaio').value = laudo.data_ensaio || '';
+      document.getElementById('norma_ref').value = laudo.norma_ref || '';
+      document.getElementById('procedimento').value = laudo.procedimento || '';
+      document.getElementById('procedimento_rev').value = laudo.procedimento_rev || '0';
+      document.getElementById('desenho_ref').value = laudo.desenho_ref || '';
+      document.getElementById('desenho_rev').value = laudo.desenho_rev || '0';
+      document.getElementById('metal_base').value = laudo.metal_base || '';
+      document.getElementById('metal_adicao').value = laudo.metal_adicao || '';
+      document.getElementById('espessura').value = laudo.espessura || '';
+
+      if (laudo.solvente) {
+        document.getElementById('solv_fab').value = laudo.solvente.fab || '';
+        document.getElementById('solv_mod').value = laudo.solvente.mod || '';
+        document.getElementById('solv_lote').value = laudo.solvente.lote || '';
+      }
+      if (laudo.penetrante) {
+        document.getElementById('pen_fab').value = laudo.penetrante.fab || '';
+        document.getElementById('pen_mod').value = laudo.penetrante.mod || '';
+        document.getElementById('pen_lote').value = laudo.penetrante.lote || '';
+      }
+      if (laudo.removedor) {
+        document.getElementById('rem_fab').value = laudo.removedor.fab || '';
+        document.getElementById('rem_mod').value = laudo.removedor.mod || '';
+        document.getElementById('rem_lote').value = laudo.removedor.lote || '';
+      }
+      if (laudo.revelador) {
+        document.getElementById('rev_fab').value = laudo.revelador.fab || '';
+        document.getElementById('rev_mod').value = laudo.revelador.mod || '';
+        document.getElementById('rev_lote').value = laudo.revelador.lote || '';
+      }
+
+      document.getElementById('obs_gerais').value = laudo.obs_gerais || '';
+      if (laudo.instrumentos && laudo.instrumentos[0]) {
+        document.getElementById('inst_1').value = laudo.instrumentos[0].inst || '';
+        document.getElementById('tag_1').value = laudo.instrumentos[0].tag || '';
+      }
+      if (laudo.instrumentos && laudo.instrumentos[1]) {
+        document.getElementById('inst_2').value = laudo.instrumentos[1].inst || '';
+        document.getElementById('tag_2').value = laudo.instrumentos[1].tag || '';
+      }
+
+      dadosJuntas = laudo.juntas || [
+        { junta: "JUNTA - 01", num: "", tipo: "-", cota: "", comp: "", result: "-", pos: "-", final: "-", obs: "", fotos: ["", "", ""] }
+      ];
+
+      renderizarTabelaForm();
+      fecharModalHistorico();
+
+      document.getElementById('txtEditandoRlp').innerText = laudo.num_rlp || 'Sem RLP';
+      document.getElementById('bannerEdicaoAtiva').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function cancelarEdicao() {
+      if (confirm('Deseja cancelar a edição e abrir um novo laudo?')) {
+        prepararProximoLaudo();
+      }
+    }
+
+    async function imprimirLaudoDireto(numRlp) {
+      await carregarLaudoParaEdicao(numRlp);
+      setTimeout(() => {
+        gerarVisualizacaoImpressao();
+      }, 300);
+    }
+
+    async function excluirLaudoHistorico(id) {
+      if (!id) {
+        alert('Este laudo está salvo apenas na nuvem.');
+        return;
+      }
+      if (confirm('Deseja realmente excluir este laudo do aparelho?')) {
+        await db.laudosLP.delete(id);
+        abrirModalHistorico();
+        atualizarStatusConexao();
+      }
+    }
+
+    function prepararProximoLaudo() {
+      idLaudoEmEdicao = null;
+      document.getElementById('bannerEdicaoAtiva').classList.add('hidden');
+      dadosJuntas = [
+        { junta: "JUNTA - 01", num: "", tipo: "-", cota: "", comp: "", result: "-", pos: "-", final: "-", obs: "", fotos: ["", "", ""] }
+      ];
+      document.getElementById('obs_gerais').value = "";
+      gerarProximoRLP();
+      renderizarTabelaForm();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function abrirConfigDrive() {
+      const urlAtual = localStorage.getItem('omega_drive_url') || '';
+      const novaUrl = prompt("Cole a URL do seu Google Apps Script (Web App):", urlAtual);
+      if (novaUrl !== null) {
+        localStorage.setItem('omega_drive_url', novaUrl.trim());
+        driveScriptUrl = novaUrl.trim();
+        atualizarStatusConexao();
+        gerarProximoRLP();
+      }
+    }
+
+    async function atualizarStatusConexao() {
+      const statusEl = document.getElementById('saveStatus');
+      const pendentes = await db.laudosLP.where('sincronizado').equals(0).count();
+      if (!navigator.onLine) {
+        statusEl.innerHTML = `<span class="text-amber-600 font-semibold">● Modo Offline</span> (${pendentes} no aparelho)`;
+      } else {
+        if (pendentes > 0) {
+          statusEl.innerHTML = `<span class="text-blue-600 font-semibold">● Online</span> (${pendentes} para sincronizar)`;
+        } else {
+          statusEl.innerHTML = `<span class="text-emerald-600 font-semibold">● Sincronizado</span>`;
+        }
+      }
+    }
+
+    // ==========================================
+    // GERAÇÃO DE VISUALIZAÇÃO A4 / PDF
+    // ==========================================
+    function gerarVisualizacaoImpressao() {
+      document.getElementById('p_empreendimento').innerText = document.getElementById('empreendimento').value || '-';
+      document.getElementById('p_num_contrato').innerText = document.getElementById('num_contrato').value || '-';
+      document.getElementById('p_num_rlp').innerText = document.getElementById('num_rlp').value || '-';
+      document.getElementById('p_data').innerText = formatarData(document.getElementById('data_ensaio').value);
+      document.getElementById('p_cliente').innerText = document.getElementById('cliente').value || '-';
+      document.getElementById('p_local').innerText = document.getElementById('local_ensaio').value || '-';
+      document.getElementById('p_norma').innerText = document.getElementById('norma_ref').value || '-';
+      document.getElementById('p_procedimento').innerText = `${document.getElementById('procedimento').value || '-'} / Rev. ${document.getElementById('procedimento_rev').value}`;
+      document.getElementById('p_desenho').innerText = `${document.getElementById('desenho_ref').value || '-'} / Rev. ${document.getElementById('desenho_rev').value}`;
+      document.getElementById('p_metal_base').innerText = document.getElementById('metal_base').value || '-';
+      document.getElementById('p_metal_adicao').innerText = document.getElementById('metal_adicao').value || '-';
+      document.getElementById('p_espessura').innerText = document.getElementById('espessura').value || '-';
+
+      document.getElementById('p_solv_fab').innerText = document.getElementById('solv_fab').value || '-';
+      document.getElementById('p_solv_mod').innerText = document.getElementById('solv_mod').value || '-';
+      document.getElementById('p_solv_lote').innerText = document.getElementById('solv_lote').value || '-';
+      document.getElementById('p_pen_fab').innerText = document.getElementById('pen_fab').value || '-';
+      document.getElementById('p_pen_mod').innerText = document.getElementById('pen_mod').value || '-';
+      document.getElementById('p_pen_lote').innerText = document.getElementById('pen_lote').value || '-';
+      document.getElementById('p_rem_fab').innerText = document.getElementById('rem_fab').value || '-';
+      document.getElementById('p_rem_mod').innerText = document.getElementById('rem_mod').value || '-';
+      document.getElementById('p_rem_lote').innerText = document.getElementById('rem_lote').value || '-';
+      document.getElementById('p_rev_fab').innerText = document.getElementById('rev_fab').value || '-';
+      document.getElementById('p_rev_mod').innerText = document.getElementById('rev_mod').value || '-';
+      document.getElementById('p_rev_lote').innerText = document.getElementById('rev_lote').value || '-';
+
+      document.getElementById('p_obs').innerText = document.getElementById('obs_gerais').value;
+      document.getElementById('p_inst_1').innerText = document.getElementById('inst_1').value || '-';
+      document.getElementById('p_tag_1').innerText = document.getElementById('tag_1').value || '-';
+      document.getElementById('p_inst_2').innerText = document.getElementById('inst_2').value || '-';
+      document.getElementById('p_tag_2').innerText = document.getElementById('tag_2').value || '-';
+
+      document.getElementById('p_inspetor_nome').innerText = document.getElementById('inspetor_nome').value || '-';
+      document.getElementById('p_inspetor_qualif').innerText = document.getElementById('inspetor_qualif').value || '-';
+      document.getElementById('p_inspetor_snqc').innerText = document.getElementById('inspetor_snqc').value || '-';
+      document.getElementById('p_data_ass').innerText = formatarData(document.getElementById('data_ensaio').value);
+
+      const ptbody = document.getElementById('p_corpo_juntas');
+      ptbody.innerHTML = '';
+      dadosJuntas.forEach(j => {
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-black text-center text-[8.5px]';
+        tr.innerHTML = `
+          <td class="p-1 border-r border-black font-semibold text-left">${j.junta}</td>
+          <td class="p-0.5 border-r border-black">${j.num || '-'}</td>
+          <td class="p-0.5 border-r border-black font-medium">${j.tipo}</td>
+          <td class="p-0.5 border-r border-black">${j.cota || '-'}</td>
+          <td class="p-0.5 border-r border-black">${j.comp || '-'}</td>
+          <td class="p-0.5 border-r border-black font-bold ${j.result === 'R' ? 'text-red-700' : ''}">${j.result}</td>
+          <td class="p-0.5 border-r border-black font-bold">${j.pos}</td>
+          <td class="p-0.5 border-r border-black font-bold ${j.final === 'R' ? 'text-red-700' : ''}">${j.final}</td>
+          <td class="p-1 text-left">${j.obs || '-'}</td>
+        `;
+        ptbody.appendChild(tr);
+      });
+
+      montarPaginasFotosImpressao();
+      window.print();
     }
 
     function montarPaginasFotosImpressao() {
@@ -1398,412 +1607,17 @@
       }
     }
 
-    function gerarVisualizacaoImpressao() {
-      document.getElementById('p_empreendimento').innerText = document.getElementById('empreendimento').value || '-';
-      document.getElementById('p_num_contrato').innerText = document.getElementById('num_contrato').value || '-';
-      document.getElementById('p_num_rlp').innerText = document.getElementById('num_rlp').value || '-';
-      document.getElementById('p_data').innerText = formatarData(document.getElementById('data_ensaio').value);
-      document.getElementById('p_cliente').innerText = document.getElementById('cliente').value || '-';
-      document.getElementById('p_local').innerText = document.getElementById('local_ensaio').value || '-';
-      document.getElementById('p_norma').innerText = document.getElementById('norma_ref').value || '-';
-      document.getElementById('p_procedimento').innerText = `${document.getElementById('procedimento').value || '-'} / Rev. ${document.getElementById('procedimento_rev').value}`;
-      document.getElementById('p_desenho').innerText = `${document.getElementById('desenho_ref').value || '-'} / Rev. ${document.getElementById('desenho_rev').value}`;
-      document.getElementById('p_metal_base').innerText = document.getElementById('metal_base').value || '-';
-      document.getElementById('p_metal_adicao').innerText = document.getElementById('metal_adicao').value || '-';
-      document.getElementById('p_espessura').innerText = document.getElementById('espessura').value || '-';
-
-      // Consumíveis
-      document.getElementById('p_solv_fab').innerText = document.getElementById('solv_fab').value || '-';
-      document.getElementById('p_solv_mod').innerText = document.getElementById('solv_mod').value || '-';
-      document.getElementById('p_solv_lote').innerText = document.getElementById('solv_lote').value || '-';
-
-      document.getElementById('p_pen_fab').innerText = document.getElementById('pen_fab').value || '-';
-      document.getElementById('p_pen_mod').innerText = document.getElementById('pen_mod').value || '-';
-      document.getElementById('p_pen_lote').innerText = document.getElementById('pen_lote').value || '-';
-
-      document.getElementById('p_rem_fab').innerText = document.getElementById('rem_fab').value || '-';
-      document.getElementById('p_rem_mod').innerText = document.getElementById('rem_mod').value || '-';
-      document.getElementById('p_rem_lote').innerText = document.getElementById('rem_lote').value || '-';
-
-      document.getElementById('p_rev_fab').innerText = document.getElementById('rev_fab').value || '-';
-      document.getElementById('p_rev_mod').innerText = document.getElementById('rev_mod').value || '-';
-      document.getElementById('p_rev_lote').innerText = document.getElementById('rev_lote').value || '-';
-
-      // Observações & Instrumentos
-      document.getElementById('p_obs').innerText = document.getElementById('obs_gerais').value;
-      document.getElementById('p_inst_1').innerText = document.getElementById('inst_1').value || '-';
-      document.getElementById('p_tag_1').innerText = document.getElementById('tag_1').value || '-';
-      document.getElementById('p_inst_2').innerText = document.getElementById('inst_2').value || '-';
-      document.getElementById('p_tag_2').innerText = document.getElementById('tag_2').value || '-';
-
-      // Inspetor
-      document.getElementById('p_inspetor_nome').innerText = document.getElementById('inspetor_nome').value || '-';
-      document.getElementById('p_inspetor_qualif').innerText = document.getElementById('inspetor_qualif').value || '-';
-      document.getElementById('p_inspetor_snqc').innerText = document.getElementById('inspetor_snqc').value || '-';
-      document.getElementById('p_data_ass').innerText = formatarData(document.getElementById('data_ensaio').value);
-
-      // Tabela de Juntas na Impressão
-      const ptbody = document.getElementById('p_corpo_juntas');
-      ptbody.innerHTML = '';
-      dadosJuntas.forEach(j => {
-        const tr = document.createElement('tr');
-        tr.className = 'border-b border-black text-center text-[8.5px]';
-        tr.innerHTML = `
-          <td class="p-1 border-r border-black font-semibold text-left">${j.junta}</td>
-          <td class="p-0.5 border-r border-black">${j.num || '-'}</td>
-          <td class="p-0.5 border-r border-black font-medium">${j.tipo}</td>
-          <td class="p-0.5 border-r border-black">${j.cota || '-'}</td>
-          <td class="p-0.5 border-r border-black">${j.comp || '-'}</td>
-          <td class="p-0.5 border-r border-black font-bold ${j.result === 'R' ? 'text-red-700' : ''}">${j.result}</td>
-          <td class="p-0.5 border-r border-black font-bold">${j.pos}</td>
-          <td class="p-0.5 border-r border-black font-bold ${j.final === 'R' ? 'text-red-700' : ''}">${j.final}</td>
-          <td class="p-1 text-left">${j.obs || '-'}</td>
-        `;
-        ptbody.appendChild(tr);
-      });
-
-      montarPaginasFotosImpressao();
-
-      window.print();
-    }
-
     function formatarData(dataIso) {
       if (!dataIso) return '-';
       const partes = dataIso.split('-');
       return `${partes[2]}/${partes[1]}/${partes[0]}`;
     }
 
-    // Salva ou Atualiza Laudo no Dexie DB
-    async function salvarLaudoLocal(perguntarLimpeza = false) {
-      const laudo = {
-        num_rlp: document.getElementById('num_rlp').value,
-        empreendimento: document.getElementById('empreendimento').value,
-        num_contrato: document.getElementById('num_contrato').value,
-        cliente: document.getElementById('cliente').value,
-        local_ensaio: document.getElementById('local_ensaio').value,
-        data_ensaio: document.getElementById('data_ensaio').value,
-        norma_ref: document.getElementById('norma_ref').value,
-        procedimento: document.getElementById('procedimento').value,
-        procedimento_rev: document.getElementById('procedimento_rev').value,
-        desenho_ref: document.getElementById('desenho_ref').value,
-        desenho_rev: document.getElementById('desenho_rev').value,
-        metal_base: document.getElementById('metal_base').value,
-        metal_adicao: document.getElementById('metal_adicao').value,
-        espessura: document.getElementById('espessura').value,
-        solvente: { fab: document.getElementById('solv_fab').value, mod: document.getElementById('solv_mod').value, lote: document.getElementById('solv_lote').value },
-        penetrante: { fab: document.getElementById('pen_fab').value, mod: document.getElementById('pen_mod').value, lote: document.getElementById('pen_lote').value },
-        removedor: { fab: document.getElementById('rem_fab').value, mod: document.getElementById('rem_mod').value, lote: document.getElementById('rem_lote').value },
-        revelador: { fab: document.getElementById('rev_fab').value, mod: document.getElementById('rev_mod').value, lote: document.getElementById('rev_lote').value },
-        juntas: dadosJuntas,
-        obs_gerais: document.getElementById('obs_gerais').value,
-        instrumentos: [
-          { inst: document.getElementById('inst_1').value, tag: document.getElementById('tag_1').value },
-          { inst: document.getElementById('inst_2').value, tag: document.getElementById('tag_2').value }
-        ],
-        inspetor: {
-          nome: document.getElementById('inspetor_nome').value,
-          qualif: document.getElementById('inspetor_qualif').value,
-          snqc: document.getElementById('inspetor_snqc').value
-        },
-        atualizadoEm: new Date().toISOString(),
-        sincronizado: 0
-      };
-
-      if (idLaudoEmEdicao !== null) {
-        laudo.id = idLaudoEmEdicao;
-      }
-
-      const idSalvo = await db.laudosLP.put(laudo);
-      idLaudoEmEdicao = idSalvo;
-
-      const statusEl = document.getElementById('saveStatus');
-      statusEl.innerText = `Salvo às ${new Date().toLocaleTimeString()}`;
-      statusEl.classList.add('text-emerald-600', 'font-semibold');
-      atualizarStatusConexao();
-
-      if (navigator.onLine && driveScriptUrl) {
-        sincronizarComDrive(true);
-      }
-
-      if (perguntarLimpeza) {
-        setTimeout(() => {
-          if (confirm("Laudo salvo com sucesso no aparelho! Deseja preparar o formulário para o próximo laudo (mantém cabeçalho e consumíveis)?")) {
-            prepararProximoLaudo();
-          }
-        }, 300);
-      }
-    }
-
-    // ==========================================
-    // SISTEMA DE HISTÓRICO & EDIÇÃO EM CAMPO
-    // ==========================================
-    let listaLaudosCache = [];
-
-    async function abrirModalHistorico() {
-      listaLaudosCache = await db.laudosLP.toArray();
-      // Ordena por data/ID mais recente primeiro
-      listaLaudosCache.sort((a, b) => (b.id || 0) - (a.id || 0));
-      
-      document.getElementById('buscaHistorico').value = '';
-      renderizarListaHistorico(listaLaudosCache);
-      document.getElementById('modalHistorico').classList.remove('hidden');
-      if (window.lucide) lucide.createIcons();
-    }
-
-    function fecharModalHistorico() {
-      document.getElementById('modalHistorico').classList.add('hidden');
-    }
-
-    function filtrarHistorico(termo) {
-      const t = termo.toLowerCase().trim();
-      if (!t) {
-        renderizarListaHistorico(listaLaudosCache);
-        return;
-      }
-      const filtrados = listaLaudosCache.filter(l => 
-        (l.num_rlp && l.num_rlp.toLowerCase().includes(t)) ||
-        (l.empreendimento && l.empreendimento.toLowerCase().includes(t)) ||
-        (l.cliente && l.cliente.toLowerCase().includes(t)) ||
-        (l.data_ensaio && l.data_ensaio.includes(t))
-      );
-      renderizarListaHistorico(filtrados);
-    }
-
-    function renderizarListaHistorico(laudos) {
-      const container = document.getElementById('listaLaudosContainer');
-      container.innerHTML = '';
-
-      if (laudos.length === 0) {
-        container.innerHTML = `
-          <div class="text-center py-10 text-slate-400">
-            <i data-lucide="inbox" class="w-10 h-10 mx-auto mb-2 opacity-40"></i>
-            <p class="text-xs sm:text-sm">Nenhum laudo encontrado no aparelho.</p>
-          </div>
-        `;
-        if (window.lucide) lucide.createIcons();
-        return;
-      }
-
-      laudos.forEach(laudo => {
-        const item = document.createElement('div');
-        item.className = 'border border-slate-200 rounded-xl p-3 bg-white hover:bg-slate-50/80 transition-colors shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3';
-
-        const qtdJuntas = (laudo.juntas && laudo.juntas.length) || 0;
-        const sincronizado = laudo.sincronizado === 1;
-
-        item.innerHTML = `
-          <div class="space-y-1 flex-1">
-            <div class="flex items-center gap-2 flex-wrap">
-              <span class="font-bold text-sm text-red-700">${laudo.num_rlp || 'Sem RLP'}</span>
-              <span class="text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-700">${laudo.cliente || 'Sem cliente'}</span>
-              ${sincronizado ? 
-                `<span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded flex items-center gap-0.5"><i data-lucide="cloud-check" class="w-3 h-3"></i> Sincronizado</span>` : 
-                `<span class="text-[10px] bg-amber-100 text-amber-800 font-bold px-1.5 py-0.5 rounded flex items-center gap-0.5"><i data-lucide="cloud-off" class="w-3 h-3"></i> Pendente</span>`
-              }
-            </div>
-            <p class="text-xs font-medium text-slate-800 truncate">${laudo.empreendimento || 'Equipamento não especificado'}</p>
-            <div class="text-[11px] text-slate-500 flex items-center gap-3">
-              <span>📅 ${formatarData(laudo.data_ensaio)}</span>
-              <span>🔩 ${qtdJuntas} junta(s)</span>
-            </div>
-          </div>
-
-          <div class="flex items-center gap-1.5 self-end sm:self-center">
-            <button type="button" onclick="carregarLaudoParaEdicao(${laudo.id})" class="bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold px-3 py-2 rounded-lg flex items-center gap-1 shadow-sm touch-target">
-              <i data-lucide="edit-3" class="w-3.5 h-3.5 text-amber-700"></i> Editar
-            </button>
-            <button type="button" onclick="imprimirLaudoDireto(${laudo.id})" class="bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-300 text-xs font-bold px-3 py-2 rounded-lg flex items-center gap-1 shadow-sm touch-target">
-              <i data-lucide="printer" class="w-3.5 h-3.5 text-blue-700"></i> PDF
-            </button>
-            <button type="button" onclick="excluirLaudoHistorico(${laudo.id})" class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs p-2 rounded-lg touch-target" title="Excluir do aparelho">
-              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-            </button>
-          </div>
-        `;
-        container.appendChild(item);
-      });
-
-      if (window.lucide) lucide.createIcons();
-    }
-
-    // Carrega todos os campos de um laudo selecionado no formulário
-    async function carregarLaudoParaEdicao(id) {
-      const laudo = await db.laudosLP.get(id);
-      if (!laudo) {
-        alert('Erro ao carregar laudo.');
-        return;
-      }
-
-      idLaudoEmEdicao = laudo.id;
-
-      // 1. Preenche Dados Gerais
-      document.getElementById('empreendimento').value = laudo.empreendimento || '';
-      document.getElementById('num_contrato').value = laudo.num_contrato || '';
-      document.getElementById('num_rlp').value = laudo.num_rlp || '';
-      document.getElementById('cliente').value = laudo.cliente || '';
-      document.getElementById('local_ensaio').value = laudo.local_ensaio || '';
-      document.getElementById('data_ensaio').value = laudo.data_ensaio || '';
-      document.getElementById('norma_ref').value = laudo.norma_ref || '';
-      document.getElementById('procedimento').value = laudo.procedimento || '';
-      document.getElementById('procedimento_rev').value = laudo.procedimento_rev || '0';
-      document.getElementById('desenho_ref').value = laudo.desenho_ref || '';
-      document.getElementById('desenho_rev').value = laudo.desenho_rev || '0';
-      document.getElementById('metal_base').value = laudo.metal_base || '';
-      document.getElementById('metal_adicao').value = laudo.metal_adicao || '';
-      document.getElementById('espessura').value = laudo.espessura || '';
-
-      // 2. Preenche Consumíveis
-      if (laudo.solvente) {
-        document.getElementById('solv_fab').value = laudo.solvente.fab || '';
-        document.getElementById('solv_mod').value = laudo.solvente.mod || '';
-        document.getElementById('solv_lote').value = laudo.solvente.lote || '';
-      }
-      if (laudo.penetrante) {
-        document.getElementById('pen_fab').value = laudo.penetrante.fab || '';
-        document.getElementById('pen_mod').value = laudo.penetrante.mod || '';
-        document.getElementById('pen_lote').value = laudo.penetrante.lote || '';
-      }
-      if (laudo.removedor) {
-        document.getElementById('rem_fab').value = laudo.removedor.fab || '';
-        document.getElementById('rem_mod').value = laudo.removedor.mod || '';
-        document.getElementById('rem_lote').value = laudo.removedor.lote || '';
-      }
-      if (laudo.revelador) {
-        document.getElementById('rev_fab').value = laudo.revelador.fab || '';
-        document.getElementById('rev_mod').value = laudo.revelador.mod || '';
-        document.getElementById('rev_lote').value = laudo.revelador.lote || '';
-      }
-
-      // 3. Preenche Observações e Instrumentos
-      document.getElementById('obs_gerais').value = laudo.obs_gerais || '';
-      if (laudo.instrumentos && laudo.instrumentos[0]) {
-        document.getElementById('inst_1').value = laudo.instrumentos[0].inst || '';
-        document.getElementById('tag_1').value = laudo.instrumentos[0].tag || '';
-      }
-      if (laudo.instrumentos && laudo.instrumentos[1]) {
-        document.getElementById('inst_2').value = laudo.instrumentos[1].inst || '';
-        document.getElementById('tag_2').value = laudo.instrumentos[1].tag || '';
-      }
-
-      // 4. Preenche Inspetor
-      if (laudo.inspetor) {
-        document.getElementById('inspetor_nome').value = laudo.inspetor.nome || '';
-        document.getElementById('inspetor_qualif').value = laudo.inspetor.qualif || '';
-        document.getElementById('inspetor_snqc').value = laudo.inspetor.snqc || '';
-      }
-
-      // 5. Preenche Juntas e Fotos
-      dadosJuntas = laudo.juntas && laudo.juntas.length > 0 ? laudo.juntas : [
-        { junta: "JUNTA - 01", num: "", tipo: "-", cota: "", comp: "", result: "-", pos: "-", final: "-", obs: "", fotos: ["", "", ""] }
-      ];
-
-      renderizarTabelaForm();
-      fecharModalHistorico();
-
-      // Ativa banner de edição no topo
-      document.getElementById('txtEditandoRlp').innerText = laudo.num_rlp || 'Sem RLP';
-      document.getElementById('bannerEdicaoAtiva').classList.remove('hidden');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function cancelarEdicao() {
-      if (confirm('Deseja sair do modo de edição e iniciar um novo laudo?')) {
-        prepararProximoLaudo();
-      }
-    }
-
-    async function imprimirLaudoDireto(id) {
-      await carregarLaudoParaEdicao(id);
-      setTimeout(() => {
-        gerarVisualizacaoImpressao();
-      }, 300);
-    }
-
-    async function excluirLaudoHistorico(id) {
-      if (confirm('Deseja realmente excluir este laudo do aparelho?')) {
-        await db.laudosLP.delete(id);
-        if (idLaudoEmEdicao === id) {
-          prepararProximoLaudo();
-        }
-        abrirModalHistorico();
-        atualizarStatusConexao();
-      }
-    }
-
-    function prepararProximoLaudo() {
-      idLaudoEmEdicao = null;
-      document.getElementById('bannerEdicaoAtiva').classList.add('hidden');
-
-      dadosJuntas = [
-        { junta: "JUNTA - 01", num: "", tipo: "-", cota: "", comp: "", result: "-", pos: "-", final: "-", obs: "", fotos: ["", "", ""] }
-      ];
-      document.getElementById('obs_gerais').value = "";
-
-      gerarProximoRLP();
-      renderizarTabelaForm();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function limparFormularioTotal() {
-      if (confirm('Deseja realmente limpar TODOS os campos do cabeçalho e iniciar um formulário 100% em branco?')) {
-        idLaudoEmEdicao = null;
-        document.getElementById('bannerEdicaoAtiva').classList.add('hidden');
-
-        document.getElementById('empreendimento').value = '';
-        document.getElementById('num_contrato').selectedIndex = 0;
-        document.getElementById('cliente').selectedIndex = 0;
-        document.getElementById('local_ensaio').selectedIndex = 0;
-        document.getElementById('data_ensaio').value = '';
-        document.getElementById('norma_ref').selectedIndex = 0;
-        document.getElementById('procedimento').selectedIndex = 0;
-        document.getElementById('procedimento_rev').value = '0';
-        document.getElementById('desenho_ref').selectedIndex = 0;
-        document.getElementById('desenho_rev').value = '0';
-        document.getElementById('metal_base').selectedIndex = 0;
-        document.getElementById('metal_adicao').selectedIndex = 0;
-        document.getElementById('espessura').selectedIndex = 0;
-
-        document.getElementById('solv_fab').selectedIndex = 0;
-        document.getElementById('solv_mod').selectedIndex = 0;
-        document.getElementById('solv_lote').value = '';
-        document.getElementById('pen_fab').selectedIndex = 0;
-        document.getElementById('pen_mod').selectedIndex = 0;
-        document.getElementById('pen_lote').value = '';
-        document.getElementById('rem_fab').selectedIndex = 0;
-        document.getElementById('rem_mod').selectedIndex = 0;
-        document.getElementById('rem_lote').value = '';
-        document.getElementById('rev_fab').selectedIndex = 0;
-        document.getElementById('rev_mod').selectedIndex = 0;
-        document.getElementById('rev_lote').value = '';
-
-        document.getElementById('obs_gerais').value = '';
-        document.getElementById('inst_1').value = '';
-        document.getElementById('tag_1').value = '';
-        document.getElementById('inst_2').value = '';
-        document.getElementById('tag_2').value = '';
-        document.getElementById('inspetor_nome').selectedIndex = 0;
-        document.getElementById('inspetor_qualif').value = '';
-        document.getElementById('inspetor_snqc').value = '';
-
-        dadosJuntas = [
-          { junta: "JUNTA - 01", num: "", tipo: "-", cota: "", comp: "", result: "-", pos: "-", final: "-", obs: "", fotos: ["", "", ""] }
-        ];
-
-        gerarProximoRLP();
-        renderizarTabelaForm();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-    }
-
-    // Inicialização ao carregar
     window.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('data_ensaio').value = '';
+      checarPerfilInicial();
       renderizarTabelaForm();
       gerarProximoRLP();
       atualizarStatusConexao();
-      if (window.lucide) {
-        lucide.createIcons();
-      }
     });
   </script>
 </body>
