@@ -16,14 +16,12 @@
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
-    /* Previne zoom no iOS ao focar inputs */
     @media screen and (max-width: 768px) {
       input, select, textarea {
         font-size: 16px !important;
       }
     }
 
-    /* Otimização de toque em telas pequenas */
     .touch-target {
       min-height: 42px;
     }
@@ -125,6 +123,17 @@
   <!-- Main Container -->
   <main class="max-w-5xl mx-auto p-2.5 sm:p-6 no-print">
 
+    <!-- Indicador de Edição Ativa (Aparece quando você está editando um laudo antigo) -->
+    <div id="bannerEdicaoAtiva" class="hidden bg-amber-500 text-white px-4 py-2 rounded-xl mb-3 flex items-center justify-between shadow-sm">
+      <div class="flex items-center gap-2 text-xs font-bold">
+        <i data-lucide="edit-3" class="w-4 h-4"></i>
+        <span>Modo Edição Ativo: <span id="txtEditandoRlp" class="underline"></span></span>
+      </div>
+      <button type="button" onclick="cancelarEdicao()" class="text-xs bg-amber-700 hover:bg-amber-800 px-2 py-1 rounded font-semibold">
+        Cancelar Edição
+      </button>
+    </div>
+
     <!-- Status / Quick Actions -->
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-3 mb-3 sm:mb-4">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
@@ -141,11 +150,11 @@
           <button type="button" onclick="abrirConfigDrive()" title="Configurar URL do Drive" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 border px-2 py-1.5 rounded-lg touch-target">
             <i data-lucide="settings" class="w-3.5 h-3.5"></i>
           </button>
-          <button type="button" onclick="carregarHistorico()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1.5 rounded-lg font-medium border flex items-center gap-1 touch-target">
-            <i data-lucide="folder-open" class="w-3.5 h-3.5"></i> Histórico
+          <button type="button" onclick="abrirModalHistorico()" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 px-2.5 py-1.5 rounded-lg font-bold flex items-center gap-1 touch-target">
+            <i data-lucide="folder-open" class="w-3.5 h-3.5 text-blue-600"></i> Laudos Salvos / Editar
           </button>
           <button type="button" onclick="prepararProximoLaudo()" title="Mantém cabeçalho e consumíveis, limpa juntas" class="text-xs bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 px-2.5 py-1.5 rounded-lg font-medium flex items-center gap-1 touch-target">
-            <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i> Novo
+            <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i> Novo Laudo
           </button>
           <button type="button" onclick="limparFormularioTotal()" class="text-xs text-red-600 hover:bg-red-50 px-2 py-1.5 rounded-lg font-medium ml-auto sm:ml-0">
             Limpar
@@ -532,7 +541,7 @@
         </div>
       </section>
 
-      <!-- 3. Registro de Juntas e Descontinuidades (Cards no Mobile / Tabela no Desktop) -->
+      <!-- 3. Registro de Juntas e Descontinuidades -->
       <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <div class="bg-slate-800 text-white px-3 sm:px-4 py-2.5 flex items-center justify-between">
           <h2 class="font-semibold text-xs sm:text-sm flex items-center gap-2">
@@ -544,7 +553,6 @@
         </div>
 
         <div class="p-2 sm:p-4">
-          <!-- Modo Desktop: Tabela clássica -->
           <div class="hidden md:block overflow-x-auto">
             <table class="w-full text-left text-xs border-collapse" id="tabelaJuntasForm">
               <thead>
@@ -567,7 +575,6 @@
             </table>
           </div>
 
-          <!-- Modo Mobile: Cards verticais com áreas de toque ampliadas -->
           <div class="md:hidden space-y-3" id="corpoJuntasMobile">
             <!-- Injetado via JS -->
           </div>
@@ -633,7 +640,7 @@
         </div>
       </section>
 
-      <!-- 6. Registro Fotográfico (3 Fotos por Junta com Câmera e Upload Local) -->
+      <!-- 6. Registro Fotográfico -->
       <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <div class="bg-slate-800 text-white px-3 sm:px-4 py-2.5 flex items-center justify-between">
           <div>
@@ -661,7 +668,7 @@
       <!-- Botões de Ação Final (Desktop) -->
       <div class="hidden sm:flex flex-wrap justify-end gap-3 pb-8">
         <button type="button" onclick="prepararProximoLaudo()" class="bg-amber-600 hover:bg-amber-700 text-white font-medium px-4 py-2.5 rounded-lg text-sm shadow flex items-center gap-1.5">
-          <i data-lucide="rotate-cw" class="w-4 h-4"></i> Próximo Laudo
+          <i data-lucide="rotate-cw" class="w-4 h-4"></i> Novo Laudo
         </button>
         <button type="button" onclick="salvarLaudoLocal(true)" class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-5 py-2.5 rounded-lg text-sm shadow flex items-center gap-1.5">
           <i data-lucide="save" class="w-4 h-4"></i> Salvar Laudo
@@ -674,7 +681,7 @@
   </main>
 
   <!-- Bottom Floating Action Bar (Exclusivo Mobile) -->
-  <div class="sm:hidden fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur border-t border-slate-800 p-2 z-40 flex items-center gap-2 no-print">
+  <div class="sm:hidden fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur border-t border-slate-800 p-2 z-30 flex items-center gap-2 no-print">
     <button type="button" onclick="salvarLaudoLocal(true)" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 rounded-lg flex items-center justify-center gap-1.5 shadow">
       <i data-lucide="save" class="w-4 h-4"></i> Salvar
     </button>
@@ -683,7 +690,44 @@
     </button>
   </div>
 
-  <!-- Printable Report Template -->
+  <!-- MODAL DE HISTÓRICO E EDIÇÃO DE LAUDOS -->
+  <div id="modalHistorico" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-6 no-print">
+    <div class="bg-white w-full max-w-3xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden border border-slate-200">
+      
+      <!-- Cabeçalho do Modal -->
+      <div class="bg-slate-800 text-white px-4 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <i data-lucide="folder-open" class="w-5 h-5 text-amber-400"></i>
+          <h2 class="font-bold text-sm sm:text-base">Laudos Salvos no Aparelho</h2>
+        </div>
+        <button type="button" onclick="fecharModalHistorico()" class="text-slate-400 hover:text-white p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Barra de Busca -->
+      <div class="p-3 bg-slate-50 border-b border-slate-200">
+        <div class="relative">
+          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-3"></i>
+          <input type="text" id="buscaHistorico" oninput="filtrarHistorico(this.value)" placeholder="Buscar por RLP, cliente ou equipamento..." class="w-full pl-9 pr-3 py-2 border border-slate-300 rounded-lg text-xs sm:text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+        </div>
+      </div>
+
+      <!-- Lista de Laudos Salvos -->
+      <div class="p-3 sm:p-4 overflow-y-auto flex-1 space-y-2.5" id="listaLaudosContainer">
+        <!-- Renderizado dinamicamente via JS -->
+      </div>
+
+      <!-- Rodapé do Modal -->
+      <div class="p-3 bg-slate-100 border-t border-slate-200 flex justify-end">
+        <button type="button" onclick="fecharModalHistorico()" class="bg-slate-700 hover:bg-slate-800 text-white text-xs font-semibold px-4 py-2 rounded-lg">
+          Fechar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Printable Report Template (Full A4 Page 100%) -->
   <div id="printArea" class="print-only">
 
     <!-- PÁGINA 1: RELATÓRIO TÉCNICO DE JUNTAS -->
@@ -893,6 +937,7 @@
 
   <script>
     let driveScriptUrl = localStorage.getItem('omega_drive_url') || '';
+    let idLaudoEmEdicao = null; // Guarda o ID quando estiver editando um laudo salvo
 
     function abrirConfigDrive() {
       const urlAtual = localStorage.getItem('omega_drive_url') || '';
@@ -970,7 +1015,7 @@
       atualizarStatusConexao();
     });
 
-    // Dexie Database
+    // Inicialização Dexie DB
     const db = new Dexie('OmegaInspectionDB');
     db.version(2).stores({
       laudosLP: '++id, num_rlp, empreendimento, cliente, data_ensaio, sincronizado'
@@ -1041,15 +1086,13 @@
                 `}
               </div>
 
-              <!-- Botões de Ação: Câmera Direta e Upload de Arquivo/Galeria -->
+              <!-- Botões de Ação: Câmera Direta e Upload de Arquivo -->
               <div class="grid grid-cols-2 gap-1 w-full">
-                <!-- Botão 1: Câmera Direta -->
                 <label class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-[9px] sm:text-[11px] font-semibold py-1.5 rounded cursor-pointer flex items-center justify-center gap-0.5 shadow-sm touch-target" title="Tirar foto com a câmera">
                   <i data-lucide="camera" class="w-3 h-3 text-red-600"></i> Câmera
                   <input type="file" accept="image/*" capture="environment" class="hidden" onchange="carregarFotoJunta(${jIndex}, ${slotIdx}, this.files[0])">
                 </label>
 
-                <!-- Botão 2: Galeria / Arquivo Local -->
                 <label class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 text-[9px] sm:text-[11px] font-semibold py-1.5 rounded cursor-pointer flex items-center justify-center gap-0.5 shadow-sm touch-target" title="Escolher arquivo ou foto da galeria">
                   <i data-lucide="folder" class="w-3 h-3 text-slate-600"></i> Arquivo
                   <input type="file" accept="image/*" class="hidden" onchange="carregarFotoJunta(${jIndex}, ${slotIdx}, this.files[0])">
@@ -1422,12 +1465,6 @@
       montarPaginasFotosImpressao();
 
       window.print();
-
-      setTimeout(() => {
-        if (confirm("Impressão/PDF gerado! Deseja preparar o formulário para o próximo laudo?")) {
-          prepararProximoLaudo();
-        }
-      }, 800);
     }
 
     function formatarData(dataIso) {
@@ -1436,6 +1473,7 @@
       return `${partes[2]}/${partes[1]}/${partes[0]}`;
     }
 
+    // Salva ou Atualiza Laudo no Dexie DB
     async function salvarLaudoLocal(perguntarLimpeza = false) {
       const laudo = {
         num_rlp: document.getElementById('num_rlp').value,
@@ -1471,7 +1509,13 @@
         sincronizado: 0
       };
 
-      await db.laudosLP.put(laudo);
+      if (idLaudoEmEdicao !== null) {
+        laudo.id = idLaudoEmEdicao;
+      }
+
+      const idSalvo = await db.laudosLP.put(laudo);
+      idLaudoEmEdicao = idSalvo;
+
       const statusEl = document.getElementById('saveStatus');
       statusEl.innerText = `Salvo às ${new Date().toLocaleTimeString()}`;
       statusEl.classList.add('text-emerald-600', 'font-semibold');
@@ -1483,14 +1527,213 @@
 
       if (perguntarLimpeza) {
         setTimeout(() => {
-          if (confirm("Laudo salvo com sucesso! Deseja preparar o formulário para o próximo laudo?")) {
+          if (confirm("Laudo salvo com sucesso no aparelho! Deseja preparar o formulário para o próximo laudo (mantém cabeçalho e consumíveis)?")) {
             prepararProximoLaudo();
           }
-        }, 400);
+        }, 300);
+      }
+    }
+
+    // ==========================================
+    // SISTEMA DE HISTÓRICO & EDIÇÃO EM CAMPO
+    // ==========================================
+    let listaLaudosCache = [];
+
+    async function abrirModalHistorico() {
+      listaLaudosCache = await db.laudosLP.toArray();
+      // Ordena por data/ID mais recente primeiro
+      listaLaudosCache.sort((a, b) => (b.id || 0) - (a.id || 0));
+      
+      document.getElementById('buscaHistorico').value = '';
+      renderizarListaHistorico(listaLaudosCache);
+      document.getElementById('modalHistorico').classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function fecharModalHistorico() {
+      document.getElementById('modalHistorico').classList.add('hidden');
+    }
+
+    function filtrarHistorico(termo) {
+      const t = termo.toLowerCase().trim();
+      if (!t) {
+        renderizarListaHistorico(listaLaudosCache);
+        return;
+      }
+      const filtrados = listaLaudosCache.filter(l => 
+        (l.num_rlp && l.num_rlp.toLowerCase().includes(t)) ||
+        (l.empreendimento && l.empreendimento.toLowerCase().includes(t)) ||
+        (l.cliente && l.cliente.toLowerCase().includes(t)) ||
+        (l.data_ensaio && l.data_ensaio.includes(t))
+      );
+      renderizarListaHistorico(filtrados);
+    }
+
+    function renderizarListaHistorico(laudos) {
+      const container = document.getElementById('listaLaudosContainer');
+      container.innerHTML = '';
+
+      if (laudos.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-10 text-slate-400">
+            <i data-lucide="inbox" class="w-10 h-10 mx-auto mb-2 opacity-40"></i>
+            <p class="text-xs sm:text-sm">Nenhum laudo encontrado no aparelho.</p>
+          </div>
+        `;
+        if (window.lucide) lucide.createIcons();
+        return;
+      }
+
+      laudos.forEach(laudo => {
+        const item = document.createElement('div');
+        item.className = 'border border-slate-200 rounded-xl p-3 bg-white hover:bg-slate-50/80 transition-colors shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3';
+
+        const qtdJuntas = (laudo.juntas && laudo.juntas.length) || 0;
+        const sincronizado = laudo.sincronizado === 1;
+
+        item.innerHTML = `
+          <div class="space-y-1 flex-1">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="font-bold text-sm text-red-700">${laudo.num_rlp || 'Sem RLP'}</span>
+              <span class="text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-700">${laudo.cliente || 'Sem cliente'}</span>
+              ${sincronizado ? 
+                `<span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded flex items-center gap-0.5"><i data-lucide="cloud-check" class="w-3 h-3"></i> Sincronizado</span>` : 
+                `<span class="text-[10px] bg-amber-100 text-amber-800 font-bold px-1.5 py-0.5 rounded flex items-center gap-0.5"><i data-lucide="cloud-off" class="w-3 h-3"></i> Pendente</span>`
+              }
+            </div>
+            <p class="text-xs font-medium text-slate-800 truncate">${laudo.empreendimento || 'Equipamento não especificado'}</p>
+            <div class="text-[11px] text-slate-500 flex items-center gap-3">
+              <span>📅 ${formatarData(laudo.data_ensaio)}</span>
+              <span>🔩 ${qtdJuntas} junta(s)</span>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-1.5 self-end sm:self-center">
+            <button type="button" onclick="carregarLaudoParaEdicao(${laudo.id})" class="bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold px-3 py-2 rounded-lg flex items-center gap-1 shadow-sm touch-target">
+              <i data-lucide="edit-3" class="w-3.5 h-3.5 text-amber-700"></i> Editar
+            </button>
+            <button type="button" onclick="imprimirLaudoDireto(${laudo.id})" class="bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-300 text-xs font-bold px-3 py-2 rounded-lg flex items-center gap-1 shadow-sm touch-target">
+              <i data-lucide="printer" class="w-3.5 h-3.5 text-blue-700"></i> PDF
+            </button>
+            <button type="button" onclick="excluirLaudoHistorico(${laudo.id})" class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs p-2 rounded-lg touch-target" title="Excluir do aparelho">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    // Carrega todos os campos de um laudo selecionado no formulário
+    async function carregarLaudoParaEdicao(id) {
+      const laudo = await db.laudosLP.get(id);
+      if (!laudo) {
+        alert('Erro ao carregar laudo.');
+        return;
+      }
+
+      idLaudoEmEdicao = laudo.id;
+
+      // 1. Preenche Dados Gerais
+      document.getElementById('empreendimento').value = laudo.empreendimento || '';
+      document.getElementById('num_contrato').value = laudo.num_contrato || '';
+      document.getElementById('num_rlp').value = laudo.num_rlp || '';
+      document.getElementById('cliente').value = laudo.cliente || '';
+      document.getElementById('local_ensaio').value = laudo.local_ensaio || '';
+      document.getElementById('data_ensaio').value = laudo.data_ensaio || '';
+      document.getElementById('norma_ref').value = laudo.norma_ref || '';
+      document.getElementById('procedimento').value = laudo.procedimento || '';
+      document.getElementById('procedimento_rev').value = laudo.procedimento_rev || '0';
+      document.getElementById('desenho_ref').value = laudo.desenho_ref || '';
+      document.getElementById('desenho_rev').value = laudo.desenho_rev || '0';
+      document.getElementById('metal_base').value = laudo.metal_base || '';
+      document.getElementById('metal_adicao').value = laudo.metal_adicao || '';
+      document.getElementById('espessura').value = laudo.espessura || '';
+
+      // 2. Preenche Consumíveis
+      if (laudo.solvente) {
+        document.getElementById('solv_fab').value = laudo.solvente.fab || '';
+        document.getElementById('solv_mod').value = laudo.solvente.mod || '';
+        document.getElementById('solv_lote').value = laudo.solvente.lote || '';
+      }
+      if (laudo.penetrante) {
+        document.getElementById('pen_fab').value = laudo.penetrante.fab || '';
+        document.getElementById('pen_mod').value = laudo.penetrante.mod || '';
+        document.getElementById('pen_lote').value = laudo.penetrante.lote || '';
+      }
+      if (laudo.removedor) {
+        document.getElementById('rem_fab').value = laudo.removedor.fab || '';
+        document.getElementById('rem_mod').value = laudo.removedor.mod || '';
+        document.getElementById('rem_lote').value = laudo.removedor.lote || '';
+      }
+      if (laudo.revelador) {
+        document.getElementById('rev_fab').value = laudo.revelador.fab || '';
+        document.getElementById('rev_mod').value = laudo.revelador.mod || '';
+        document.getElementById('rev_lote').value = laudo.revelador.lote || '';
+      }
+
+      // 3. Preenche Observações e Instrumentos
+      document.getElementById('obs_gerais').value = laudo.obs_gerais || '';
+      if (laudo.instrumentos && laudo.instrumentos[0]) {
+        document.getElementById('inst_1').value = laudo.instrumentos[0].inst || '';
+        document.getElementById('tag_1').value = laudo.instrumentos[0].tag || '';
+      }
+      if (laudo.instrumentos && laudo.instrumentos[1]) {
+        document.getElementById('inst_2').value = laudo.instrumentos[1].inst || '';
+        document.getElementById('tag_2').value = laudo.instrumentos[1].tag || '';
+      }
+
+      // 4. Preenche Inspetor
+      if (laudo.inspetor) {
+        document.getElementById('inspetor_nome').value = laudo.inspetor.nome || '';
+        document.getElementById('inspetor_qualif').value = laudo.inspetor.qualif || '';
+        document.getElementById('inspetor_snqc').value = laudo.inspetor.snqc || '';
+      }
+
+      // 5. Preenche Juntas e Fotos
+      dadosJuntas = laudo.juntas && laudo.juntas.length > 0 ? laudo.juntas : [
+        { junta: "JUNTA - 01", num: "", tipo: "-", cota: "", comp: "", result: "-", pos: "-", final: "-", obs: "", fotos: ["", "", ""] }
+      ];
+
+      renderizarTabelaForm();
+      fecharModalHistorico();
+
+      // Ativa banner de edição no topo
+      document.getElementById('txtEditandoRlp').innerText = laudo.num_rlp || 'Sem RLP';
+      document.getElementById('bannerEdicaoAtiva').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function cancelarEdicao() {
+      if (confirm('Deseja sair do modo de edição e iniciar um novo laudo?')) {
+        prepararProximoLaudo();
+      }
+    }
+
+    async function imprimirLaudoDireto(id) {
+      await carregarLaudoParaEdicao(id);
+      setTimeout(() => {
+        gerarVisualizacaoImpressao();
+      }, 300);
+    }
+
+    async function excluirLaudoHistorico(id) {
+      if (confirm('Deseja realmente excluir este laudo do aparelho?')) {
+        await db.laudosLP.delete(id);
+        if (idLaudoEmEdicao === id) {
+          prepararProximoLaudo();
+        }
+        abrirModalHistorico();
+        atualizarStatusConexao();
       }
     }
 
     function prepararProximoLaudo() {
+      idLaudoEmEdicao = null;
+      document.getElementById('bannerEdicaoAtiva').classList.add('hidden');
+
       dadosJuntas = [
         { junta: "JUNTA - 01", num: "", tipo: "-", cota: "", comp: "", result: "-", pos: "-", final: "-", obs: "", fotos: ["", "", ""] }
       ];
@@ -1503,6 +1746,9 @@
 
     function limparFormularioTotal() {
       if (confirm('Deseja realmente limpar TODOS os campos do cabeçalho e iniciar um formulário 100% em branco?')) {
+        idLaudoEmEdicao = null;
+        document.getElementById('bannerEdicaoAtiva').classList.add('hidden');
+
         document.getElementById('empreendimento').value = '';
         document.getElementById('num_contrato').selectedIndex = 0;
         document.getElementById('cliente').selectedIndex = 0;
@@ -1549,19 +1795,7 @@
       }
     }
 
-    async function carregarHistorico() {
-      const laudos = await db.laudosLP.toArray();
-      if (laudos.length === 0) {
-        alert('Nenhum laudo salvo no aparelho ainda.');
-        return;
-      }
-      let msg = 'Laudos salvos offline:\n\n';
-      laudos.forEach((l, i) => {
-        msg += `${i+1}. RLP: ${l.num_rlp} | ${l.empreendimento || 'Sem título'} (${l.data_ensaio || 'Sem data'})\n`;
-      });
-      alert(msg);
-    }
-
+    // Inicialização ao carregar
     window.addEventListener('DOMContentLoaded', () => {
       document.getElementById('data_ensaio').value = '';
       renderizarTabelaForm();
