@@ -824,7 +824,7 @@
     ];
 
     // ==========================================
-    // CONTROLE DA TELA DE LOGIN & RESTRIÇÃO DE SENHA
+    // CONTROLE DA TELA DE LOGIN & SEGURANÇA POR SENHA
     // ==========================================
     function inicializarTelaLogin() {
       renderizarDropdownUsuariosLogin();
@@ -866,7 +866,7 @@
       if (selecionado) {
         document.getElementById('login_nome').value = selecionado.nome;
         document.getElementById('login_snqc').value = selecionado.snqc;
-        document.getElementById('login_senha').value = ''; // Mantém senha limpa por segurança ao trocar de perfil
+        document.getElementById('login_senha').value = selecionado.senha || '';
         
         const checks = document.querySelectorAll('input[name="qualif_check"]');
         checks.forEach(chk => {
@@ -898,27 +898,16 @@
       }
 
       if (!senha) {
-        alert('Acesso negado: Digite a senha cadastrada para liberar o laudo.');
+        alert('A senha de acesso é obrigatória para liberar o laudo.');
         document.getElementById('login_senha').focus();
         return;
-      }
-
-      // Verifica se o usuário já existe no aparelho e valida a senha estritamente
-      let indexExistente = listaUsuariosLocais.findIndex(u => u.snqc === snqc);
-      
-      if (indexExistente !== -1) {
-        const usuarioCadastrado = listaUsuariosLocais[indexExistente];
-        if (usuarioCadastrado.senha && usuarioCadastrado.senha !== senha) {
-          alert('Senha incorreta para este inspetor!');
-          document.getElementById('login_senha').focus();
-          return;
-        }
       }
 
       const checksSelecionados = document.querySelectorAll('input[name="qualif_check"]:checked');
       const qualifArr = Array.from(checksSelecionados).map(chk => chk.value);
       const qualifStr = qualifArr.length > 0 ? qualifArr.join(' / ') : 'LP';
 
+      let indexExistente = listaUsuariosLocais.findIndex(u => u.snqc === snqc);
       let usr = {
         id: indexExistente !== -1 ? listaUsuariosLocais[indexExistente].id : ('USR-' + new Date().getTime()),
         nome: nome,
@@ -955,7 +944,7 @@
         } catch(e) {}
       }
 
-      // Libera o acesso ao laudo
+      // Aplica na interface e libera o laudo
       document.getElementById('headerUserTxt').innerText = `${usr.nome} (SNQC: ${usr.snqc})`;
       document.getElementById('inspetor_nome').value = usr.nome;
       document.getElementById('inspetor_snqc').value = `SNQC: ${usr.snqc}`;
