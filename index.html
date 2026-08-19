@@ -66,473 +66,506 @@
     .print-only { display: none; }
   </style>
 </head>
-<body class="bg-slate-100 text-slate-900 min-h-screen pb-24 md:pb-8">
+<body class="bg-slate-100 text-slate-900 min-h-screen">
 
-  <!-- Top App Bar -->
-  <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-md no-print">
-    <div class="max-w-5xl mx-auto px-3 sm:px-4 py-2.5 flex items-center justify-between">
-      <div class="flex items-center space-x-2 sm:space-x-3">
-        <div class="w-8 h-8 rounded-lg bg-red-600 flex items-center justify-center font-black text-white text-base shadow">&Omega;</div>
+  <!-- ========================================== -->
+  <!-- 1. TELA DE LOGIN / SELEÇÃO DE INSPETOR     -->
+  <!-- ========================================== -->
+  <section id="telaLogin" class="min-h-screen flex items-center justify-center p-4 bg-slate-900 no-print">
+    <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden border border-slate-700">
+      
+      <!-- Cabeçalho Login -->
+      <div class="bg-slate-800 text-white p-6 text-center border-b border-slate-700">
+        <div class="w-12 h-12 rounded-xl bg-red-600 flex items-center justify-center font-black text-white text-2xl mx-auto mb-2 shadow-lg">&Omega;</div>
+        <h1 class="text-lg font-bold">Laudo LP Digital</h1>
+        <p class="text-xs text-slate-400">Omega Service • Acesso Restrito por Senha</p>
+      </div>
+
+      <!-- Formulário de Autenticação -->
+      <div class="p-6 space-y-4">
+        
+        <!-- Seleção de Perfis Existentes -->
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="block text-xs font-bold text-slate-700">Inspetor Cadastrado:</label>
+            <button type="button" onclick="iniciarNovoUsuarioLogin()" class="text-xs bg-red-600 hover:bg-red-700 text-white font-bold px-2.5 py-1 rounded shadow flex items-center gap-1">
+              <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> + Novo
+            </button>
+          </div>
+          <select id="selectUsuariosLogin" onchange="selecionarUsuarioNaTelaLogin(this.value)" class="w-full p-2 border border-slate-300 rounded-lg text-xs sm:text-sm bg-white font-semibold">
+            <!-- Populado via JS -->
+          </select>
+        </div>
+
         <div>
-          <h1 class="font-bold text-xs sm:text-base leading-tight">Laudo LP Digital</h1>
-          <p class="text-[10px] sm:text-xs text-slate-400" id="headerUserTxt">Carregando perfil...</p>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Nome Completo</label>
+          <input type="text" id="login_nome" placeholder="Digite seu nome..." class="w-full p-2.5 border border-slate-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-red-500 focus:outline-none">
         </div>
-      </div>
-      <div class="flex items-center space-x-1.5 sm:space-x-2">
-        <button type="button" onclick="salvarLaudoLocal(true)" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-2.5 sm:px-3 py-2 rounded-lg flex items-center gap-1 shadow touch-target">
-          <i data-lucide="save" class="w-4 h-4"></i> <span class="hidden sm:inline">Salvar</span>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Nº Registro / SNQC</label>
+          <input type="text" id="login_snqc" placeholder="Ex: 12345678" class="w-full p-2.5 border border-slate-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-red-500 focus:outline-none">
+        </div>
+
+        <!-- Múltiplas Seleções de Qualificações -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Qualificações</label>
+          <div class="p-2.5 border border-slate-300 rounded-lg bg-slate-50 grid grid-cols-3 gap-2">
+            <label class="flex items-center space-x-1.5 text-xs cursor-pointer font-medium"><input type="checkbox" name="qualif_check" value="LP" class="rounded text-red-600 focus:ring-red-500"> <span>LP</span></label>
+            <label class="flex items-center space-x-1.5 text-xs cursor-pointer font-medium"><input type="checkbox" name="qualif_check" value="ME" class="rounded text-red-600 focus:ring-red-500"> <span>ME</span></label>
+            <label class="flex items-center space-x-1.5 text-xs cursor-pointer font-medium"><input type="checkbox" name="qualif_check" value="EVS" class="rounded text-red-600 focus:ring-red-500"> <span>EVS</span></label>
+            <label class="flex items-center space-x-1.5 text-xs cursor-pointer font-medium"><input type="checkbox" name="qualif_check" value="US" class="rounded text-red-600 focus:ring-red-500"> <span>US</span></label>
+            <label class="flex items-center space-x-1.5 text-xs cursor-pointer font-medium"><input type="checkbox" name="qualif_check" value="PM" class="rounded text-red-600 focus:ring-red-500"> <span>PM</span></label>
+            <label class="flex items-center space-x-1.5 text-xs cursor-pointer font-medium"><input type="checkbox" name="qualif_check" value="IEQ" class="rounded text-red-600 focus:ring-red-500"> <span>IEQ</span></label>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Senha de Acesso (Obrigatória)</label>
+          <input type="password" id="login_senha" placeholder="Digite sua senha..." class="w-full p-2.5 border border-slate-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-red-500 focus:outline-none">
+        </div>
+
+        <button type="button" onclick="confirmarAcessoApp()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 text-sm touch-target">
+          <i data-lucide="log-in" class="w-4 h-4"></i> Entrar no Sistema
         </button>
-        <button type="button" onclick="gerarVisualizacaoImpressao()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-2.5 sm:px-3 py-2 rounded-lg flex items-center gap-1 shadow touch-target">
-          <i data-lucide="printer" class="w-4 h-4"></i> <span class="hidden sm:inline">PDF / Imprimir</span>
+
+        <p class="text-[11px] text-slate-400 text-center pt-2">
+          Acesso seguro para uso em campo (compatível com modo offline).
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- 2. APLICAÇÃO PRINCIPAL DO LAUDO            -->
+  <!-- ========================================== -->
+  <div id="areaPrincipalApp" class="hidden pb-24 md:pb-8">
+
+    <!-- Top App Bar -->
+    <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-md no-print">
+      <div class="max-w-5xl mx-auto px-3 sm:px-4 py-2.5 flex items-center justify-between">
+        <div class="flex items-center space-x-2 sm:space-x-3">
+          <div class="w-8 h-8 rounded-lg bg-red-600 flex items-center justify-center font-black text-white text-base shadow">&Omega;</div>
+          <div>
+            <h1 class="font-bold text-xs sm:text-base leading-tight">Laudo LP Digital</h1>
+            <p class="text-[10px] sm:text-xs text-slate-400" id="headerUserTxt">-</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-1.5 sm:space-x-2">
+          <button type="button" onclick="voltarParaLogin()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs px-2 sm:px-2.5 py-2 rounded-lg flex items-center gap-1 border border-slate-700 touch-target" title="Trocar Inspetor">
+            <i data-lucide="log-out" class="w-3.5 h-3.5"></i> <span class="hidden sm:inline">Trocar</span>
+          </button>
+          <button type="button" onclick="salvarLaudoLocal(true)" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-2.5 sm:px-3 py-2 rounded-lg flex items-center gap-1 shadow touch-target">
+            <i data-lucide="save" class="w-4 h-4"></i> <span class="hidden sm:inline">Salvar</span>
+          </button>
+          <button type="button" onclick="gerarVisualizacaoImpressao()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-2.5 sm:px-3 py-2 rounded-lg flex items-center gap-1 shadow touch-target">
+            <i data-lucide="printer" class="w-4 h-4"></i> <span class="hidden sm:inline">PDF / Imprimir</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-5xl mx-auto p-2.5 sm:p-6 no-print">
+
+      <!-- Banner Modo Edição Ativo -->
+      <div id="bannerEdicaoAtiva" class="hidden bg-amber-500 text-white px-4 py-2 rounded-xl mb-3 flex items-center justify-between shadow-sm">
+        <div class="flex items-center gap-2 text-xs font-bold">
+          <i data-lucide="edit-3" class="w-4 h-4"></i>
+          <span>Modo Edição Ativo: <span id="txtEditandoRlp" class="underline"></span></span>
+        </div>
+        <button type="button" onclick="cancelarEdicao()" class="text-xs bg-amber-700 hover:bg-amber-800 px-2.5 py-1 rounded-lg font-semibold">
+          Cancelar
         </button>
       </div>
-    </div>
-  </header>
 
-  <!-- Main Container -->
-  <main class="max-w-5xl mx-auto p-2.5 sm:p-6 no-print">
-
-    <!-- Banner Modo Edição Ativo -->
-    <div id="bannerEdicaoAtiva" class="hidden bg-amber-500 text-white px-4 py-2 rounded-xl mb-3 flex items-center justify-between shadow-sm">
-      <div class="flex items-center gap-2 text-xs font-bold">
-        <i data-lucide="edit-3" class="w-4 h-4"></i>
-        <span>Modo Edição Ativo: <span id="txtEditandoRlp" class="underline"></span></span>
-      </div>
-      <button type="button" onclick="cancelarEdicao()" class="text-xs bg-amber-700 hover:bg-amber-800 px-2.5 py-1 rounded-lg font-semibold">
-        Cancelar
-      </button>
-    </div>
-
-    <!-- Status & Painel de Sincronização -->
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-3 mb-3 sm:mb-4">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-        <div class="flex items-center gap-2">
-          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-100 text-emerald-800 shrink-0">
-            <span class="w-1.5 h-1.5 mr-1 bg-emerald-500 rounded-full animate-pulse"></span> Offline Ready
-          </span>
-          <span id="saveStatus" class="text-xs text-slate-500 italic truncate">Pronto</span>
-        </div>
-        <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 pt-1 border-t sm:border-0 border-slate-100">
-          <button type="button" id="btnSyncDrive" onclick="sincronizarComDrive()" class="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 px-2.5 py-1.5 rounded-lg font-medium flex items-center gap-1 touch-target">
-            <i data-lucide="cloud-upload" class="w-3.5 h-3.5 text-emerald-600"></i> Sincronizar Nuvem
-          </button>
-          <button type="button" onclick="abrirConfigDrive()" title="Configurar URL da Planilha" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 border px-2 py-1.5 rounded-lg touch-target">
-            <i data-lucide="settings" class="w-3.5 h-3.5"></i>
-          </button>
-          <button type="button" onclick="abrirModalHistorico()" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 px-2.5 py-1.5 rounded-lg font-bold flex items-center gap-1 touch-target">
-            <i data-lucide="folder-open" class="w-3.5 h-3.5 text-blue-600"></i> Histórico / Editar
-          </button>
-          <button type="button" onclick="abrirModalAuth()" class="text-xs bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-200 px-2 py-1.5 rounded-lg font-semibold flex items-center gap-1 touch-target">
-            <i data-lucide="user" class="w-3.5 h-3.5"></i> Perfil
-          </button>
-          <button type="button" onclick="prepararProximoLaudo()" class="text-xs bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 px-2.5 py-1.5 rounded-lg font-medium flex items-center gap-1 touch-target">
-            <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i> Novo Laudo
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Form Principal -->
-    <form id="lpForm" class="space-y-4 sm:space-y-6">
-
-      <!-- 1. Dados Gerais -->
-      <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <div class="bg-slate-800 text-white px-3 sm:px-4 py-2.5 flex items-center justify-between">
-          <h2 class="font-semibold text-xs sm:text-sm flex items-center gap-2">
-            <i data-lucide="file-text" class="w-4 h-4 text-red-400"></i> 1. Identificação do Laudo & Contrato
-          </h2>
-        </div>
-        <div class="p-3 sm:p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-          <div class="sm:col-span-2">
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Empreendimento / Equipamento</label>
-            <input type="text" id="empreendimento" placeholder="Equipamento ou linha..." class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+      <!-- Status & Painel de Sincronização -->
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-3 mb-3 sm:mb-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+          <div class="flex items-center gap-2">
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-100 text-emerald-800 shrink-0">
+              <span class="w-1.5 h-1.5 mr-1 bg-emerald-500 rounded-full animate-pulse"></span> Offline Ready
+            </span>
+            <span id="saveStatus" class="text-xs text-slate-500 italic truncate">Pronto</span>
           </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Nº Contrato</label>
-            <select id="num_contrato" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white focus:ring-2 focus:ring-red-500 focus:outline-none">
-              <option value="" selected>-- Selecione --</option>
-              <option value="293">293</option>
-              <option value="316">316</option>
-              <option value="OUTRO">OUTRO</option>
-            </select>
-          </div>
-          <div>
-            <div class="flex justify-between items-center mb-1">
-              <label class="block text-xs font-semibold text-slate-600">Nº RLP</label>
-              <button type="button" onclick="gerarProximoRLP()" title="Sincronizar Contador" class="text-[11px] text-red-600 hover:underline font-bold">↻ Auto</button>
-            </div>
-            <input type="text" id="num_rlp" value="OMG-RLP-Q-001" class="w-full border border-slate-300 rounded-lg p-2 text-sm font-semibold text-red-700 bg-red-50/50 focus:ring-2 focus:ring-red-500 focus:outline-none">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Cliente</label>
-            <select id="cliente" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white focus:ring-2 focus:ring-red-500 focus:outline-none">
-              <option value="" selected>-- Selecione --</option>
-              <option value="HYDRO">HYDRO</option>
-              <option value="ALUNORTE">ALUNORTE</option>
-              <option value="ALBRAS">ALBRAS</option>
-              <option value="VALE">VALE</option>
-              <option value="PETROBRAS">PETROBRAS</option>
-              <option value="OMEGA SERVICE">OMEGA SERVICE</option>
-              <option value="OUTRO">OUTRO</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Local do Ensaio</label>
-            <select id="local_ensaio" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white focus:ring-2 focus:ring-red-500 focus:outline-none">
-              <option value="" selected>-- Selecione --</option>
-              <option value="IN-LOCO">IN-LOCO</option>
-              <option value="OFICINA">OFICINA</option>
-              <option value="CANTEIRO DE OBRAS">CANTEIRO DE OBRAS</option>
-              <option value="ÁREA INDUSTRIAL">ÁREA INDUSTRIAL</option>
-              <option value="FABRICAÇÃO">FABRICAÇÃO</option>
-              <option value="OUTRO">OUTRO</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Data</label>
-            <input type="date" id="data_ensaio" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Norma de Referência</label>
-            <select id="norma_ref" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white focus:ring-2 focus:ring-red-500 focus:outline-none">
-              <option value="" selected>-- Selecione --</option>
-              <optgroup label="TUBULAÇÕES E DUTOS">
-                <option value="ASME B31.3">ASME B31.3</option>
-                <option value="ASME B31.1">ASME B31.1</option>
-                <option value="ASME B31.4 / B31.8">ASME B31.4 / B31.8</option>
-                <option value="PETROBRAS N-115">PETROBRAS N-115</option>
-              </optgroup>
-              <optgroup label="VASOS E CALDEIRAS">
-                <option value="ASME Sec. VIII Div. 1">ASME Sec. VIII Div. 1</option>
-                <option value="ASME Sec. V Artigo 6">ASME Sec. V Artigo 6</option>
-                <option value="ASME Sec. IX">ASME Sec. IX</option>
-              </optgroup>
-              <optgroup label="ESTRUTURAS METÁLICAS">
-                <option value="AWS D1.1 / D1.1M">AWS D1.1 / D1.1M</option>
-                <option value="AWS D1.6 / D1.6M">AWS D1.6 / D1.6M</option>
-              </optgroup>
-              <optgroup label="TANQUES">
-                <option value="API 650">API 650</option>
-                <option value="API 653">API 653</option>
-              </optgroup>
-              <optgroup label="NORMAS NACIONAIS / ISO">
-                <option value="PETROBRAS N-1596">PETROBRAS N-1596</option>
-                <option value="ABNT NBR ISO 3452-1">ABNT NBR ISO 3452-1</option>
-              </optgroup>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Procedimento / Rev.</label>
-            <div class="flex gap-1.5">
-              <select id="procedimento" class="w-3/4 border border-slate-300 rounded-lg p-2 text-xs sm:text-sm bg-white">
-                <option value="" selected>-- Selecione --</option>
-                <option value="PR-SGI-026">PR-SGI-026 (LP)</option>
-                <option value="PR-SGI-025">PR-SGI-025 (EVS/Dim)</option>
-                <option value="PR-SGI-027">PR-SGI-027 (ME)</option>
-                <option value="PR-SGI-028">PR-SGI-028 (PM)</option>
-                <option value="PR-END-001">PR-END-001</option>
-              </select>
-              <select id="procedimento_rev" class="w-1/4 border border-slate-300 rounded-lg p-2 text-xs sm:text-sm bg-white text-center">
-                <option value="0" selected>0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-              </select>
-            </div>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Desenho Ref. / Rev.</label>
-            <div class="flex gap-1.5">
-              <select id="desenho_ref" class="w-3/4 border border-slate-300 rounded-lg p-2 text-xs sm:text-sm bg-white">
-                <option value="" selected>-- Selecione --</option>
-                <option value="CROQUI DE CAMPO">CROQUI DE CAMPO</option>
-                <option value="ISOMÉTRICO">ISOMÉTRICO</option>
-                <option value="DESENHO EXECUTIVO">DESENHO EXECUTIVO</option>
-                <option value="FLUXOGRAMA DE ENGENHARIA">FLUXOGRAMA</option>
-                <option value="AS-BUILT">AS-BUILT</option>
-              </select>
-              <select id="desenho_rev" class="w-1/4 border border-slate-300 rounded-lg p-2 text-xs sm:text-sm bg-white text-center">
-                <option value="0" selected>0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-              </select>
-            </div>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Metal Base</label>
-            <select id="metal_base" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
-              <option value="" selected>-- Selecione --</option>
-              <option value="AÇO CARBONO">AÇO CARBONO</option>
-              <option value="AÇO CARBONO BAIXA LIGA">AÇO CARBONO BAIXA LIGA</option>
-              <option value="AÇOS INOXIDAVEIS AUSTENITICOS">AÇOS INOX AUSTENÍTICOS</option>
-              <option value="AÇOS INOXIDAVEIS FERRITICOS">AÇOS INOX FERRÍTICOS</option>
-              <option value="ALUMÍNIO E LIGAS DE ALUMÍNIO">ALUMÍNIO E LIGAS</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Metal de Adição</label>
-            <select id="metal_adicao" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
-              <option value="" selected>-- Selecione --</option>
-              <option value="E-7018">E-7018</option>
-              <option value="ER70S-6">ER70S-6</option>
-              <option value="E-308L-16 (Inox Austenítico)">E-308L-16 (Inox Austenítico)</option>
-              <option value="ER308L (Inox 304/304L)">ER308L (Inox 304/304L)</option>
-              <option value="TIG ER70S-6 (Raiz) + SMAW E-7018 (Enchimento)">TIG ER70S-6 + SMAW E-7018</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Espessura / Diâmetro</label>
-            <select id="espessura" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
-              <option value="" selected>-- Selecione --</option>
-              <option value='4"'>4"</option>
-              <option value='6"'>6"</option>
-              <option value='8"'>8"</option>
-              <option value='10"'>10"</option>
-              <option value='12"'>12"</option>
-              <option value='14"'>14"</option>
-              <option value='16"'>16"</option>
-              <option value='18"'>18"</option>
-              <option value='20"'>20"</option>
-            </select>
-          </div>
-        </div>
-      </section>
-
-      <!-- 2. Consumíveis LP -->
-      <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <div class="bg-slate-800 text-white px-3 sm:px-4 py-2.5 flex items-center justify-between">
-          <h2 class="font-semibold text-xs sm:text-sm flex items-center gap-2">
-            <i data-lucide="flask-conical" class="w-4 h-4 text-amber-400"></i> 2. Consumíveis de Ensaio
-          </h2>
-        </div>
-        <div class="p-3 sm:p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-          <!-- Solvente -->
-          <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200">
-            <div class="font-bold text-xs text-slate-700 mb-2 border-b border-slate-200 pb-1">SOLVENTE</div>
-            <div class="space-y-1.5">
-              <select id="solv_fab" class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
-                <option value="METAL-CHEK" selected>METAL-CHEK</option>
-                <option value="MAGNAFLUX">MAGNAFLUX</option>
-                <option value="CARBOCHEM">CARBOCHEM</option>
-              </select>
-              <select id="solv_mod" class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
-                <option value="E-59" selected>E-59</option>
-                <option value="SKC-S">SKC-S</option>
-                <option value="DR-60">DR-60</option>
-              </select>
-              <input type="text" id="solv_lote" placeholder="Lote..." class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
-            </div>
-          </div>
-
-          <!-- Penetrante -->
-          <div class="bg-red-50/40 p-2.5 rounded-lg border border-red-200">
-            <div class="font-bold text-xs text-red-800 mb-2 border-b border-red-200 pb-1">PENETRANTE</div>
-            <div class="space-y-1.5">
-              <select id="pen_fab" class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
-                <option value="METAL-CHEK" selected>METAL-CHEK</option>
-                <option value="MAGNAFLUX">MAGNAFLUX</option>
-              </select>
-              <select id="pen_mod" class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
-                <option value="VP-30" selected>VP-30 (Lavável a água)</option>
-                <option value="SKL-SP2">SKL-SP2 (Por solvente)</option>
-              </select>
-              <input type="text" id="pen_lote" placeholder="Lote..." class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
-            </div>
-          </div>
-
-          <!-- Removedor -->
-          <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200">
-            <div class="font-bold text-xs text-slate-700 mb-2 border-b border-slate-200 pb-1">REMOVEDOR</div>
-            <div class="space-y-1.5">
-              <select id="rem_fab" class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
-                <option value="N/A" selected>N/A</option>
-                <option value="METAL-CHEK">METAL-CHEK</option>
-              </select>
-              <select id="rem_mod" class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
-                <option value="ÁGUA" selected>ÁGUA</option>
-                <option value="E-59">E-59</option>
-              </select>
-              <input type="text" id="rem_lote" placeholder="Lote..." class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
-            </div>
-          </div>
-
-          <!-- Revelador -->
-          <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200">
-            <div class="font-bold text-xs text-slate-700 mb-2 border-b border-slate-200 pb-1">REVELADOR</div>
-            <div class="space-y-1.5">
-              <select id="rev_fab" class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
-                <option value="METAL CHEK" selected>METAL CHEK</option>
-                <option value="MAGNAFLUX">MAGNAFLUX</option>
-              </select>
-              <select id="rev_mod" class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
-                <option value="D70" selected>D70 (Tipo D)</option>
-                <option value="SKD-S2">SKD-S2</option>
-              </select>
-              <input type="text" id="rev_lote" placeholder="Lote..." class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 3. Registro de Juntas -->
-      <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <div class="bg-slate-800 text-white px-3 sm:px-4 py-2.5 flex items-center justify-between">
-          <h2 class="font-semibold text-xs sm:text-sm flex items-center gap-2">
-            <i data-lucide="check-square" class="w-4 h-4 text-emerald-400"></i> 3. Avaliação das Juntas & Laudos
-          </h2>
-          <button type="button" onclick="adicionarLinhaJunta()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-2.5 sm:px-3 py-1.5 rounded-lg font-medium flex items-center gap-1 shadow touch-target">
-            <i data-lucide="plus" class="w-4 h-4"></i> Adicionar Junta
-          </button>
-        </div>
-
-        <div class="p-2 sm:p-4">
-          <div class="hidden md:block overflow-x-auto">
-            <table class="w-full text-left text-xs border-collapse" id="tabelaJuntasForm">
-              <thead>
-                <tr class="bg-slate-100 text-slate-700 border-b">
-                  <th class="p-2 border">Junta</th>
-                  <th class="p-2 border text-center w-16">Nº</th>
-                  <th class="p-2 border w-32">Descontinuidade</th>
-                  <th class="p-2 border w-20">Cota</th>
-                  <th class="p-2 border w-20">Comp.</th>
-                  <th class="p-2 border text-center w-24">Laudo Result</th>
-                  <th class="p-2 border text-center w-24">Pós Reparo</th>
-                  <th class="p-2 border text-center w-24">Laudo Final</th>
-                  <th class="p-2 border">Observações</th>
-                  <th class="p-2 border text-center w-12">Ação</th>
-                </tr>
-              </thead>
-              <tbody id="corpoJuntasDesktop"></tbody>
-            </table>
-          </div>
-
-          <div class="md:hidden space-y-3" id="corpoJuntasMobile"></div>
-        </div>
-      </section>
-
-      <!-- 4. Observações e Instrumentos -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-3 sm:p-4">
-          <h2 class="font-semibold text-xs sm:text-sm text-slate-800 mb-2 flex items-center gap-2">
-            <i data-lucide="message-square" class="w-4 h-4 text-blue-500"></i> Observações Gerais
-          </h2>
-          <textarea id="obs_gerais" rows="3" class="w-full border border-slate-300 rounded-lg p-2 text-sm" placeholder="Observações..."></textarea>
-        </section>
-
-        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-3 sm:p-4">
-          <h2 class="font-semibold text-xs sm:text-sm text-slate-800 mb-2 flex items-center gap-2">
-            <i data-lucide="ruler" class="w-4 h-4 text-purple-500"></i> Instrumentos Utilizados
-          </h2>
-          <div class="grid grid-cols-2 gap-2 text-xs">
-            <div>
-              <label class="text-[10px] text-slate-500">Instrumento 1</label>
-              <input type="text" id="inst_1" placeholder="Ex: Trena Métrica" class="w-full border border-slate-300 rounded p-1.5">
-            </div>
-            <div>
-              <label class="text-[10px] text-slate-500">TAG 1</label>
-              <input type="text" id="tag_1" placeholder="Ex: TR-004" class="w-full border border-slate-300 rounded p-1.5">
-            </div>
-            <div>
-              <label class="text-[10px] text-slate-500">Instrumento 2</label>
-              <input type="text" id="inst_2" placeholder="Ex: Luxímetro" class="w-full border border-slate-300 rounded p-1.5">
-            </div>
-            <div>
-              <label class="text-[10px] text-slate-500">TAG 2</label>
-              <input type="text" id="tag_2" placeholder="Ex: LUX-012" class="w-full border border-slate-300 rounded p-1.5">
-            </div>
-          </div>
-        </section>
-      </div>
-
-      <!-- 5. Inspetor Responsável -->
-      <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-3 sm:p-4">
-        <h2 class="font-semibold text-xs sm:text-sm text-slate-800 mb-2 flex items-center gap-2">
-          <i data-lucide="award" class="w-4 h-4 text-amber-500"></i> 5. Inspetor Responsável
-        </h2>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Nome do Inspetor</label>
-            <input type="text" id="inspetor_nome" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-slate-50 font-bold" readonly>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Qualificações</label>
-            <input type="text" id="inspetor_qualif" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-slate-50" readonly>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Registro / SNQC</label>
-            <input type="text" id="inspetor_snqc" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-slate-50 font-semibold" readonly>
-          </div>
-        </div>
-      </section>
-
-      <!-- 6. Fotos das Juntas -->
-      <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <div class="bg-slate-800 text-white px-3 sm:px-4 py-2.5 flex items-center justify-between">
-          <h2 class="font-semibold text-xs sm:text-sm flex items-center gap-2">
-            <i data-lucide="camera" class="w-4 h-4 text-amber-400"></i> 6. Fotos das Juntas (Visual, Penetrante, Revelação)
-          </h2>
-        </div>
-        <div class="p-3 sm:p-4 bg-slate-50/50">
-          <div id="containerFotosPorJunta" class="space-y-4"></div>
-          <div class="mt-4 pt-3 border-t text-center">
-            <button type="button" onclick="adicionarLinhaJunta()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold px-4 py-2.5 rounded-lg flex items-center gap-2 mx-auto shadow touch-target">
-              <i data-lucide="plus-circle" class="w-4 h-4 text-red-500"></i> Adicionar Junta com Fotos
+          <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 pt-1 border-t sm:border-0 border-slate-100">
+            <button type="button" id="btnSyncDrive" onclick="sincronizarComDrive()" class="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 px-2.5 py-1.5 rounded-lg font-medium flex items-center gap-1 touch-target">
+              <i data-lucide="cloud-upload" class="w-3.5 h-3.5 text-emerald-600"></i> Sincronizar Nuvem
+            </button>
+            <button type="button" onclick="abrirConfigDrive()" title="Configurar URL da Planilha" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 border px-2 py-1.5 rounded-lg touch-target">
+              <i data-lucide="settings" class="w-3.5 h-3.5"></i>
+            </button>
+            <button type="button" onclick="abrirModalHistorico()" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 px-2.5 py-1.5 rounded-lg font-bold flex items-center gap-1 touch-target">
+              <i data-lucide="folder-open" class="w-3.5 h-3.5 text-blue-600"></i> Histórico / Editar
+            </button>
+            <button type="button" onclick="prepararProximoLaudo()" class="text-xs bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 px-2.5 py-1.5 rounded-lg font-medium flex items-center gap-1 touch-target">
+              <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i> Novo Laudo
             </button>
           </div>
         </div>
-      </section>
-    </form>
-  </main>
-
-  <!-- Bottom Floating Bar (Mobile) -->
-  <div class="sm:hidden fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur border-t border-slate-800 p-2 z-30 flex items-center gap-2 no-print">
-    <button type="button" onclick="salvarLaudoLocal(true)" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 rounded-lg flex items-center justify-center gap-1.5 shadow">
-      <i data-lucide="save" class="w-4 h-4"></i> Salvar
-    </button>
-    <button type="button" onclick="gerarVisualizacaoImpressao()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 rounded-lg flex items-center justify-center gap-1.5 shadow">
-      <i data-lucide="printer" class="w-4 h-4"></i> PDF / Imprimir
-    </button>
-  </div>
-
-  <!-- MODAL DE AUTENTICAÇÃO / LOGIN OFFLINE -->
-  <div id="modalAuth" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-6 no-print">
-    <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden border border-slate-200">
-      <div class="bg-slate-800 text-white px-4 py-3 flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <i data-lucide="user-check" class="w-5 h-5 text-amber-400"></i>
-          <h2 class="font-bold text-sm" id="modalAuthTitle">Perfil do Inspetor</h2>
-        </div>
-        <button type="button" onclick="fecharModalAuth()" class="text-slate-400 hover:text-white p-1">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
       </div>
 
-      <div class="p-4 space-y-3">
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Nome Completo</label>
-          <input type="text" id="auth_nome" placeholder="Ex: Diego Morais" class="w-full p-2 border rounded-lg text-sm">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Nº Registro / SNQC</label>
-          <input type="text" id="auth_snqc" placeholder="Ex: 20251437" class="w-full p-2 border rounded-lg text-sm">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Qualificações</label>
-          <input type="text" id="auth_qualif" placeholder="Ex: EVS / LP / ME" class="w-full p-2 border rounded-lg text-sm">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Senha (Opcional p/ Sincronização)</label>
-          <input type="password" id="auth_senha" placeholder="******" class="w-full p-2 border rounded-lg text-sm">
+      <!-- Form Principal -->
+      <form id="lpForm" class="space-y-4 sm:space-y-6">
+
+        <!-- 1. Dados Gerais -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+          <div class="bg-slate-800 text-white px-3 sm:px-4 py-2.5 flex items-center justify-between">
+            <h2 class="font-semibold text-xs sm:text-sm flex items-center gap-2">
+              <i data-lucide="file-text" class="w-4 h-4 text-red-400"></i> 1. Identificação do Laudo & Contrato
+            </h2>
+          </div>
+          <div class="p-3 sm:p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Empreendimento / Equipamento</label>
+              <input type="text" id="empreendimento" placeholder="Equipamento ou linha..." class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Nº Contrato</label>
+              <select id="num_contrato" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white focus:ring-2 focus:ring-red-500 focus:outline-none">
+                <option value="" selected>-- Selecione --</option>
+                <option value="293">293</option>
+                <option value="316">316</option>
+                <option value="OUTRO">OUTRO</option>
+              </select>
+            </div>
+            <div>
+              <div class="flex justify-between items-center mb-1">
+                <label class="block text-xs font-semibold text-slate-600">Nº RLP</label>
+                <button type="button" onclick="gerarProximoRLP()" title="Sincronizar Contador" class="text-[11px] text-red-600 hover:underline font-bold">↻ Auto</button>
+              </div>
+              <input type="text" id="num_rlp" value="OMG-RLP-Q-001" class="w-full border border-slate-300 rounded-lg p-2 text-sm font-semibold text-red-700 bg-red-50/50 focus:ring-2 focus:ring-red-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Cliente</label>
+              <select id="cliente" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white focus:ring-2 focus:ring-red-500 focus:outline-none">
+                <option value="" selected>-- Selecione --</option>
+                <option value="HYDRO">HYDRO</option>
+                <option value="ALUNORTE">ALUNORTE</option>
+                <option value="ALBRAS">ALBRAS</option>
+                <option value="VALE">VALE</option>
+                <option value="PETROBRAS">PETROBRAS</option>
+                <option value="OMEGA SERVICE">OMEGA SERVICE</option>
+                <option value="OUTRO">OUTRO</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Local do Ensaio</label>
+              <select id="local_ensaio" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white focus:ring-2 focus:ring-red-500 focus:outline-none">
+                <option value="" selected>-- Selecione --</option>
+                <option value="IN-LOCO">IN-LOCO</option>
+                <option value="OFICINA">OFICINA</option>
+                <option value="CANTEIRO DE OBRAS">CANTEIRO DE OBRAS</option>
+                <option value="ÁREA INDUSTRIAL">ÁREA INDUSTRIAL</option>
+                <option value="FABRICAÇÃO">FABRICAÇÃO</option>
+                <option value="OUTRO">OUTRO</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Data</label>
+              <input type="date" id="data_ensaio" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Norma de Referência</label>
+              <select id="norma_ref" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white focus:ring-2 focus:ring-red-500 focus:outline-none">
+                <option value="" selected>-- Selecione --</option>
+                <optgroup label="TUBULAÇÕES E DUTOS">
+                  <option value="ASME B31.3">ASME B31.3</option>
+                  <option value="ASME B31.1">ASME B31.1</option>
+                  <option value="ASME B31.4 / B31.8">ASME B31.4 / B31.8</option>
+                  <option value="PETROBRAS N-115">PETROBRAS N-115</option>
+                </optgroup>
+                <optgroup label="VASOS E CALDEIRAS">
+                  <option value="ASME Sec. VIII Div. 1">ASME Sec. VIII Div. 1</option>
+                  <option value="ASME Sec. V Artigo 6">ASME Sec. V Artigo 6</option>
+                  <option value="ASME Sec. IX">ASME Sec. IX</option>
+                </optgroup>
+                <optgroup label="ESTRUTURAS METÁLICAS">
+                  <option value="AWS D1.1 / D1.1M">AWS D1.1 / D1.1M</option>
+                  <option value="AWS D1.6 / D1.6M">AWS D1.6 / D1.6M</option>
+                </optgroup>
+                <optgroup label="TANQUES">
+                  <option value="API 650">API 650</option>
+                  <option value="API 653">API 653</option>
+                </optgroup>
+                <optgroup label="NORMAS NACIONAIS / ISO">
+                  <option value="PETROBRAS N-1596">PETROBRAS N-1596</option>
+                  <option value="ABNT NBR ISO 3452-1">ABNT NBR ISO 3452-1</option>
+                </optgroup>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Procedimento / Rev.</label>
+              <div class="flex gap-1.5">
+                <select id="procedimento" class="w-3/4 border border-slate-300 rounded-lg p-2 text-xs sm:text-sm bg-white">
+                  <option value="" selected>-- Selecione --</option>
+                  <option value="PR-SGI-026">PR-SGI-026 (LP)</option>
+                  <option value="PR-SGI-025">PR-SGI-025 (EVS/Dim)</option>
+                  <option value="PR-SGI-027">PR-SGI-027 (ME)</option>
+                  <option value="PR-SGI-028">PR-SGI-028 (PM)</option>
+                  <option value="PR-END-001">PR-END-001</option>
+                </select>
+                <select id="procedimento_rev" class="w-1/4 border border-slate-300 rounded-lg p-2 text-xs sm:text-sm bg-white text-center">
+                  <option value="0" selected>0</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Desenho Ref. / Rev.</label>
+              <div class="flex gap-1.5">
+                <select id="desenho_ref" class="w-3/4 border border-slate-300 rounded-lg p-2 text-xs sm:text-sm bg-white">
+                  <option value="" selected>-- Selecione --</option>
+                  <option value="CROQUI DE CAMPO">CROQUI DE CAMPO</option>
+                  <option value="ISOMÉTRICO">ISOMÉTRICO</option>
+                  <option value="DESENHO EXECUTIVO">DESENHO EXECUTIVO</option>
+                  <option value="FLUXOGRAMA DE ENGENHARIA">FLUXOGRAMA</option>
+                  <option value="AS-BUILT">AS-BUILT</option>
+                </select>
+                <select id="desenho_rev" class="w-1/4 border border-slate-300 rounded-lg p-2 text-xs sm:text-sm bg-white text-center">
+                  <option value="0" selected>0</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Metal Base</label>
+              <select id="metal_base" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
+                <option value="" selected>-- Selecione --</option>
+                <option value="AÇO CARBONO">AÇO CARBONO</option>
+                <option value="AÇO CARBONO BAIXA LIGA">AÇO CARBONO BAIXA LIGA</option>
+                <option value="AÇOS INOXIDAVEIS AUSTENITICOS">AÇOS INOX AUSTENÍTICOS</option>
+                <option value="AÇOS INOXIDAVEIS FERRITICOS">AÇOS INOX FERRÍTICOS</option>
+                <option value="ALUMÍNIO E LIGAS DE ALUMÍNIO">ALUMÍNIO E LIGAS</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Metal de Adição</label>
+              <select id="metal_adicao" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
+                <option value="" selected>-- Selecione --</option>
+                <option value="E-7018">E-7018</option>
+                <option value="ER70S-6">ER70S-6</option>
+                <option value="E-308L-16 (Inox Austenítico)">E-308L-16 (Inox Austenítico)</option>
+                <option value="ER308L (Inox 304/304L)">ER308L (Inox 304/304L)</option>
+                <option value="TIG ER70S-6 (Raiz) + SMAW E-7018 (Enchimento)">TIG ER70S-6 + SMAW E-7018</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Espessura / Diâmetro</label>
+              <select id="espessura" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
+                <option value="" selected>-- Selecione --</option>
+                <option value='4"'>4"</option>
+                <option value='6"'>6"</option>
+                <option value='8"'>8"</option>
+                <option value='10"'>10"</option>
+                <option value='12"'>12"</option>
+                <option value='14"'>14"</option>
+                <option value='16"'>16"</option>
+                <option value='18"'>18"</option>
+                <option value='20"'>20"</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. Consumíveis LP -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+          <div class="bg-slate-800 text-white px-3 sm:px-4 py-2.5 flex items-center justify-between">
+            <h2 class="font-semibold text-xs sm:text-sm flex items-center gap-2">
+              <i data-lucide="flask-conical" class="w-4 h-4 text-amber-400"></i> 2. Consumíveis de Ensaio
+            </h2>
+          </div>
+          <div class="p-3 sm:p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+            <!-- Solvente -->
+            <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+              <div class="font-bold text-xs text-slate-700 mb-2 border-b border-slate-200 pb-1">SOLVENTE</div>
+              <div class="space-y-1.5">
+                <select id="solv_fab" class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
+                  <option value="METAL-CHEK" selected>METAL-CHEK</option>
+                  <option value="MAGNAFLUX">MAGNAFLUX</option>
+                  <option value="CARBOCHEM">CARBOCHEM</option>
+                </select>
+                <select id="solv_mod" class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
+                  <option value="E-59" selected>E-59</option>
+                  <option value="SKC-S">SKC-S</option>
+                  <option value="DR-60">DR-60</option>
+                </select>
+                <input type="text" id="solv_lote" placeholder="Lote..." class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
+              </div>
+            </div>
+
+            <!-- Penetrante -->
+            <div class="bg-red-50/40 p-2.5 rounded-lg border border-red-200">
+              <div class="font-bold text-xs text-red-800 mb-2 border-b border-red-200 pb-1">PENETRANTE</div>
+              <div class="space-y-1.5">
+                <select id="pen_fab" class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
+                  <option value="METAL-CHEK" selected>METAL-CHEK</option>
+                  <option value="MAGNAFLUX">MAGNAFLUX</option>
+                </select>
+                <select id="pen_mod" class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
+                  <option value="VP-30" selected>VP-30 (Lavável a água)</option>
+                  <option value="SKL-SP2">SKL-SP2 (Por solvente)</option>
+                </select>
+                <input type="text" id="pen_lote" placeholder="Lote..." class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
+              </div>
+            </div>
+
+            <!-- Removedor -->
+            <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+              <div class="font-bold text-xs text-slate-700 mb-2 border-b border-slate-200 pb-1">REMOVEDOR</div>
+              <div class="space-y-1.5">
+                <select id="rem_fab" class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
+                  <option value="N/A" selected>N/A</option>
+                  <option value="METAL-CHEK">METAL-CHEK</option>
+                </select>
+                <select id="rem_mod" class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
+                  <option value="ÁGUA" selected>ÁGUA</option>
+                  <option value="E-59">E-59</option>
+                </select>
+                <input type="text" id="rem_lote" placeholder="Lote..." class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
+              </div>
+            </div>
+
+            <!-- Revelador -->
+            <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+              <div class="font-bold text-xs text-slate-700 mb-2 border-b border-slate-200 pb-1">REVELADOR</div>
+              <div class="space-y-1.5">
+                <select id="rev_fab" class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
+                  <option value="METAL CHEK" selected>METAL CHEK</option>
+                  <option value="MAGNAFLUX">MAGNAFLUX</option>
+                </select>
+                <select id="rev_mod" class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
+                  <option value="D70" selected>D70 (Tipo D)</option>
+                  <option value="SKD-S2">SKD-S2</option>
+                </select>
+                <input type="text" id="rev_lote" placeholder="Lote..." class="w-full border border-slate-300 rounded p-1.5 text-xs bg-white">
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. Registro de Juntas -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+          <div class="bg-slate-800 text-white px-3 sm:px-4 py-2.5 flex items-center justify-between">
+            <h2 class="font-semibold text-xs sm:text-sm flex items-center gap-2">
+              <i data-lucide="check-square" class="w-4 h-4 text-emerald-400"></i> 3. Avaliação das Juntas & Laudos
+            </h2>
+            <button type="button" onclick="adicionarLinhaJunta()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-2.5 sm:px-3 py-1.5 rounded-lg font-medium flex items-center gap-1 shadow touch-target">
+              <i data-lucide="plus" class="w-4 h-4"></i> Adicionar Junta
+            </button>
+          </div>
+
+          <div class="p-2 sm:p-4">
+            <div class="hidden md:block overflow-x-auto">
+              <table class="w-full text-left text-xs border-collapse" id="tabelaJuntasForm">
+                <thead>
+                  <tr class="bg-slate-100 text-slate-700 border-b">
+                    <th class="p-2 border">Junta</th>
+                    <th class="p-2 border text-center w-16">Nº</th>
+                    <th class="p-2 border w-32">Descontinuidade</th>
+                    <th class="p-2 border w-20">Cota</th>
+                    <th class="p-2 border w-20">Comp.</th>
+                    <th class="p-2 border text-center w-24">Laudo Result</th>
+                    <th class="p-2 border text-center w-24">Pós Reparo</th>
+                    <th class="p-2 border text-center w-24">Laudo Final</th>
+                    <th class="p-2 border">Observações</th>
+                    <th class="p-2 border text-center w-12">Ação</th>
+                  </tr>
+                </thead>
+                <tbody id="corpoJuntasDesktop"></tbody>
+              </table>
+            </div>
+
+            <div class="md:hidden space-y-3" id="corpoJuntasMobile"></div>
+          </div>
+        </section>
+
+        <!-- 4. Observações e Instrumentos -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+          <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-3 sm:p-4">
+            <h2 class="font-semibold text-xs sm:text-sm text-slate-800 mb-2 flex items-center gap-2">
+              <i data-lucide="message-square" class="w-4 h-4 text-blue-500"></i> Observações Gerais
+            </h2>
+            <textarea id="obs_gerais" rows="3" class="w-full border border-slate-300 rounded-lg p-2 text-sm" placeholder="Observações..."></textarea>
+          </section>
+
+          <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-3 sm:p-4">
+            <h2 class="font-semibold text-xs sm:text-sm text-slate-800 mb-2 flex items-center gap-2">
+              <i data-lucide="ruler" class="w-4 h-4 text-purple-500"></i> Instrumentos Utilizados
+            </h2>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <div>
+                <label class="text-[10px] text-slate-500">Instrumento 1</label>
+                <input type="text" id="inst_1" placeholder="Ex: Trena Métrica" class="w-full border border-slate-300 rounded p-1.5">
+              </div>
+              <div>
+                <label class="text-[10px] text-slate-500">TAG 1</label>
+                <input type="text" id="tag_1" placeholder="Ex: TR-004" class="w-full border border-slate-300 rounded p-1.5">
+              </div>
+              <div>
+                <label class="text-[10px] text-slate-500">Instrumento 2</label>
+                <input type="text" id="inst_2" placeholder="Ex: Luxímetro" class="w-full border border-slate-300 rounded p-1.5">
+              </div>
+              <div>
+                <label class="text-[10px] text-slate-500">TAG 2</label>
+                <input type="text" id="tag_2" placeholder="Ex: LUX-012" class="w-full border border-slate-300 rounded p-1.5">
+              </div>
+            </div>
+          </section>
         </div>
 
-        <div class="pt-2 flex flex-col gap-2">
-          <button type="button" onclick="salvarPerfilLocalECloud()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 rounded-lg shadow">
-            Confirmar e Salvar Perfil
-          </button>
-          <p class="text-[10px] text-slate-400 text-center">Salvo localmente no aparelho para uso 100% offline em campo.</p>
-        </div>
-      </div>
+        <!-- 5. Inspetor Responsável -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-3 sm:p-4">
+          <h2 class="font-semibold text-xs sm:text-sm text-slate-800 mb-2 flex items-center gap-2">
+            <i data-lucide="award" class="w-4 h-4 text-amber-500"></i> 5. Inspetor Responsável
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Nome do Inspetor</label>
+              <input type="text" id="inspetor_nome" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-slate-50 font-bold" readonly>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Qualificações</label>
+              <input type="text" id="inspetor_qualif" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-slate-50" readonly>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Registro / SNQC</label>
+              <input type="text" id="inspetor_snqc" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-slate-50 font-semibold" readonly>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6. Fotos das Juntas -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+          <div class="bg-slate-800 text-white px-3 sm:px-4 py-2.5 flex items-center justify-between">
+            <h2 class="font-semibold text-xs sm:text-sm flex items-center gap-2">
+              <i data-lucide="camera" class="w-4 h-4 text-amber-400"></i> 6. Fotos das Juntas (Visual, Penetrante, Revelação)
+            </h2>
+          </div>
+          <div class="p-3 sm:p-4 bg-slate-50/50">
+            <div id="containerFotosPorJunta" class="space-y-4"></div>
+            <div class="mt-4 pt-3 border-t text-center">
+              <button type="button" onclick="adicionarLinhaJunta()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold px-4 py-2.5 rounded-lg flex items-center gap-2 mx-auto shadow touch-target">
+                <i data-lucide="plus-circle" class="w-4 h-4 text-red-500"></i> Adicionar Junta com Fotos
+              </button>
+            </div>
+          </div>
+        </section>
+      </form>
+    </main>
+
+    <!-- Bottom Floating Bar (Mobile) -->
+    <div class="sm:hidden fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur border-t border-slate-800 p-2 z-30 flex items-center gap-2 no-print">
+      <button type="button" onclick="salvarLaudoLocal(true)" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 rounded-lg flex items-center justify-center gap-1.5 shadow">
+        <i data-lucide="save" class="w-4 h-4"></i> Salvar
+      </button>
+      <button type="button" onclick="gerarVisualizacaoImpressao()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 rounded-lg flex items-center justify-center gap-1.5 shadow">
+        <i data-lucide="printer" class="w-4 h-4"></i> PDF / Imprimir
+      </button>
     </div>
   </div>
 
@@ -765,7 +798,8 @@
   <script>
     let driveScriptUrl = localStorage.getItem('omega_drive_url') || '';
     let idLaudoEmEdicao = null;
-    let usuarioLogado = JSON.parse(localStorage.getItem('omega_user') || 'null');
+    let usuarioLogado = null;
+    let listaUsuariosLocais = JSON.parse(localStorage.getItem('omega_usuarios_lista') || '[]');
 
     // Inicialização Dexie DB
     const db = new Dexie('OmegaInspectionDB');
@@ -790,66 +824,120 @@
     ];
 
     // ==========================================
-    // AUTENTICAÇÃO E PERFIL OFFLINE-FIRST
+    // CONTROLE DA TELA DE LOGIN & RESTRIÇÃO DE SENHA
     // ==========================================
-    function checarPerfilInicial() {
-      if (!usuarioLogado) {
-        // Usuário Padrão Inicial caso abra sem login
-        usuarioLogado = {
-          id: 'USR-DEFAULT',
-          nome: 'Diego Morais',
-          snqc: '20251437',
-          qualif: 'EVS / LP / ME'
-        };
-        localStorage.setItem('omega_user', JSON.stringify(usuarioLogado));
+    function inicializarTelaLogin() {
+      renderizarDropdownUsuariosLogin();
+      
+      if (listaUsuariosLocais.length > 0) {
+        selecionarUsuarioNaTelaLogin(listaUsuariosLocais[0].snqc);
+      } else {
+        iniciarNovoUsuarioLogin();
       }
-      aplicarPerfilNaInterface();
+
+      document.getElementById('telaLogin').classList.remove('hidden');
+      document.getElementById('areaPrincipalApp').classList.add('hidden');
+      if (window.lucide) lucide.createIcons();
     }
 
-    function aplicarPerfilNaInterface() {
-      if (!usuarioLogado) return;
-      document.getElementById('headerUserTxt').innerText = `${usuarioLogado.nome} (SNQC: ${usuarioLogado.snqc})`;
-      document.getElementById('inspetor_nome').value = usuarioLogado.nome;
-      document.getElementById('inspetor_snqc').value = `SNQC: ${usuarioLogado.snqc}`;
-      document.getElementById('inspetor_qualif').value = usuarioLogado.qualif;
+    function renderizarDropdownUsuariosLogin() {
+      const select = document.getElementById('selectUsuariosLogin');
+      select.innerHTML = '';
+
+      listaUsuariosLocais.forEach(u => {
+        const opt = document.createElement('option');
+        opt.value = u.snqc;
+        opt.innerText = `${u.nome} (SNQC: ${u.snqc})`;
+        select.appendChild(opt);
+      });
+
+      const optNovo = document.createElement('option');
+      optNovo.value = "NOVO";
+      optNovo.innerText = "+ Cadastrar Novo Inspetor";
+      select.appendChild(optNovo);
     }
 
-    function abrirModalAuth() {
-      if (usuarioLogado) {
-        document.getElementById('auth_nome').value = usuarioLogado.nome || '';
-        document.getElementById('auth_snqc').value = usuarioLogado.snqc || '';
-        document.getElementById('auth_qualif').value = usuarioLogado.qualif || '';
+    function selecionarUsuarioNaTelaLogin(valor) {
+      if (valor === "NOVO") {
+        iniciarNovoUsuarioLogin();
+        return;
       }
-      document.getElementById('modalAuth').classList.remove('hidden');
+      const selecionado = listaUsuariosLocais.find(u => u.snqc === valor);
+      if (selecionado) {
+        document.getElementById('login_nome').value = selecionado.nome;
+        document.getElementById('login_snqc').value = selecionado.snqc;
+        document.getElementById('login_senha').value = ''; // Mantém senha limpa por segurança ao trocar de perfil
+        
+        const checks = document.querySelectorAll('input[name="qualif_check"]');
+        checks.forEach(chk => {
+          chk.checked = selecionado.qualif && selecionado.qualif.includes(chk.value);
+        });
+      }
     }
 
-    function fecharModalAuth() {
-      document.getElementById('modalAuth').classList.add('hidden');
+    function iniciarNovoUsuarioLogin() {
+      document.getElementById('selectUsuariosLogin').value = "NOVO";
+      document.getElementById('login_nome').value = '';
+      document.getElementById('login_snqc').value = '';
+      document.getElementById('login_senha').value = '';
+      
+      const checks = document.querySelectorAll('input[name="qualif_check"]');
+      checks.forEach(chk => chk.checked = false);
+      
+      document.getElementById('login_nome').focus();
     }
 
-    async function salvarPerfilLocalECloud() {
-      const nome = document.getElementById('auth_nome').value.trim();
-      const snqc = document.getElementById('auth_snqc').value.trim();
-      const qualif = document.getElementById('auth_qualif').value.trim();
-      const senha = document.getElementById('auth_senha').value.trim();
+    async function confirmarAcessoApp() {
+      const nome = document.getElementById('login_nome').value.trim();
+      const snqc = document.getElementById('login_snqc').value.trim();
+      const senha = document.getElementById('login_senha').value.trim();
 
       if (!nome || !snqc) {
-        alert('Nome e SNQC são obrigatórios!');
+        alert('Por favor, informe o Nome Completo e o Nº de Registro / SNQC.');
         return;
       }
 
-      usuarioLogado = {
-        id: usuarioLogado?.id || ('USR-' + new Date().getTime()),
+      if (!senha) {
+        alert('Acesso negado: Digite a senha cadastrada para liberar o laudo.');
+        document.getElementById('login_senha').focus();
+        return;
+      }
+
+      // Verifica se o usuário já existe no aparelho e valida a senha estritamente
+      let indexExistente = listaUsuariosLocais.findIndex(u => u.snqc === snqc);
+      
+      if (indexExistente !== -1) {
+        const usuarioCadastrado = listaUsuariosLocais[indexExistente];
+        if (usuarioCadastrado.senha && usuarioCadastrado.senha !== senha) {
+          alert('Senha incorreta para este inspetor!');
+          document.getElementById('login_senha').focus();
+          return;
+        }
+      }
+
+      const checksSelecionados = document.querySelectorAll('input[name="qualif_check"]:checked');
+      const qualifArr = Array.from(checksSelecionados).map(chk => chk.value);
+      const qualifStr = qualifArr.length > 0 ? qualifArr.join(' / ') : 'LP';
+
+      let usr = {
+        id: indexExistente !== -1 ? listaUsuariosLocais[indexExistente].id : ('USR-' + new Date().getTime()),
         nome: nome,
         snqc: snqc,
-        qualif: qualif
+        qualif: qualifStr,
+        senha: senha
       };
 
-      localStorage.setItem('omega_user', JSON.stringify(usuarioLogado));
-      aplicarPerfilNaInterface();
-      fecharModalAuth();
+      if (indexExistente !== -1) {
+        listaUsuariosLocais[indexExistente] = usr;
+      } else {
+        listaUsuariosLocais.push(usr);
+      }
 
-      // Sincroniza o usuário com a planilha se estiver online
+      localStorage.setItem('omega_usuarios_lista', JSON.stringify(listaUsuariosLocais));
+      usuarioLogado = usr;
+      localStorage.setItem('omega_user', JSON.stringify(usuarioLogado));
+
+      // Sincroniza em segundo plano se online
       if (navigator.onLine && driveScriptUrl) {
         try {
           fetch(driveScriptUrl, {
@@ -860,18 +948,36 @@
               action: 'cadastrarUsuario',
               nome: nome,
               snqc: snqc,
-              qualificacoes: qualif,
+              qualificacoes: qualifStr,
               senha: senha
             })
           });
         } catch(e) {}
       }
 
-      alert('Perfil do inspetor salvo no aparelho!');
+      // Libera o acesso ao laudo
+      document.getElementById('headerUserTxt').innerText = `${usr.nome} (SNQC: ${usr.snqc})`;
+      document.getElementById('inspetor_nome').value = usr.nome;
+      document.getElementById('inspetor_snqc').value = `SNQC: ${usr.snqc}`;
+      document.getElementById('inspetor_qualif').value = usr.qualif;
+
+      document.getElementById('telaLogin').classList.add('hidden');
+      document.getElementById('areaPrincipalApp').classList.remove('hidden');
+
+      renderizarTabelaForm();
+      gerarProximoRLP();
+      atualizarStatusConexao();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function voltarParaLogin() {
+      if (confirm('Deseja bloquear a sessão e retornar à tela de login?')) {
+        inicializarTelaLogin();
+      }
     }
 
     // ==========================================
-    // CONTROLE SEQUENCIAL DE RLP (OFFLINE & NUVEM)
+    // CONTROLE SEQUENCIAL DE RLP
     // ==========================================
     async function gerarProximoRLP() {
       if (navigator.onLine && driveScriptUrl) {
@@ -887,7 +993,6 @@
         }
       }
 
-      // Fallback Offline Local
       const total = await db.laudosLP.count();
       const padNumero = String(total + 1).padStart(3, '0');
       document.getElementById('num_rlp').value = `OMG-RLP-Q-${padNumero}`;
@@ -979,7 +1084,6 @@
     }
 
     function renderizarTabelaForm() {
-      // Desktop Table
       const tbody = document.getElementById('corpoJuntasDesktop');
       if (tbody) {
         tbody.innerHTML = '';
@@ -1036,7 +1140,6 @@
         });
       }
 
-      // Mobile Cards
       const containerMobile = document.getElementById('corpoJuntasMobile');
       if (containerMobile) {
         containerMobile.innerHTML = '';
@@ -1267,7 +1370,6 @@
       listaLaudosCache = await db.laudosLP.toArray();
       listaLaudosCache.sort((a, b) => (b.id || 0) - (a.id || 0));
 
-      // Se estiver online, mescla com o histórico da nuvem
       if (navigator.onLine && driveScriptUrl) {
         try {
           const resp = await fetch(`${driveScriptUrl}?action=getHistorico`);
@@ -1614,10 +1716,7 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      checarPerfilInicial();
-      renderizarTabelaForm();
-      gerarProximoRLP();
-      atualizarStatusConexao();
+      inicializarTelaLogin();
     });
   </script>
 </body>
