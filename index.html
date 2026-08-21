@@ -1855,13 +1855,13 @@
       document.getElementById('p_parecer_texto').innerText = document.getElementById('parecer_texto').value || '';
 
       document.getElementById('p_inst_1').innerText = document.getElementById('inst_1').value || '-';
-      document.getElementById('p_tag_1').innerText = document.getElementById('tag_1').value || '-';
+      document.getElementById('tag_1').innerText = document.getElementById('tag_1').value || '-';
       document.getElementById('p_inst_2').innerText = document.getElementById('inst_2').value || '-';
-      document.getElementById('p_tag_2').innerText = document.getElementById('tag_2').value || '-';
+      document.getElementById('tag_2').innerText = document.getElementById('tag_2').value || '-';
       document.getElementById('p_inst_3').innerText = document.getElementById('inst_3').value || '-';
-      document.getElementById('p_tag_3').innerText = document.getElementById('tag_3').value || '-';
+      document.getElementById('tag_3').innerText = document.getElementById('tag_3').value || '-';
       document.getElementById('p_inst_4').innerText = document.getElementById('inst_4').value || '-';
-      document.getElementById('p_tag_4').innerText = document.getElementById('tag_4').value || '-';
+      document.getElementById('tag_4').innerText = document.getElementById('tag_4').value || '-';
 
       document.getElementById('p_inspetor_nome').innerText = document.getElementById('inspetor_nome').value || '-';
       document.getElementById('p_inspetor_qualif').innerText = document.getElementById('inspetor_qualif').value || '-';
@@ -2025,7 +2025,7 @@
     }
 
     // ==========================================
-    // ENVIO DO ARQUIVO PDF DIRETO AO WHATSAPP
+    // ENVIO DO ARQUIVO PDF DIRETO AO WHATSAPP (PADRÃO A4 PERFEITO 1:1)
     // ==========================================
     async function compartilharPdfWhatsapp() {
       const rlp = document.getElementById('num_rlp').value || 'Laudo_LP';
@@ -2036,41 +2036,89 @@
       // 1. Atualiza e monta todo o DOM de impressão
       preencherDadosImpressao();
 
-      const printArea = document.getElementById('printArea');
-      
-      // Torna a div visível temporariamente para html2canvas/html2pdf capturar
-      printArea.classList.remove('print-only');
-      printArea.style.display = 'block';
-      printArea.style.background = '#ffffff';
+      // 2. Criação de um container virtual off-screen com dimensões exatas de A4 (794px = 210mm a 96dpi)
+      const offscreenDiv = document.createElement('div');
+      offscreenDiv.style.position = 'fixed';
+      offscreenDiv.style.top = '-10000px';
+      offscreenDiv.style.left = '0';
+      offscreenDiv.style.width = '794px';
+      offscreenDiv.style.background = '#ffffff';
+      offscreenDiv.style.zIndex = '-9999';
+
+      // Estilos forçados para renderização A4 sem colapso
+      const customStyles = `
+        <style>
+          .offscreen-a4-page {
+            width: 794px !important;
+            height: 1120px !important;
+            max-height: 1120px !important;
+            box-sizing: border-box !important;
+            border: 2px solid #000 !important;
+            background: #fff !important;
+            color: #000 !important;
+            font-family: Arial, Helvetica, sans-serif !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+            overflow: hidden !important;
+            margin-bottom: 0 !important;
+            page-break-after: always !important;
+          }
+          .offscreen-a4-page table { width: 100% !important; border-collapse: collapse !important; }
+          .offscreen-a4-page table, .offscreen-a4-page th, .offscreen-a4-page td { border: 1px solid #000 !important; }
+          .offscreen-inutilizacao {
+            flex-grow: 1 !important;
+            min-height: 20mm !important;
+            background: #fff !important;
+            border-bottom: 2px solid #000 !important;
+            padding: 8px !important;
+          }
+        </style>
+      `;
+
+      // Clona o conteúdo da página principal
+      let clonedHtml = document.getElementById('paginaLaudoPrincipal').outerHTML;
+      clonedHtml = clonedHtml.replace(/report-container/g, 'offscreen-a4-page');
+      clonedHtml = clonedHtml.replace(/inutilizacao-area/g, 'offscreen-inutilizacao');
+
+      // Clona anexos de fotos e descontinuidades se existirem
+      let clonedFotos = document.getElementById('areaPaginasFotosPrint').innerHTML;
+      clonedFotos = clonedFotos.replace(/report-container/g, 'offscreen-a4-page');
+
+      let clonedDescs = document.getElementById('areaPaginasDescontinuidadesPrint').innerHTML;
+      clonedDescs = clonedDescs.replace(/report-container/g, 'offscreen-a4-page');
+
+      offscreenDiv.innerHTML = customStyles + clonedHtml + clonedFotos + clonedDescs;
+      document.body.appendChild(offscreenDiv);
 
       const opt = {
         margin: [0, 0, 0, 0],
         filename: `${rlp}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, logging: false },
+        html2canvas: { 
+          scale: 2, 
+          useCORS: true, 
+          logging: false,
+          width: 794,
+          windowWidth: 794
+        },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
 
       try {
-        // Mostra feedback de carregamento no status
         const statusEl = document.getElementById('saveStatus');
         const statusAntigo = statusEl.innerHTML;
-        statusEl.innerHTML = `<span class="text-emerald-600 font-bold animate-pulse">Gerando PDF do Laudo...</span>`;
+        statusEl.innerHTML = `<span class="text-emerald-600 font-bold animate-pulse">Gerando PDF A4 no Aparelho...</span>`;
 
-        // 2. Converte elemento A4 em Blob de arquivo PDF
-        const pdfBlob = await html2pdf().set(opt).from(printArea).outputPdf('blob');
+        // Gera o Blob com proporção exata
+        const pdfBlob = await html2pdf().set(opt).from(offscreenDiv).outputPdf('blob');
         const pdfFile = new File([pdfBlob], `${rlp}.pdf`, { type: 'application/pdf' });
 
         statusEl.innerHTML = statusAntigo;
 
-        const textoMensagem = `*RELATÓRIO DE ENSAIO NÃO-DESTRUTIVO (LP)*
-*Nº RLP:* ${rlp}
-*Cliente:* ${cliente}
-*Equipamento:* ${equipamento}
-*Parecer Final:* ${statusLaudo}
-_Omega Service - Qualidade & END_`;
+        const textoMensagem = `*RELATÓRIO DE ENSAIO NÃO-DESTRUTIVO (LP)*\n*Nº RLP:* ${rlp}\n*Cliente:* ${cliente}\n*Equipamento:* ${equipamento}\n*Parecer Final:* ${statusLaudo}\n_Omega Service - Qualidade & END_`;
 
-        // 3. Verifica suporte da Web Share API para anexar arquivos
+        // Dispara compartilhamento nativo
         if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
           await navigator.share({
             files: [pdfFile],
@@ -2078,7 +2126,7 @@ _Omega Service - Qualidade & END_`;
             text: textoMensagem
           });
         } else {
-          // Fallback: Baixa o PDF direto no aparelho e abre o WhatsApp com a mensagem
+          // Fallback para download imediato + abertura do WhatsApp
           const urlDownload = URL.createObjectURL(pdfBlob);
           const link = document.createElement('a');
           link.href = urlDownload;
@@ -2086,18 +2134,17 @@ _Omega Service - Qualidade & END_`;
           link.click();
           URL.revokeObjectURL(urlDownload);
 
-          const textoEncoded = encodeURIComponent(`${textoMensagem}
-
-*(Arquivo PDF ${rlp}.pdf baixado no aparelho)*`);
+          const textoEncoded = encodeURIComponent(`${textoMensagem}\n\n*(Arquivo PDF ${rlp}.pdf pronto no aparelho)*`);
           window.open(`https://api.whatsapp.com/send?text=${textoEncoded}`, '_blank');
         }
       } catch (err) {
         console.error("Erro ao gerar/compartilhar PDF:", err);
-        alert("Erro ao processar o arquivo PDF. Tente usar a opção 'Imprimir / PDF' do topo.");
+        alert("Erro ao processar o arquivo PDF.");
       } finally {
-        // Restaura a área de impressão para o estado oculto
-        printArea.classList.add('print-only');
-        printArea.style.display = '';
+        // Remove a div temporária
+        if (document.body.contains(offscreenDiv)) {
+          document.body.removeChild(offscreenDiv);
+        }
       }
     }
 
