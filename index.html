@@ -14,8 +14,9 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- html2pdf.js Bundle para geração direta de PDF no aparelho -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <!-- html2canvas e jsPDF para renderização 100% fiel em A4 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <style>
     @media screen and (max-width: 768px) {
@@ -95,7 +96,7 @@
         <button type="button" onclick="salvarLaudoLocal(true)" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-2.5 sm:px-3 py-2 rounded-lg flex items-center gap-1 shadow touch-target">
           <i data-lucide="save" class="w-4 h-4"></i> <span class="hidden sm:inline">Salvar</span>
         </button>
-        <button type="button" onclick="compartilharPdfWhatsapp()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold px-2.5 sm:px-3 py-2 rounded-lg flex items-center gap-1 shadow touch-target" title="Gerar e Enviar PDF via WhatsApp">
+        <button type="button" id="btnShareWhatsapp" onclick="compartilharPdfWhatsapp()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold px-2.5 sm:px-3 py-2 rounded-lg flex items-center gap-1 shadow touch-target" title="Gerar e Enviar PDF via WhatsApp">
           <i data-lucide="share-2" class="w-4 h-4"></i> <span class="hidden sm:inline">WhatsApp</span>
         </button>
         <button type="button" onclick="gerarVisualizacaoImpressao(true)" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-2.5 sm:px-3 py-2 rounded-lg flex items-center gap-1 shadow touch-target">
@@ -2024,101 +2025,110 @@
       }
     }
 
-    // ==========================================
-    // ENVIO DO ARQUIVO PDF DIRETO AO WHATSAPP (PADRÃO A4 PERFEITO 1:1)
-    // ==========================================
+    // ==========================================================
+    // ENVIO DO ARQUIVO PDF DIRETO AO WHATSAPP (100% VISÍVEL & FIEL)
+    // ==========================================================
     async function compartilharPdfWhatsapp() {
       const rlp = document.getElementById('num_rlp').value || 'Laudo_LP';
       const cliente = document.getElementById('cliente').value || '-';
       const equipamento = document.getElementById('empreendimento').value || '-';
       const statusLaudo = document.getElementById('parecer_resultado').value || '-';
 
-      // 1. Atualiza e monta todo o DOM de impressão
+      const statusEl = document.getElementById('saveStatus');
+      const statusAntigo = statusEl.innerHTML;
+      statusEl.innerHTML = `<span class="text-emerald-600 font-bold animate-pulse">Gerando PDF A4...</span>`;
+
+      // 1. Preenche e monta os dados
       preencherDadosImpressao();
 
-      // 2. Criação de um container virtual off-screen com dimensões exatas de A4 (794px = 210mm a 96dpi)
-      const offscreenDiv = document.createElement('div');
-      offscreenDiv.style.position = 'fixed';
-      offscreenDiv.style.top = '-10000px';
-      offscreenDiv.style.left = '0';
-      offscreenDiv.style.width = '794px';
-      offscreenDiv.style.background = '#ffffff';
-      offscreenDiv.style.zIndex = '-9999';
+      // 2. Cria container temporário visível no fluxo (para html2canvas capturar com 100% de precisão)
+      const renderContainer = document.createElement('div');
+      renderContainer.id = 'renderContainerTemp';
+      renderContainer.style.cssText = 'position: absolute; left: 0; top: 0; width: 794px; background: #fff; z-index: 99999; padding: 0; margin: 0;';
 
-      // Estilos forçados para renderização A4 sem colapso
-      const customStyles = `
-        <style>
-          .offscreen-a4-page {
-            width: 794px !important;
-            height: 1120px !important;
-            max-height: 1120px !important;
-            box-sizing: border-box !important;
-            border: 2px solid #000 !important;
-            background: #fff !important;
-            color: #000 !important;
-            font-family: Arial, Helvetica, sans-serif !important;
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: space-between !important;
-            overflow: hidden !important;
-            margin-bottom: 0 !important;
-            page-break-after: always !important;
-          }
-          .offscreen-a4-page table { width: 100% !important; border-collapse: collapse !important; }
-          .offscreen-a4-page table, .offscreen-a4-page th, .offscreen-a4-page td { border: 1px solid #000 !important; }
-          .offscreen-inutilizacao {
-            flex-grow: 1 !important;
-            min-height: 20mm !important;
-            background: #fff !important;
-            border-bottom: 2px solid #000 !important;
-            padding: 8px !important;
-          }
-        </style>
+      const styleEl = document.createElement('style');
+      styleEl.innerHTML = `
+        .a4-render-page {
+          width: 794px !important;
+          height: 1120px !important;
+          box-sizing: border-box !important;
+          border: 2px solid #000 !important;
+          background: #fff !important;
+          color: #000 !important;
+          font-family: Arial, Helvetica, sans-serif !important;
+          display: flex !important;
+          flex-direction: column !important;
+          justify-content: space-between !important;
+          overflow: hidden !important;
+          margin-bottom: 20px !important;
+          padding: 0 !important;
+        }
+        .a4-render-page table { width: 100% !important; border-collapse: collapse !important; }
+        .a4-render-page table, .a4-render-page th, .a4-render-page td { border: 1px solid #000 !important; }
+        .a4-inutilizacao {
+          flex-grow: 1 !important;
+          min-height: 20mm !important;
+          background: #fff !important;
+          border-bottom: 2px solid #000 !important;
+          padding: 8px !important;
+        }
       `;
+      renderContainer.appendChild(styleEl);
 
-      // Clona o conteúdo da página principal
-      let clonedHtml = document.getElementById('paginaLaudoPrincipal').outerHTML;
-      clonedHtml = clonedHtml.replace(/report-container/g, 'offscreen-a4-page');
-      clonedHtml = clonedHtml.replace(/inutilizacao-area/g, 'offscreen-inutilizacao');
+      // Clona o laudo principal
+      const clonePrincipal = document.getElementById('paginaLaudoPrincipal').cloneNode(true);
+      clonePrincipal.className = 'a4-render-page';
+      const areaInutil = clonePrincipal.querySelector('.inutilizacao-area');
+      if (areaInutil) areaInutil.className = 'a4-inutilizacao';
+      renderContainer.appendChild(clonePrincipal);
 
-      // Clona anexos de fotos e descontinuidades se existirem
-      let clonedFotos = document.getElementById('areaPaginasFotosPrint').innerHTML;
-      clonedFotos = clonedFotos.replace(/report-container/g, 'offscreen-a4-page');
+      // Clona anexos de fotos
+      const fotosPages = document.getElementById('areaPaginasFotosPrint').children;
+      for (let el of fotosPages) {
+        const c = el.cloneNode(true);
+        c.className = 'a4-render-page';
+        renderContainer.appendChild(c);
+      }
 
-      let clonedDescs = document.getElementById('areaPaginasDescontinuidadesPrint').innerHTML;
-      clonedDescs = clonedDescs.replace(/report-container/g, 'offscreen-a4-page');
+      // Clona anexos de descontinuidades
+      const descPages = document.getElementById('areaPaginasDescontinuidadesPrint').children;
+      for (let el of descPages) {
+        const c = el.cloneNode(true);
+        c.className = 'a4-render-page';
+        renderContainer.appendChild(c);
+      }
 
-      offscreenDiv.innerHTML = customStyles + clonedHtml + clonedFotos + clonedDescs;
-      document.body.appendChild(offscreenDiv);
-
-      const opt = {
-        margin: [0, 0, 0, 0],
-        filename: `${rlp}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { 
-          scale: 2, 
-          useCORS: true, 
-          logging: false,
-          width: 794,
-          windowWidth: 794
-        },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      };
+      document.body.appendChild(renderContainer);
+      window.scrollTo(0, 0);
 
       try {
-        const statusEl = document.getElementById('saveStatus');
-        const statusAntigo = statusEl.innerHTML;
-        statusEl.innerHTML = `<span class="text-emerald-600 font-bold animate-pulse">Gerando PDF A4 no Aparelho...</span>`;
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
 
-        // Gera o Blob com proporção exata
-        const pdfBlob = await html2pdf().set(opt).from(offscreenDiv).outputPdf('blob');
+        const pages = renderContainer.querySelectorAll('.a4-render-page');
+        for (let i = 0; i < pages.length; i++) {
+          const page = pages[i];
+          const canvas = await html2canvas(page, {
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            backgroundColor: '#ffffff',
+            width: 794,
+            height: 1120
+          });
+
+          const imgData = canvas.toDataURL('image/jpeg', 0.98);
+          if (i > 0) pdf.addPage('a4', 'portrait');
+          pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+        }
+
+        const pdfBlob = pdf.output('blob');
         const pdfFile = new File([pdfBlob], `${rlp}.pdf`, { type: 'application/pdf' });
 
         statusEl.innerHTML = statusAntigo;
 
         const textoMensagem = `*RELATÓRIO DE ENSAIO NÃO-DESTRUTIVO (LP)*\n*Nº RLP:* ${rlp}\n*Cliente:* ${cliente}\n*Equipamento:* ${equipamento}\n*Parecer Final:* ${statusLaudo}\n_Omega Service - Qualidade & END_`;
 
-        // Dispara compartilhamento nativo
         if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
           await navigator.share({
             files: [pdfFile],
@@ -2126,7 +2136,6 @@
             text: textoMensagem
           });
         } else {
-          // Fallback para download imediato + abertura do WhatsApp
           const urlDownload = URL.createObjectURL(pdfBlob);
           const link = document.createElement('a');
           link.href = urlDownload;
@@ -2134,16 +2143,16 @@
           link.click();
           URL.revokeObjectURL(urlDownload);
 
-          const textoEncoded = encodeURIComponent(`${textoMensagem}\n\n*(Arquivo PDF ${rlp}.pdf pronto no aparelho)*`);
+          const textoEncoded = encodeURIComponent(`${textoMensagem}\n\n*(Arquivo PDF ${rlp}.pdf gerado)*`);
           window.open(`https://api.whatsapp.com/send?text=${textoEncoded}`, '_blank');
         }
       } catch (err) {
         console.error("Erro ao gerar/compartilhar PDF:", err);
         alert("Erro ao processar o arquivo PDF.");
+        statusEl.innerHTML = statusAntigo;
       } finally {
-        // Remove a div temporária
-        if (document.body.contains(offscreenDiv)) {
-          document.body.removeChild(offscreenDiv);
+        if (document.body.contains(renderContainer)) {
+          document.body.removeChild(renderContainer);
         }
       }
     }
