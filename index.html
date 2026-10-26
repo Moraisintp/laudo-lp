@@ -184,7 +184,8 @@
             <label class="block text-xs font-semibold text-slate-600 mb-1">Cliente</label>
             <select id="cliente" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white focus:ring-2 focus:ring-red-500 focus:outline-none">
               <option value="" selected>-- Selecione --</option>
-              <option value="ALUNORTE">HYDRO ALUNORTE</option>
+              <option value="HYDRO">HYDRO</option>
+              <option value="ALUNORTE">ALUNORTE</option>
               <option value="ALBRAS">ALBRAS</option>
               <option value="VALE">VALE</option>
               <option value="PETROBRAS">PETROBRAS</option>
@@ -196,12 +197,12 @@
             <label class="block text-xs font-semibold text-slate-600 mb-1">Local do Ensaio</label>
             <select id="local_ensaio" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white focus:ring-2 focus:ring-red-500 focus:outline-none">
               <option value="" selected>-- Selecione --</option>
-              <option value="IN-LOCO">In-Loco</option>
-              <option value="OFICINA">Oficina</option>
-              <option value="CANTEIRO DE OBRAS">Canteiro de Obras</option>
-              <option value="ÁREA INDUSTRIAL">Área Indusrial</option>
-              <option value="FABRICAÇÃO">Fabricação</option>
-              <option value="OUTRO">Outro</option>
+              <option value="IN-LOCO">IN-LOCO</option>
+              <option value="OFICINA">OFICINA</option>
+              <option value="CANTEIRO DE OBRAS">CANTEIRO DE OBRAS</option>
+              <option value="ÁREA INDUSTRIAL">ÁREA INDUSTRIAL</option>
+              <option value="FABRICAÇÃO">FABRICAÇÃO</option>
+              <option value="OUTRO">OUTRO</option>
             </select>
           </div>
           <div>
@@ -261,11 +262,11 @@
             <div class="flex gap-1.5">
               <select id="desenho_ref" class="w-3/4 border border-slate-300 rounded-lg p-2 text-xs sm:text-sm bg-white">
                 <option value="" selected>-- Selecione --</option>
-                <option value="CROQUI DE CAMPO">Croque de Campo</option>
-                <option value="ISOMÉTRICO">Isométrico</option>
-                <option value="DESENHO EXECUTIVO">Desenho Executivo</option>
-                <option value="FLUXOGRAMA DE ENGENHARIA">Fluxograma</option>
-                <option value="AS-BUILT">As-Built</option>
+                <option value="CROQUI DE CAMPO">CROQUI DE CAMPO</option>
+                <option value="ISOMÉTRICO">ISOMÉTRICO</option>
+                <option value="DESENHO EXECUTIVO">DESENHO EXECUTIVO</option>
+                <option value="FLUXOGRAMA DE ENGENHARIA">FLUXOGRAMA</option>
+                <option value="AS-BUILT">AS-BUILT</option>
               </select>
               <select id="desenho_rev" class="w-1/4 border border-slate-300 rounded-lg p-2 text-xs sm:text-sm bg-white text-center">
                 <option value="0" selected>0</option>
@@ -279,11 +280,11 @@
             <label class="block text-xs font-semibold text-slate-600 mb-1">Metal Base</label>
             <select id="metal_base" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
               <option value="" selected>-- Selecione --</option>
-              <option value="AÇO CARBONO">Aço Carbono</option>
-              <option value="AÇO CARBONO BAIXA LIGA">Aço Carbono Baixa Liga</option>
-              <option value="AÇOS INOXIDAVEIS AUSTENITICOS">Aço Inox Austenítico</option>
-              <option value="AÇOS INOXIDAVEIS FERRITICOS">Aço Inox Ferrítico</option>
-              <option value="ALUMÍNIO E LIGAS DE ALUMÍNIO">Alumínio E Ligas</option>
+              <option value="AÇO CARBONO">AÇO CARBONO</option>
+              <option value="AÇO CARBONO BAIXA LIGA">AÇO CARBONO BAIXA LIGA</option>
+              <option value="AÇOS INOXIDAVEIS AUSTENITICOS">AÇOS INOX AUSTENÍTICOS</option>
+              <option value="AÇOS INOXIDAVEIS FERRITICOS">AÇOS INOX FERRÍTICOS</option>
+              <option value="ALUMÍNIO E LIGAS DE ALUMÍNIO">ALUMÍNIO E LIGAS</option>
             </select>
           </div>
           <div>
@@ -315,14 +316,17 @@
         </div>
       </section>
 
-      <!-- 2. Consumíveis LP -->
-      <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      <!-- 2. Consumíveis LP (Com opção de ocultar) -->
+      <section id="blocoConsumiveis" class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <div class="bg-slate-800 text-white px-3 sm:px-4 py-2.5 flex items-center justify-between">
           <h2 class="font-semibold text-xs sm:text-sm flex items-center gap-2">
             <i data-lucide="flask-conical" class="w-4 h-4 text-amber-400"></i> 2. Consumíveis de Ensaio
           </h2>
+          <button type="button" onclick="alternarOcultarSecao('consumiveis')" id="btnOcultarConsumiveis" class="text-xs bg-slate-700 hover:bg-slate-600 px-2.5 py-1 rounded text-slate-200 flex items-center gap-1">
+            <i data-lucide="eye-off" class="w-3.5 h-3.5"></i> <span>Ocultar Campo</span>
+          </button>
         </div>
-        <div class="p-3 sm:p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+        <div id="conteudoConsumiveis" class="p-3 sm:p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
           <!-- Solvente -->
           <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200">
             <div class="font-bold text-xs text-slate-700 mb-2 border-b border-slate-200 pb-1">SOLVENTE</div>
@@ -407,19 +411,24 @@
         </div>
       </section>
 
-      <!-- 3. Registro de Juntas -->
-      <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      <!-- 3. Registro de Juntas (Com opção de ocultar) -->
+      <section id="blocoJuntas" class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <div class="bg-slate-800 text-white px-3 sm:px-4 py-2.5 flex items-center justify-between">
           <h2 class="font-semibold text-xs sm:text-sm flex items-center gap-2">
             <i data-lucide="check-square" class="w-4 h-4 text-emerald-400"></i> 
             3. Avaliação das Juntas & Laudos
           </h2>
-          <button type="button" onclick="adicionarLinhaJunta()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-2.5 sm:px-3 py-1.5 rounded-lg font-medium flex items-center gap-1 shadow touch-target">
-            <i data-lucide="plus" class="w-4 h-4"></i> Adicionar Junta
-          </button>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="alternarOcultarSecao('juntas')" id="btnOcultarJuntas" class="text-xs bg-slate-700 hover:bg-slate-600 px-2.5 py-1 rounded text-slate-200 flex items-center gap-1">
+              <i data-lucide="eye-off" class="w-3.5 h-3.5"></i> <span>Ocultar Campo</span>
+            </button>
+            <button type="button" onclick="adicionarLinhaJunta()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-2.5 sm:px-3 py-1.5 rounded-lg font-medium flex items-center gap-1 shadow touch-target">
+              <i data-lucide="plus" class="w-4 h-4"></i> Adicionar Junta
+            </button>
+          </div>
         </div>
 
-        <div class="p-2 sm:p-4">
+        <div id="conteudoJuntas" class="p-2 sm:p-4">
           <div class="hidden md:block overflow-x-auto">
             <table class="w-full text-left text-xs border-collapse" id="tabelaJuntasForm">
               <thead>
@@ -444,73 +453,83 @@
         </div>
       </section>
 
-      <!-- 4. Observações e Instrumentos -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-3 sm:p-4">
-          <h2 class="font-semibold text-xs sm:text-sm text-slate-800 mb-2 flex items-center gap-2">
-            <i data-lucide="message-square" class="w-4 h-4 text-blue-500"></i> 4. Observações Gerais
+      <!-- 4. Observações e Instrumentos (Com opção de ocultar) -->
+      <section id="blocoObsInst" class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="bg-slate-800 text-white px-3 sm:px-4 py-2.5 flex items-center justify-between">
+          <h2 class="font-semibold text-xs sm:text-sm flex items-center gap-2">
+            <i data-lucide="message-square" class="w-4 h-4 text-blue-400"></i> 4. Observações Gerais & Instrumentos
           </h2>
-          <textarea id="obs_gerais" rows="5" class="w-full border border-slate-300 rounded-lg p-2 text-sm" placeholder="Observações do ensaio..."></textarea>
-        </section>
+          <button type="button" onclick="alternarOcultarSecao('obsinst')" id="btnOcultarObsInst" class="text-xs bg-slate-700 hover:bg-slate-600 px-2.5 py-1 rounded text-slate-200 flex items-center gap-1">
+            <i data-lucide="eye-off" class="w-3.5 h-3.5"></i> <span>Ocultar Campo</span>
+          </button>
+        </div>
+        <div id="conteudoObsInst" class="p-3 sm:p-4 grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+          <div class="bg-white rounded-xl border border-slate-200 p-3 sm:p-4">
+            <h3 class="font-semibold text-xs sm:text-sm text-slate-800 mb-2 flex items-center gap-2">
+              <i data-lucide="message-square" class="w-4 h-4 text-blue-500"></i> Observações Gerais
+            </h3>
+            <textarea id="obs_gerais" rows="5" class="w-full border border-slate-300 rounded-lg p-2 text-sm" placeholder="Observações do ensaio..."></textarea>
+          </div>
 
-        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-3 sm:p-4">
-          <h2 class="font-semibold text-xs sm:text-sm text-slate-800 mb-2 flex items-center gap-2">
-            <i data-lucide="ruler" class="w-4 h-4 text-purple-500"></i> Instrumentos Utilizados (Até 4)
-          </h2>
-          <div class="grid grid-cols-2 gap-2 text-xs">
-            <div>
-              <label class="text-[10px] text-slate-500">Instrumento 1</label>
-              <input type="text" id="inst_1" placeholder="Ex: Trena Métrica" class="w-full border border-slate-300 rounded p-1.5">
-            </div>
-            <div>
-              <label class="text-[10px] text-slate-500">TAG 1</label>
-              <input type="text" id="tag_1" placeholder="Ex: TR-004" class="w-full border border-slate-300 rounded p-1.5">
-            </div>
-            <div>
-              <label class="text-[10px] text-slate-500">Instrumento 2</label>
-              <input type="text" id="inst_2" placeholder="Ex: Luxímetro" class="w-full border border-slate-300 rounded p-1.5">
-            </div>
-            <div>
-              <label class="text-[10px] text-slate-500">TAG 2</label>
-              <input type="text" id="tag_2" placeholder="Ex: LUX-012" class="w-full border border-slate-300 rounded p-1.5">
-            </div>
-            <div>
-              <label class="text-[10px] text-slate-500">Instrumento 3</label>
-              <input type="text" id="inst_3" placeholder="Ex: Termômetro Contato" class="w-full border border-slate-300 rounded p-1.5">
-            </div>
-            <div>
-              <label class="text-[10px] text-slate-500">TAG 3</label>
-              <input type="text" id="tag_3" placeholder="Ex: TM-001" class="w-full border border-slate-300 rounded p-1.5">
-            </div>
-            <div>
-              <label class="text-[10px] text-slate-500">Instrumento 4</label>
-              <input type="text" id="inst_4" placeholder="Ex: Calibre FBTS" class="w-full border border-slate-300 rounded p-1.5">
-            </div>
-            <div>
-              <label class="text-[10px] text-slate-500">TAG 4</label>
-              <input type="text" id="tag_4" placeholder="Ex: CAL-005" class="w-full border border-slate-300 rounded p-1.5">
+          <div class="bg-white rounded-xl border border-slate-200 p-3 sm:p-4">
+            <h3 class="font-semibold text-xs sm:text-sm text-slate-800 mb-2 flex items-center gap-2">
+              <i data-lucide="ruler" class="w-4 h-4 text-purple-500"></i> Instrumentos Utilizados (Até 4)
+            </h3>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <div>
+                <label class="text-[10px] text-slate-500">Instrumento 1</label>
+                <input type="text" id="inst_1" placeholder="Ex: Trena Métrica" class="w-full border border-slate-300 rounded p-1.5">
+              </div>
+              <div>
+                <label class="text-[10px] text-slate-500">TAG 1</label>
+                <input type="text" id="tag_1" placeholder="Ex: TR-004" class="w-full border border-slate-300 rounded p-1.5">
+              </div>
+              <div>
+                <label class="text-[10px] text-slate-500">Instrumento 2</label>
+                <input type="text" id="inst_2" placeholder="Ex: Luxímetro" class="w-full border border-slate-300 rounded p-1.5">
+              </div>
+              <div>
+                <label class="text-[10px] text-slate-500">TAG 2</label>
+                <input type="text" id="tag_2" placeholder="Ex: LUX-012" class="w-full border border-slate-300 rounded p-1.5">
+              </div>
+              <div>
+                <label class="text-[10px] text-slate-500">Instrumento 3</label>
+                <input type="text" id="inst_3" placeholder="Ex: Termômetro Contato" class="w-full border border-slate-300 rounded p-1.5">
+              </div>
+              <div>
+                <label class="text-[10px] text-slate-500">TAG 3</label>
+                <input type="text" id="tag_3" placeholder="Ex: TM-001" class="w-full border border-slate-300 rounded p-1.5">
+              </div>
+              <div>
+                <label class="text-[10px] text-slate-500">Instrumento 4</label>
+                <input type="text" id="inst_4" placeholder="Ex: Calibre FBTS" class="w-full border border-slate-300 rounded p-1.5">
+              </div>
+              <div>
+                <label class="text-[10px] text-slate-500">TAG 4</label>
+                <input type="text" id="tag_4" placeholder="Ex: CAL-005" class="w-full border border-slate-300 rounded p-1.5">
+              </div>
             </div>
           </div>
-        </section>
-      </div>        
+        </div>
+      </section>
 
-      <!-- 5. Inspetor Responsável -->
+      <!-- 5. Inspetor Responsável (Agora Editável) -->
       <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-3 sm:p-4">
         <h2 class="font-semibold text-xs sm:text-sm text-slate-800 mb-2 flex items-center gap-2">
-          <i data-lucide="award" class="w-4 h-4 text-amber-500"></i> 5. Inspetor Responsável
+          <i data-lucide="award" class="w-4 h-4 text-amber-500"></i> 5. Inspetor Responsável (Editável)
         </h2>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
             <label class="block text-xs font-semibold text-slate-600 mb-1">Nome do Inspetor</label>
-            <input type="text" id="inspetor_nome" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-slate-50 font-bold" readonly>
+            <input type="text" id="inspetor_nome" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white font-bold">
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-600 mb-1">Qualificações</label>
-            <input type="text" id="inspetor_qualif" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-slate-50" readonly>
+            <input type="text" id="inspetor_qualif" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-600 mb-1">Registro / SNQC</label>
-            <input type="text" id="inspetor_snqc" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-slate-50 font-semibold" readonly>
+            <input type="text" id="inspetor_snqc" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white font-semibold">
           </div>
         </div>
       </section>
@@ -726,8 +745,8 @@
       </div>
 
       <div class="flex-grow-0" id="consumiveisBloco">
-        <!-- Consumíveis -->
-        <table class="w-full border-collapse text-[8.5px] border-b-2 border-black">
+        <!-- Consumíveis (Ocultável) -->
+        <table id="p_tabela_consumiveis" class="w-full border-collapse text-[8.5px] border-b-2 border-black">
           <tr class="bg-slate-200 font-bold text-center border-b border-black">
             <td class="p-0.5 border-r border-black w-1/4">SOLVENTE / SOLVENT</td>
             <td class="p-0.5 border-r border-black w-1/4">PENETRANTE / PENETRATING</td>
@@ -762,30 +781,32 @@
           </tr>
         </table>
 
-        <!-- Tabela de Juntas Impressão -->
-        <table class="w-full border-collapse text-[9px] border-b-2 border-black" id="tabelaPrintJuntas">
-          <thead>
-            <tr class="bg-slate-200 text-center font-bold border-b border-black">
-              <th rowspan="2" class="p-1 border-r border-black w-24">JUNTA / JOINT</th>
-              <th colspan="4" class="p-0.5 border-r border-black">DESCONTINUIDADES / DESCONTINUITIES</th>
-              <th rowspan="2" class="p-0.5 border-r border-black w-10">Laudo result</th>
-              <th rowspan="2" class="p-0.5 border-r border-black w-10">Laudo pós reparo</th>
-              <th rowspan="2" class="p-0.5 border-r border-black w-10">Laudo Final</th>
-              <th rowspan="2" class="p-1 w-44">OBSERVAÇÕES / REMARKS</th>
-            </tr>
-            <tr class="bg-slate-100 text-center font-bold border-b border-black text-[8px]">
-              <th class="p-0.5 border-r border-black w-8">Nº</th>
-              <th class="p-0.5 border-r border-black w-14">TIPO</th>
-              <th class="p-0.5 border-r border-black w-12">COTA</th>
-              <th class="p-0.5 border-r border-black w-12">COMP.</th>
-            </tr>
-          </thead>
-          <tbody id="p_corpo_juntas"></tbody>
-        </table>
+        <!-- Tabela de Juntas Impressão (Ocultável) -->
+        <div id="p_container_tabela_juntas">
+          <table class="w-full border-collapse text-[9px] border-b-2 border-black" id="tabelaPrintJuntas">
+            <thead>
+              <tr class="bg-slate-200 text-center font-bold border-b border-black">
+                <th rowspan="2" class="p-1 border-r border-black w-24">JUNTA / JOINT</th>
+                <th colspan="4" class="p-0.5 border-r border-black">DESCONTINUIDADES / DESCONTINUITIES</th>
+                <th rowspan="2" class="p-0.5 border-r border-black w-10">Laudo result</th>
+                <th rowspan="2" class="p-0.5 border-r border-black w-10">Laudo pós reparo</th>
+                <th rowspan="2" class="p-0.5 border-r border-black w-10">Laudo Final</th>
+                <th rowspan="2" class="p-1 w-44">OBSERVAÇÕES / REMARKS</th>
+              </tr>
+              <tr class="bg-slate-100 text-center font-bold border-b border-black text-[8px]">
+                <th class="p-0.5 border-r border-black w-8">Nº</th>
+                <th class="p-0.5 border-r border-black w-14">TIPO</th>
+                <th class="p-0.5 border-r border-black w-12">COTA</th>
+                <th class="p-0.5 border-r border-black w-12">COMP.</th>
+              </tr>
+            </thead>
+            <tbody id="p_corpo_juntas"></tbody>
+          </table>
+        </div>
       </div>
 
-      <!-- Observações Gerais na Impressão -->
-      <div class="inutilizacao-area border-b-2 border-black p-2 flex flex-col justify-start">
+      <!-- Observações Gerais na Impressão (Ocultável) -->
+      <div id="p_bloco_obs" class="inutilizacao-area border-b-2 border-black p-2 flex flex-col justify-start">
         <div class="text-[8px] font-bold uppercase text-slate-700 mb-0.5">Observações Gerais / Remarks:</div>
         <p class="text-[9px] font-medium whitespace-pre-line" id="p_obs">-</p>
       </div>
@@ -800,8 +821,8 @@
       </div>
 
       <div class="flex-grow-0" id="footerBlocoClone">
-        <!-- Instrumentos -->
-        <div class="border-b-2 border-black">
+        <!-- Instrumentos (Ocultável junto com as observações) -->
+        <div id="p_bloco_instrumentos" class="border-b-2 border-black">
           <div class="bg-slate-200 text-center font-bold text-[8.5px] py-0.5 border-b border-black">
             INSTRUMENTOS UTILIZADOS / USED INSTRUMENTS
           </div>
@@ -881,6 +902,13 @@
     let usuarioLogado = JSON.parse(localStorage.getItem('omega_user') || 'null');
     let listaUsuariosLocais = JSON.parse(localStorage.getItem('omega_usuarios_lista') || '[]');
 
+    // Estados de visibilidade das seções 2, 3 e 4
+    let secoesOcultas = {
+      consumiveis: false,
+      juntas: false,
+      obsinst: false
+    };
+
     const db = new Dexie('OmegaInspectionDB');
     db.version(4).stores({
       laudosLP: '++id, num_rlp, empreendimento, cliente, data_ensaio, sincronizado, usuario_id'
@@ -903,6 +931,54 @@
     ];
 
     let dadosDescontinuidades = [];
+
+    function alternarOcultarSecao(secao) {
+      secoesOcultas[secao] = !secoesOcultas[secao];
+      aplicarEstadoOcultarSecoes();
+    }
+
+    function aplicarEstadoOcultarSecoes() {
+      // Seção 2: Consumíveis
+      const conteudoCons = document.getElementById('conteudoConsumiveis');
+      const btnCons = document.getElementById('btnOcultarConsumiveis');
+      if (secoesOcultas.consumiveis) {
+        conteudoCons.classList.add('hidden');
+        btnCons.innerHTML = `<i data-lucide="eye" class="w-3.5 h-3.5"></i> <span>Mostrar Campo</span>`;
+        btnCons.className = 'text-xs bg-amber-600 hover:bg-amber-700 px-2.5 py-1 rounded text-white flex items-center gap-1';
+      } else {
+        conteudoCons.classList.remove('hidden');
+        btnCons.innerHTML = `<i data-lucide="eye-off" class="w-3.5 h-3.5"></i> <span>Ocultar Campo</span>`;
+        btnCons.className = 'text-xs bg-slate-700 hover:bg-slate-600 px-2.5 py-1 rounded text-slate-200 flex items-center gap-1';
+      }
+
+      // Seção 3: Juntas
+      const conteudoJuntas = document.getElementById('conteudoJuntas');
+      const btnJuntas = document.getElementById('btnOcultarJuntas');
+      if (secoesOcultas.juntas) {
+        conteudoJuntas.classList.add('hidden');
+        btnJuntas.innerHTML = `<i data-lucide="eye" class="w-3.5 h-3.5"></i> <span>Mostrar Campo</span>`;
+        btnJuntas.className = 'text-xs bg-amber-600 hover:bg-amber-700 px-2.5 py-1 rounded text-white flex items-center gap-1';
+      } else {
+        conteudoJuntas.classList.remove('hidden');
+        btnJuntas.innerHTML = `<i data-lucide="eye-off" class="w-3.5 h-3.5"></i> <span>Ocultar Campo</span>`;
+        btnJuntas.className = 'text-xs bg-slate-700 hover:bg-slate-600 px-2.5 py-1 rounded text-slate-200 flex items-center gap-1';
+      }
+
+      // Seção 4: Obs e Instrumentos
+      const conteudoObsInst = document.getElementById('conteudoObsInst');
+      const btnObsInst = document.getElementById('btnOcultarObsInst');
+      if (secoesOcultas.obsinst) {
+        conteudoObsInst.classList.add('hidden');
+        btnObsInst.innerHTML = `<i data-lucide="eye" class="w-3.5 h-3.5"></i> <span>Mostrar Campo</span>`;
+        btnObsInst.className = 'text-xs bg-amber-600 hover:bg-amber-700 px-2.5 py-1 rounded text-white flex items-center gap-1';
+      } else {
+        conteudoObsInst.classList.remove('hidden');
+        btnObsInst.innerHTML = `<i data-lucide="eye-off" class="w-3.5 h-3.5"></i> <span>Ocultar Campo</span>`;
+        btnObsInst.className = 'text-xs bg-slate-700 hover:bg-slate-600 px-2.5 py-1 rounded text-slate-200 flex items-center gap-1';
+      }
+
+      if (window.lucide) lucide.createIcons();
+    }
 
     function checarPerfilInicial() {
       if (listaUsuariosLocais.length === 0) {
@@ -1459,6 +1535,7 @@
         metal_base: document.getElementById('metal_base').value,
         metal_adicao: document.getElementById('metal_adicao').value,
         espessura: document.getElementById('espessura').value,
+        secoesOcultas: secoesOcultas,
         solvente: { 
           fab: document.getElementById('solv_fab').value, 
           mod: document.getElementById('solv_mod').value, 
@@ -1686,6 +1763,13 @@
       document.getElementById('metal_adicao').value = laudo.metal_adicao || '';
       document.getElementById('espessura').value = laudo.espessura || '';
 
+      if (laudo.secoesOcultas) {
+        secoesOcultas = laudo.secoesOcultas;
+      } else {
+        secoesOcultas = { consumiveis: false, juntas: false, obsinst: false };
+      }
+      aplicarEstadoOcultarSecoes();
+
       if (laudo.solvente) {
         document.getElementById('solv_fab').value = laudo.solvente.fab || '';
         document.getElementById('solv_mod').value = laudo.solvente.mod || '';
@@ -1721,6 +1805,12 @@
       document.getElementById('tag_3').value = laudo.instrumentos?.[2]?.tag || '';
       document.getElementById('inst_4').value = laudo.instrumentos?.[3]?.inst || '';
       document.getElementById('tag_4').value = laudo.instrumentos?.[3]?.tag || '';
+
+      if (laudo.inspetor) {
+        document.getElementById('inspetor_nome').value = laudo.inspetor.nome || '';
+        document.getElementById('inspetor_qualif').value = laudo.inspetor.qualif || '';
+        document.getElementById('inspetor_snqc').value = laudo.inspetor.snqc || '';
+      }
 
       if (laudo.parecer) {
         document.getElementById('parecer_resultado').value = laudo.parecer.resultado || '';
@@ -1772,6 +1862,9 @@
     function prepararProximoLaudo() {
       idLaudoEmEdicao = null;
       document.getElementById('bannerEdicaoAtiva').classList.add('hidden');
+      secoesOcultas = { consumiveis: false, juntas: false, obsinst: false };
+      aplicarEstadoOcultarSecoes();
+
       dadosJuntas = [
         { junta: "JUNTA - 01", num: "", tipo: "-", cota: "", comp: "", result: "-", pos: "-", final: "-", obs: "", fotos: ["", "", ""] }
       ];
@@ -1785,6 +1878,7 @@
       document.getElementById('rem_val').value = "";
       document.getElementById('rev_val').value = "";
 
+      aplicarPerfilNaInterface();
       gerarProximoRLP();
       renderizarTabelaForm();
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1828,6 +1922,31 @@
       document.getElementById('p_metal_base').innerText = document.getElementById('metal_base').value || '-';
       document.getElementById('p_metal_adicao').innerText = document.getElementById('metal_adicao').value || '-';
       document.getElementById('p_espessura').innerText = document.getElementById('espessura').value || '-';
+
+      // Controla visibilidade de blocos na impressão conforme escolha do usuário
+      const tConsumiveis = document.getElementById('p_tabela_consumiveis');
+      if (secoesOcultas.consumiveis) {
+        tConsumiveis.style.display = 'none';
+      } else {
+        tConsumiveis.style.display = 'table';
+      }
+
+      const cJuntas = document.getElementById('p_container_tabela_juntas');
+      if (secoesOcultas.juntas) {
+        cJuntas.style.display = 'none';
+      } else {
+        cJuntas.style.display = 'block';
+      }
+
+      const bObs = document.getElementById('p_bloco_obs');
+      const bInst = document.getElementById('p_bloco_instrumentos');
+      if (secoesOcultas.obsinst) {
+        bObs.style.display = 'none';
+        bInst.style.display = 'none';
+      } else {
+        bObs.style.display = 'flex';
+        bInst.style.display = 'block';
+      }
 
       document.getElementById('p_solv_fab').innerText = document.getElementById('solv_fab').value || '-';
       document.getElementById('p_solv_mod').innerText = document.getElementById('solv_mod').value || '-';
