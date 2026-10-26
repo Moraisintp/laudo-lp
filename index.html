@@ -346,11 +346,15 @@
         </div>
       </section>
 
-      <!-- 5. Parecer Técnico / Conclusão -->
-      <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-3 sm:p-4">
+      <!-- 5. Parecer Técnico / Conclusão & Observações -->
+      <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-3 sm:p-4 space-y-3">
         <h2 class="font-semibold text-xs sm:text-sm text-slate-800 mb-2 flex items-center gap-2">
-          <i data-lucide="clipboard-check" class="w-4 h-4 text-emerald-600"></i> 5. Parecer Técnico / Conclusão Final
+          <i data-lucide="clipboard-check" class="w-4 h-4 text-emerald-600"></i> 5. Observações Gerais & Parecer Técnico
         </h2>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Observações Gerais / Remarks</label>
+          <textarea id="obs_gerais" rows="2" placeholder="Observações complementares do ensaio..." class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white"></textarea>
+        </div>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div class="sm:col-span-1">
             <label class="block text-xs font-semibold text-slate-600 mb-1">Status do Laudo</label>
@@ -417,10 +421,6 @@
           <label class="block text-xs font-semibold text-slate-600 mb-1">Nº Registro / SNQC</label>
           <input type="text" id="auth_snqc" placeholder="Digite o registro SNQC..." class="w-full p-2 border border-slate-300 rounded-lg text-sm bg-white">
         </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Senha de Sincronização (Opcional)</label>
-          <input type="password" id="auth_senha" placeholder="******" class="w-full p-2 border border-slate-300 rounded-lg text-sm bg-white">
-        </div>
 
         <div class="pt-2 flex flex-col gap-2">
           <button type="button" onclick="salvarPerfilLocalECloud()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 rounded-lg shadow touch-target flex items-center justify-center gap-1.5">
@@ -467,7 +467,7 @@
           <tr>
             <td class="w-40 p-1 text-center border-r-2 border-b-2 border-black bg-white">
                 <img src="logo.png" alt="Logo da Empresa" style="max-height: 48px; max-width: 130px; object-fit: contain; margin: 0 auto; display: block;" />
-                </td>
+            </td>
             <td class="text-center p-2 border-b-2 border-black">
               <h1 class="text-sm font-extrabold uppercase tracking-wide">RELATÓRIO DE ENSAIO NÃO-DESTRUTIVO - LÍQUIDO PENETRANTE</h1>
               <p class="text-[10px] italic text-slate-700 uppercase">REPORT NON-DESTRUCTIVE TESTING - LIQUID PENETRANT</p>
@@ -660,8 +660,8 @@
       const elSnqc = document.getElementById('inspetor_snqc');
       
       if (elUser) elUser.innerText = `${usuarioLogado.nome} (SNQC: ${usuarioLogado.snqc})`;
-      if (elNome) elNome.value = usuarioLogado.nome || '';
-      if (elSnqc) elSnqc.value = `SNQC: ${usuarioLogado.snqc || ''}`;
+      if (elNome && !elNome.value) elNome.value = usuarioLogado.nome || '';
+      if (elSnqc && !elSnqc.value) elSnqc.value = usuarioLogado.snqc || '';
     }
 
     function abrirModalAuth() {
@@ -952,158 +952,9 @@
     }
 
     function renderizarTabelaForm() {
-      const tbody = document.getElementById('corpoJuntasDesktop');
-      if (tbody) {
-        tbody.innerHTML = '';
-        dadosJuntas.forEach((item, index) => {
-          const tr = document.createElement('tr');
-          tr.className = index % 2 === 0 ? 'bg-white' : 'bg-slate-50';
-
-          let descOptions = opcoesDescontinuidades.map(opt => 
-            `<option value="${opt.val}" ${item.tipo === opt.val ? 'selected' : ''}>${opt.label}</option>`
-          ).join('');
-
-          tr.innerHTML = `
-            <td class="p-1 border"><input type="text" value="${item.junta}" onchange="atualizarJunta(${index}, 'junta', this.value)" class="w-full p-1 border rounded text-xs font-semibold"></td>
-            <td class="p-1 border"><input type="text" value="${item.num}" placeholder="Nº" onchange="atualizarJunta(${index}, 'num', this.value)" class="w-full p-1 border rounded text-xs text-center"></td>
-            <td class="p-1 border">
-              <select onchange="atualizarJunta(${index}, 'tipo', this.value)" class="w-full p-1 border rounded text-xs font-medium">
-                ${descOptions}
-              </select>
-            </td>
-            <td class="p-1 border"><input type="text" value="${item.cota}" placeholder="Cota" onchange="atualizarJunta(${index}, 'cota', this.value)" class="w-full p-1 border rounded text-xs text-center"></td>
-            <td class="p-1 border"><input type="text" value="${item.comp}" placeholder="Comp." onchange="atualizarJunta(${index}, 'comp', this.value)" class="w-full p-1 border rounded text-xs text-center"></td>
-            <td class="p-1 border">
-              <select onchange="atualizarJunta(${index}, 'result', this.value)" class="w-full p-1 border rounded text-xs font-bold ${item.result === 'R' ? 'text-red-600 bg-red-50' : item.result === 'A' ? 'text-emerald-700' : ''}">
-                <option value="-" ${item.result === '-' ? 'selected' : ''}>-</option>
-                <option value="A" ${item.result === 'A' ? 'selected' : ''}>A</option>
-                <option value="R" ${item.result === 'R' ? 'selected' : ''}>R</option>
-                <option value="N/A" ${item.result === 'N/A' ? 'selected' : ''}>N/A</option>
-              </select>
-            </td>
-            <td class="p-1 border">
-              <select onchange="atualizarJunta(${index}, 'pos', this.value)" class="w-full p-1 border rounded text-xs font-semibold">
-                <option value="-" ${item.pos === '-' ? 'selected' : ''}>-</option>
-                <option value="A" ${item.pos === 'A' ? 'selected' : ''}>A</option>
-                <option value="R" ${item.pos === 'R' ? 'selected' : ''}>R</option>
-                <option value="N/A" ${item.pos === 'N/A' ? 'selected' : ''}>N/A</option>
-              </select>
-            </td>
-            <td class="p-1 border">
-              <select onchange="atualizarJunta(${index}, 'final', this.value)" class="w-full p-1 border rounded text-xs font-bold ${item.final === 'R' ? 'text-red-600 bg-red-50' : item.final === 'A' ? 'text-emerald-700' : ''}">
-                <option value="-" ${item.final === '-' ? 'selected' : ''}>-</option>
-                <option value="A" ${item.final === 'A' ? 'selected' : ''}>A</option>
-                <option value="R" ${item.final === 'R' ? 'selected' : ''}>R</option>
-                <option value="N/A" ${item.final === 'N/A' ? 'selected' : ''}>N/A</option>
-              </select>
-            </td>
-            <td class="p-1 border"><input type="text" value="${item.obs}" placeholder="Obs" onchange="atualizarJunta(${index}, 'obs', this.value)" class="w-full p-1 border rounded text-xs"></td>
-            <td class="p-1 border text-center">
-              <button type="button" onclick="removerLinhaJunta(${index})" class="text-red-500 hover:text-red-700 p-1">
-                <i data-lucide="trash-2" class="w-4 h-4"></i>
-              </button>
-            </td>
-          `;
-          tbody.appendChild(tr);
-        });
-      }
-
-      const containerMobile = document.getElementById('corpoJuntasMobile');
-      if (containerMobile) {
-        containerMobile.innerHTML = '';
-        dadosJuntas.forEach((item, index) => {
-          const card = document.createElement('div');
-          card.className = 'border border-slate-200 rounded-xl p-3 bg-slate-50/50 space-y-2 shadow-sm';
-
-          let descOptions = opcoesDescontinuidades.map(opt => 
-            `<option value="${opt.val}" ${item.tipo === opt.val ? 'selected' : ''}>${opt.label}</option>`
-          ).join('');
-
-          card.innerHTML = `
-            <div class="flex items-center justify-between pb-1 border-b border-slate-200">
-              <input type="text" value="${item.junta}" onchange="atualizarJunta(${index}, 'junta', this.value)" class="font-bold text-sm text-red-700 bg-transparent w-2/3">
-              ${dadosJuntas.length > 1 ? `
-                <button type="button" onclick="removerLinhaJunta(${index})" class="text-xs text-red-600 flex items-center gap-1 font-semibold">
-                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Excluir
-                </button>
-              ` : ''}
-            </div>
-
-            <div class="grid grid-cols-3 gap-2">
-              <div>
-                <label class="text-[10px] text-slate-500">Nº</label>
-                <input type="text" value="${item.num}" placeholder="Nº" onchange="atualizarJunta(${index}, 'num', this.value)" class="w-full p-1.5 border rounded bg-white text-xs">
-              </div>
-              <div class="col-span-2">
-                <label class="text-[10px] text-slate-500">Descontinuidade</label>
-                <select onchange="atualizarJunta(${index}, 'tipo', this.value)" class="w-full p-1.5 border rounded bg-white text-xs">
-                  ${descOptions}
-                </select>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-2">
-              <div>
-                <label class="text-[10px] text-slate-500">Cota</label>
-                <input type="text" value="${item.cota}" placeholder="Cota" onchange="atualizarJunta(${index}, 'cota', this.value)" class="w-full p-1.5 border rounded bg-white text-xs">
-              </div>
-              <div>
-                <label class="text-[10px] text-slate-500">Comprimento</label>
-                <input type="text" value="${item.comp}" placeholder="Comp." onchange="atualizarJunta(${index}, 'comp', this.value)" class="w-full p-1.5 border rounded bg-white text-xs">
-              </div>
-            </div>
-
-            <div class="grid grid-cols-3 gap-2 pt-1 border-t border-slate-100">
-              <div>
-                <label class="text-[10px] font-semibold text-slate-600">Result.</label>
-                <select onchange="atualizarJunta(${index}, 'result', this.value)" class="w-full p-1.5 border rounded bg-white text-xs font-bold ${item.result === 'R' ? 'text-red-600' : 'text-emerald-700'}">
-                  <option value="-" ${item.result === '-' ? 'selected' : ''}>-</option>
-                  <option value="A" ${item.result === 'A' ? 'selected' : ''}>A</option>
-                  <option value="R" ${item.result === 'R' ? 'selected' : ''}>R</option>
-                  <option value="N/A" ${item.result === 'N/A' ? 'selected' : ''}>N/A</option>
-                </select>
-              </div>
-              <div>
-                <label class="text-[10px] font-semibold text-slate-600">Pós Rep.</label>
-                <select onchange="atualizarJunta(${index}, 'pos', this.value)" class="w-full p-1.5 border rounded bg-white text-xs">
-                  <option value="-" ${item.pos === '-' ? 'selected' : ''}>-</option>
-                  <option value="A" ${item.pos === 'A' ? 'selected' : ''}>A</option>
-                  <option value="R" ${item.pos === 'R' ? 'selected' : ''}>R</option>
-                </select>
-              </div>
-              <div>
-                <label class="text-[10px] font-semibold text-slate-600">Final</label>
-                <select onchange="atualizarJunta(${index}, 'final', this.value)" class="w-full p-1.5 border rounded bg-white text-xs font-bold ${item.final === 'R' ? 'text-red-600' : 'text-emerald-700'}">
-                  <option value="-" ${item.final === '-' ? 'selected' : ''}>-</option>
-                  <option value="A" ${item.final === 'A' ? 'selected' : ''}>A</option>
-                  <option value="R" ${item.final === 'R' ? 'selected' : ''}>R</option>
-                </select>
-              </div>
-            </div>
-
-            <div>
-              <label class="text-[10px] text-slate-500">Observações</label>
-              <input type="text" value="${item.obs}" placeholder="Obs da junta..." onchange="atualizarJunta(${index}, 'obs', this.value)" class="w-full p-1.5 border rounded bg-white text-xs">
-            </div>
-          `;
-          containerMobile.appendChild(card);
-        });
-      }
-
       renderizarFotosPorJunta();
       renderizarDescontinuidades();
       if (window.lucide) lucide.createIcons();
-    }
-
-    function atualizarJunta(index, campo, valor) {
-      dadosJuntas[index][campo] = valor;
-      if (campo === 'result' && valor === 'R') {
-        dadosJuntas[index]['final'] = 'R';
-        renderizarTabelaForm();
-      }
-      if (campo === 'junta') {
-        renderizarFotosPorJunta();
-      }
     }
 
     function adicionarLinhaJunta() {
@@ -1162,7 +1013,7 @@
       };
 
       if (idLaudoEmEdicao !== null) {
-        laudo.id = idLaudoEmEdicao;
+        laudo.id = Number(idLaudoEmEdicao);
       }
 
       const idSalvo = await db.laudosLP.put(laudo);
@@ -1303,9 +1154,9 @@
     }
 
     async function carregarLaudoParaEdicao(idLocal) {
-      let laudo = await db.laudosLP.get(idLocal);
+      let laudo = await db.laudosLP.get(Number(idLocal));
       if (!laudo) {
-        laudo = listaLaudosCache.find(l => l.id === idLocal);
+        laudo = listaLaudosCache.find(l => l.id === Number(idLocal));
       }
       if (!laudo) {
         alert('Erro ao carregar os dados do laudo.');
@@ -1376,7 +1227,7 @@
         return;
       }
       if (confirm('Deseja realmente excluir este laudo do aparelho?')) {
-        await db.laudosLP.delete(id);
+        await db.laudosLP.delete(Number(id));
         abrirModalHistorico();
         atualizarStatusConexao();
       }
@@ -1467,7 +1318,7 @@
       montarPaginasDescontinuidadesImpressao();
     }
 
-    // GERAÇÃO DE PDF 100% ROBUSTA VIA TELA DE IMPRESSÃO NATIVA DO NAVEGADOR
+    // GERAÇÃO DE PDF VIA TELA DE IMPRESSÃO NATIVA DO NAVEGADOR
     function gerarVisualizacaoImpressao() {
       preencherDadosImpressao();
       window.print();
@@ -1601,9 +1452,7 @@
       }
     }
 
-    // ==========================================================
     // COMPARTILHAMENTO RÁPIDO VIA WHATSAPP
-    // ==========================================================
     function compartilharPdfWhatsapp() {
       const cliente = document.getElementById('cliente').value || '-';
       const equipamento = document.getElementById('empreendimento').value || 'Laudo_LP';
