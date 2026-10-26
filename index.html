@@ -14,9 +14,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- html2canvas e jsPDF para renderização 100% fiel em A4 -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <style>
     @media screen and (max-width: 768px) {
@@ -96,11 +93,11 @@
         <button type="button" onclick="salvarLaudoLocal(true)" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-2.5 sm:px-3 py-2 rounded-lg flex items-center gap-1 shadow touch-target">
           <i data-lucide="save" class="w-4 h-4"></i> <span class="hidden sm:inline">Salvar</span>
         </button>
-        <button type="button" id="btnShareWhatsapp" onclick="compartilharPdfWhatsapp()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold px-2.5 sm:px-3 py-2 rounded-lg flex items-center gap-1 shadow touch-target" title="Gerar e Enviar PDF via WhatsApp">
+        <button type="button" id="btnShareWhatsapp" onclick="compartilharPdfWhatsapp()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold px-2.5 sm:px-3 py-2 rounded-lg flex items-center gap-1 shadow touch-target" title="Enviar Resumo via WhatsApp">
           <i data-lucide="share-2" class="w-4 h-4"></i> <span class="hidden sm:inline">WhatsApp</span>
         </button>
-        <button type="button" onclick="gerarVisualizacaoImpressao(true)" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-2.5 sm:px-3 py-2 rounded-lg flex items-center gap-1 shadow touch-target">
-          <i data-lucide="printer" class="w-4 h-4"></i> <span class="hidden sm:inline">Imprimir / PDF</span>
+        <button type="button" onclick="gerarVisualizacaoImpressao()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-2.5 sm:px-3 py-2 rounded-lg flex items-center gap-1 shadow touch-target">
+          <i data-lucide="printer" class="w-4 h-4"></i> <span class="hidden sm:inline">Gerar PDF / Imprimir</span>
         </button>
       </div>
     </div>
@@ -382,8 +379,8 @@
     <button type="button" onclick="compartilharPdfWhatsapp()" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold py-2.5 rounded-lg flex items-center justify-center gap-1.5 shadow">
       <i data-lucide="share-2" class="w-4 h-4"></i> WhatsApp
     </button>
-    <button type="button" onclick="gerarVisualizacaoImpressao(true)" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 rounded-lg flex items-center justify-center gap-1.5 shadow">
-      <i data-lucide="printer" class="w-4 h-4"></i> Imprimir
+    <button type="button" onclick="gerarVisualizacaoImpressao()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 rounded-lg flex items-center justify-center gap-1.5 shadow">
+      <i data-lucide="printer" class="w-4 h-4"></i> PDF
     </button>
   </div>
 
@@ -658,9 +655,13 @@
 
     function aplicarPerfilNaInterface() {
       if (!usuarioLogado) return;
-      document.getElementById('headerUserTxt').innerText = `${usuarioLogado.nome} (SNQC: ${usuarioLogado.snqc})`;
-      document.getElementById('inspetor_nome').value = usuarioLogado.nome;
-      document.getElementById('inspetor_snqc').value = `SNQC: ${usuarioLogado.snqc}`;
+      const elUser = document.getElementById('headerUserTxt');
+      const elNome = document.getElementById('inspetor_nome');
+      const elSnqc = document.getElementById('inspetor_snqc');
+      
+      if (elUser) elUser.innerText = `${usuarioLogado.nome} (SNQC: ${usuarioLogado.snqc})`;
+      if (elNome) elNome.value = usuarioLogado.nome || '';
+      if (elSnqc) elSnqc.value = `SNQC: ${usuarioLogado.snqc || ''}`;
     }
 
     function abrirModalAuth() {
@@ -668,8 +669,7 @@
       if (usuarioLogado) {
         document.getElementById('auth_nome').value = usuarioLogado.nome || '';
         document.getElementById('auth_snqc').value = usuarioLogado.snqc || '';
-        document.getElementById('auth_senha').value = '';
-        document.getElementById('selectUsuariosCadastrados').value = usuarioLogado.snqc;
+        document.getElementById('selectUsuariosCadastrados').value = usuarioLogado.snqc || '';
       }
       document.getElementById('modalAuth').classList.remove('hidden');
       if (window.lucide) lucide.createIcons();
@@ -681,6 +681,7 @@
 
     function renderizarDropdownUsuarios() {
       const select = document.getElementById('selectUsuariosCadastrados');
+      if (!select) return;
       select.innerHTML = '';
 
       listaUsuariosLocais.forEach(u => {
@@ -708,7 +709,6 @@
       if (selecionado) {
         document.getElementById('auth_nome').value = selecionado.nome;
         document.getElementById('auth_snqc').value = selecionado.snqc;
-        document.getElementById('auth_senha').value = '';
       }
     }
 
@@ -716,14 +716,12 @@
       document.getElementById('selectUsuariosCadastrados').value = "NOVO";
       document.getElementById('auth_nome').value = '';
       document.getElementById('auth_snqc').value = '';
-      document.getElementById('auth_senha').value = '';
       document.getElementById('auth_nome').focus();
     }
 
     async function salvarPerfilLocalECloud() {
       const nome = document.getElementById('auth_nome').value.trim();
       const snqc = document.getElementById('auth_snqc').value.trim();
-      const senha = document.getElementById('auth_senha').value.trim();
 
       if (!nome || !snqc) {
         alert('Nome completo e SNQC são obrigatórios!');
@@ -749,23 +747,6 @@
 
       aplicarPerfilNaInterface();
       fecharModalAuth();
-
-      if (navigator.onLine && driveScriptUrl) {
-        try {
-          fetch(driveScriptUrl, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify({
-              action: 'cadastrarUsuario',
-              nome: nome,
-              snqc: snqc,
-              senha: senha
-            })
-          });
-        } catch(e) {}
-      }
-
       alert(`Perfil do inspetor ${nome} ativado com sucesso!`);
     }
 
@@ -909,7 +890,6 @@
         ).join('');
 
         card.innerHTML = `
-          <!-- Slot Foto -->
           <div class="w-full md:w-44 flex-shrink-0 flex flex-col items-center">
             <div class="w-full h-32 bg-slate-50 rounded-lg border border-slate-200 flex items-center justify-center overflow-hidden relative mb-1.5">
               ${desc.foto ? `
@@ -935,7 +915,6 @@
             </div>
           </div>
 
-          <!-- Campos de Identificação e Observação -->
           <div class="flex-1 w-full space-y-2">
             <div class="flex items-center justify-between">
               <span class="font-bold text-xs text-red-700 uppercase flex items-center gap-1.5">
@@ -1190,8 +1169,10 @@
       idLaudoEmEdicao = idSalvo;
 
       const statusEl = document.getElementById('saveStatus');
-      statusEl.innerText = `Salvo localmente às ${new Date().toLocaleTimeString()}`;
-      statusEl.classList.add('text-emerald-600', 'font-semibold');
+      if (statusEl) {
+        statusEl.innerText = `Salvo localmente às ${new Date().toLocaleTimeString()}`;
+        statusEl.className = 'text-xs text-emerald-600 font-semibold truncate';
+      }
       atualizarStatusConexao();
 
       if (navigator.onLine && driveScriptUrl) {
@@ -1219,7 +1200,7 @@
 
       const pendentes = await db.laudosLP.where('sincronizado').equals(0).toArray();
       const statusEl = document.getElementById('saveStatus');
-      statusEl.innerHTML = `<span class="text-amber-600 font-semibold animate-pulse">Sincronizando com a Nuvem...</span>`;
+      if (statusEl) statusEl.innerHTML = `<span class="text-amber-600 font-semibold animate-pulse">Sincronizando com a Nuvem...</span>`;
 
       try {
         for (const laudo of pendentes) {
@@ -1249,24 +1230,8 @@
       listaLaudosCache = await db.laudosLP.toArray();
       listaLaudosCache.sort((a, b) => (b.id || 0) - (a.id || 0));
 
-      if (navigator.onLine && driveScriptUrl) {
-        try {
-          const resp = await fetch(`${driveScriptUrl}?action=getHistorico`);
-          const json = await resp.json();
-          if (json && json.success && json.laudos) {
-            json.laudos.forEach(laudoCloud => {
-              const existe = listaLaudosCache.find(l => l.empreendimento === laudoCloud.empreendimento && l.data_ensaio === laudoCloud.data_ensaio);
-              if (!existe) {
-                laudoCloud.sincronizado = 1;
-                listaLaudosCache.push(laudoCloud);
-              }
-            });
-            listaLaudosCache.sort((a, b) => (b.id || 0) - (a.id || 0));
-          }
-        } catch(e) {}
-      }
-
-      document.getElementById('buscaHistorico').value = '';
+      const buscaEl = document.getElementById('buscaHistorico');
+      if (buscaEl) buscaEl.value = '';
       renderizarListaHistorico(listaLaudosCache);
       document.getElementById('modalHistorico').classList.remove('hidden');
       if (window.lucide) lucide.createIcons();
@@ -1291,6 +1256,7 @@
 
     function renderizarListaHistorico(laudos) {
       const container = document.getElementById('listaLaudosContainer');
+      if (!container) return;
       container.innerHTML = '';
 
       if (laudos.length === 0) {
@@ -1303,6 +1269,7 @@
         item.className = 'border border-slate-200 rounded-xl p-3 bg-white shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3';
 
         const identificadorVisual = laudo.empreendimento || 'Laudo LP';
+        const laudoId = laudo.id || 0;
 
         item.innerHTML = `
           <div class="space-y-1 flex-1">
@@ -1318,13 +1285,13 @@
           </div>
 
           <div class="flex items-center gap-1.5 self-end sm:self-center">
-            <button type="button" onclick="carregarLaudoParaEdicao(${laudo.id})" class="bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold px-3 py-2 rounded-lg flex items-center gap-1 touch-target">
+            <button type="button" onclick="carregarLaudoParaEdicao(${laudoId})" class="bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold px-3 py-2 rounded-lg flex items-center gap-1 touch-target">
               <i data-lucide="edit-3" class="w-3.5 h-3.5 text-amber-700"></i> Editar
             </button>
-            <button type="button" onclick="imprimirLaudoDireto(${laudo.id})" class="bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-300 text-xs font-bold px-3 py-2 rounded-lg flex items-center gap-1 touch-target">
+            <button type="button" onclick="imprimirLaudoDireto(${laudoId})" class="bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-300 text-xs font-bold px-3 py-2 rounded-lg flex items-center gap-1 touch-target">
               <i data-lucide="printer" class="w-3.5 h-3.5 text-blue-700"></i> PDF
             </button>
-            <button type="button" onclick="excluirLaudoHistorico(${laudo.id})" class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs p-2 rounded-lg touch-target">
+            <button type="button" onclick="excluirLaudoHistorico(${laudoId})" class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs p-2 rounded-lg touch-target">
               <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
             </button>
           </div>
@@ -1384,7 +1351,8 @@
       renderizarTabelaForm();
       fecharModalHistorico();
 
-      document.getElementById('txtEditandoRlp').innerText = laudo.empreendimento || 'Em Edição';
+      const txtRlp = document.getElementById('txtEditandoRlp');
+      if (txtRlp) txtRlp.innerText = laudo.empreendimento || 'Em Edição';
       document.getElementById('bannerEdicaoAtiva').classList.remove('hidden');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -1398,7 +1366,7 @@
     async function imprimirLaudoDireto(idLocal) {
       await carregarLaudoParaEdicao(idLocal);
       setTimeout(() => {
-        gerarVisualizacaoImpressao(true);
+        gerarVisualizacaoImpressao();
       }, 300);
     }
 
@@ -1443,6 +1411,7 @@
 
     async function atualizarStatusConexao() {
       const statusEl = document.getElementById('saveStatus');
+      if (!statusEl) return;
       const pendentes = await db.laudosLP.where('sincronizado').equals(0).count();
       if (!navigator.onLine) {
         statusEl.innerHTML = `<span class="text-amber-600 font-semibold">● Modo Offline</span> (${pendentes} no aparelho)`;
@@ -1498,15 +1467,15 @@
       montarPaginasDescontinuidadesImpressao();
     }
 
-    function gerarVisualizacaoImpressao(abrirJanelaPrint = false) {
+    // GERAÇÃO DE PDF 100% ROBUSTA VIA TELA DE IMPRESSÃO NATIVA DO NAVEGADOR
+    function gerarVisualizacaoImpressao() {
       preencherDadosImpressao();
-      if (abrirJanelaPrint) {
-        window.print();
-      }
+      window.print();
     }
 
     function montarPaginasFotosImpressao() {
       const containerFotosPrint = document.getElementById('areaPaginasFotosPrint');
+      if (!containerFotosPrint) return;
       containerFotosPrint.innerHTML = '';
 
       const juntasComFotos = dadosJuntas.filter(j => j.fotos && j.fotos.some(f => f !== ''));
@@ -1569,6 +1538,7 @@
 
     function montarPaginasDescontinuidadesImpressao() {
       const containerDescPrint = document.getElementById('areaPaginasDescontinuidadesPrint');
+      if (!containerDescPrint) return;
       containerDescPrint.innerHTML = '';
 
       const descontinuidadesComFotos = dadosDescontinuidades.filter(d => d.foto && d.foto.trim() !== '');
@@ -1632,133 +1602,16 @@
     }
 
     // ==========================================================
-    // COMPARTILHAMENTO E GERAÇÃO DIRETA DE PDF (WHATSAPP)
+    // COMPARTILHAMENTO RÁPIDO VIA WHATSAPP
     // ==========================================================
-    async function compartilharPdfWhatsapp() {
+    function compartilharPdfWhatsapp() {
       const cliente = document.getElementById('cliente').value || '-';
       const equipamento = document.getElementById('empreendimento').value || 'Laudo_LP';
       const statusLaudo = document.getElementById('parecer_resultado').value || '-';
-      const nomeArquivo = `Laudo_LP_${(equipamento).replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
 
-      const statusEl = document.getElementById('saveStatus');
-      const statusAntigo = statusEl.innerHTML;
-      statusEl.innerHTML = `<span class="text-emerald-600 font-bold animate-pulse">Gerando PDF A4...</span>`;
-
-      preencherDadosImpressao();
-
-      const renderContainer = document.createElement('div');
-      renderContainer.id = 'renderContainerTemp';
-      renderContainer.style.cssText = 'position: absolute; left: 0; top: 0; width: 794px; background: #fff; z-index: 99999; padding: 0; margin: 0;';
-
-      const styleEl = document.createElement('style');
-      styleEl.innerHTML = `
-        .a4-render-page {
-          width: 794px !important;
-          height: 1120px !important;
-          box-sizing: border-box !important;
-          border: 2px solid #000 !important;
-          background: #fff !important;
-          color: #000 !important;
-          font-family: Arial, Helvetica, sans-serif !important;
-          display: flex !important;
-          flex-direction: column !important;
-          justify-content: space-between !important;
-          overflow: hidden !important;
-          margin-bottom: 20px !important;
-          padding: 0 !important;
-        }
-        .a4-render-page table { width: 100% !important; border-collapse: collapse !important; }
-        .a4-render-page table, .a4-render-page th, .a4-render-page td { border: 1px solid #000 !important; }
-        .a4-inutilizacao {
-          flex-grow: 1 !important;
-          min-height: 20mm !important;
-          background: #fff !important;
-          border-bottom: 2px solid #000 !important;
-          padding: 8px !important;
-        }
-      `;
-      renderContainer.appendChild(styleEl);
-
-      const clonePrincipal = document.getElementById('paginaLaudoPrincipal').cloneNode(true);
-      clonePrincipal.className = 'a4-render-page';
-      const areaInutil = clonePrincipal.querySelector('.inutilizacao-area');
-      if (areaInutil) areaInutil.className = 'a4-inutilizacao';
-      renderContainer.appendChild(clonePrincipal);
-
-      const fotosPages = document.getElementById('areaPaginasFotosPrint').children;
-      for (let el of fotosPages) {
-        const c = el.cloneNode(true);
-        c.className = 'a4-render-page';
-        renderContainer.appendChild(c);
-      }
-
-      const descPages = document.getElementById('areaPaginasDescontinuidadesPrint').children;
-      for (let el of descPages) {
-        const c = el.cloneNode(true);
-        c.className = 'a4-render-page';
-        renderContainer.appendChild(c);
-      }
-
-      document.body.appendChild(renderContainer);
-      window.scrollTo(0, 0);
-
-      try {
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-
-        const pages = renderContainer.querySelectorAll('.a4-render-page');
-        for (let i = 0; i < pages.length; i++) {
-          const page = pages[i];
-          const canvas = await html2canvas(page, {
-            scale: 2,
-            useCORS: true,
-            logging: false,
-            backgroundColor: '#ffffff',
-            width: 794,
-            height: 1120
-          });
-
-          const imgData = canvas.toDataURL('image/jpeg', 0.98);
-          if (i > 0) pdf.addPage('a4', 'portrait');
-          pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
-        }
-
-        const pdfBlob = pdf.output('blob');
-        const pdfFile = new File([pdfBlob], nomeArquivo, { type: 'application/pdf' });
-
-        statusEl.innerHTML = statusAntigo;
-
-        const textoMensagem = `*RELATÓRIO DE ENSAIO NÃO-DESTRUTIVO (LP)*\n*Cliente:* ${cliente}\n*Equipamento:* ${equipamento}\n*Parecer Final:* ${statusLaudo}\n_Omega Service - Qualidade & END_`;
-
-        if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
-          await navigator.share({
-            files: [pdfFile],
-            title: `Laudo LP - ${equipamento}`,
-            text: textoMensagem
-          });
-        } else {
-          // Fallback universal: download direto do arquivo + WhatsApp
-          const urlDownload = URL.createObjectURL(pdfBlob);
-          const link = document.createElement('a');
-          link.href = urlDownload;
-          link.download = nomeArquivo;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          setTimeout(() => URL.revokeObjectURL(urlDownload), 1000);
-
-          const textoEncoded = encodeURIComponent(`${textoMensagem}\n\n*(Arquivo PDF ${nomeArquivo} gerado e baixado no aparelho)*`);
-          window.open(`https://api.whatsapp.com/send?text=${textoEncoded}`, '_blank');
-        }
-      } catch (err) {
-        console.error("Erro ao gerar/compartilhar PDF:", err);
-        alert("Erro ao processar o arquivo PDF.");
-        statusEl.innerHTML = statusAntigo;
-      } finally {
-        if (document.body.contains(renderContainer)) {
-          document.body.removeChild(renderContainer);
-        }
-      }
+      const textoMensagem = `*RELATÓRIO DE ENSAIO NÃO-DESTRUTIVO (LP)*\n*Cliente:* ${cliente}\n*Equipamento:* ${equipamento}\n*Parecer Final:* ${statusLaudo}\n_Omega Service - Qualidade & END_`;
+      const textoEncoded = encodeURIComponent(textoMensagem);
+      window.open(`https://api.whatsapp.com/send?text=${textoEncoded}`, '_blank');
     }
 
     function formatarData(dataIso) {
