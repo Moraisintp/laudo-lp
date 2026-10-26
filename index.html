@@ -318,7 +318,7 @@
       <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <div class="bg-slate-800 text-white px-3 sm:px-4 py-2.5 flex items-center justify-between">
           <h2 class="font-semibold text-xs sm:text-sm flex items-center gap-2">
-            <i data-lucide="camera" class="w-4 h-4 text-amber-400"></i> 3. Fotos das Juntas (Visual, Penetrante, Revelação)
+            <i data-lucide="camera" class="w-4 h-4 text-amber-400"></i> 3. Fotos das Juntas (Junta Preparada, Penetrante, Revelação)
           </h2>
         </div>
         <div class="p-3 sm:p-4 bg-slate-50/50">
@@ -547,7 +547,7 @@
         <p class="text-[9px] font-medium whitespace-pre-line" id="p_obs">-</p>
       </div>
 
-      <!-- Parecer Técnico Impressão -->
+      <!-- Parecer Técnico Impressão (CAMPO 5) -->
       <div class="border-b-2 border-black bg-slate-100 p-1.5 flex items-center justify-between text-[9px]">
         <div>
           <span class="font-bold">PARECER TÉCNICO / RESULT:</span> 
@@ -760,7 +760,7 @@
         const cardJunta = document.createElement('div');
         cardJunta.className = 'border border-slate-200 rounded-xl p-3 bg-white shadow-sm';
 
-        const labelEtapas = ['1. Visual', '2. Penetrante', '3. Revelação'];
+        const labelEtapas = ['1. Junta Preparada', '2. Penetrante', '3. Revelação'];
         let slotsHtml = `
           <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-100">
             <span class="font-bold text-xs sm:text-sm text-red-700 uppercase flex items-center gap-1.5">
@@ -1237,7 +1237,6 @@
       idLaudoEmEdicao = null;
       document.getElementById('bannerEdicaoAtiva').classList.add('hidden');
 
-      // Limpa os inputs de texto principais
       document.getElementById('empreendimento').value = "";
       document.getElementById('cliente').value = "";
       document.getElementById('local_ensaio').value = "";
@@ -1370,7 +1369,7 @@
           gridHtml += `
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; text-align: center;">
               <div>
-                <div style="font-size: 9.5pt; font-weight: bold; color: #dc2626; margin-bottom: 2px;">${nomeJuntaFormatado} (Visual)</div>
+                <div style="font-size: 9.5pt; font-weight: bold; color: #dc2626; margin-bottom: 2px;">${nomeJuntaFormatado} (Junta Preparada)</div>
                 <div style="border: 1px solid #000; height: 38mm; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #fff;">
                   ${j.fotos[0] ? `<img src="${j.fotos[0]}" style="max-height: 100%; max-width: 100%; object-fit: contain;" />` : `<span style="font-size: 8pt; color: #999;">Sem foto</span>`}
                 </div>
