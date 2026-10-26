@@ -1237,6 +1237,20 @@
       idLaudoEmEdicao = null;
       document.getElementById('bannerEdicaoAtiva').classList.add('hidden');
 
+      // Limpa os inputs de texto principais
+      document.getElementById('empreendimento').value = "";
+      document.getElementById('cliente').value = "";
+      document.getElementById('local_ensaio').value = "";
+      document.getElementById('data_ensaio').value = new Date().toISOString().split('T')[0];
+      document.getElementById('norma_ref').value = "";
+      document.getElementById('procedimento').value = "";
+      document.getElementById('procedimento_rev').value = "0";
+      document.getElementById('desenho_ref').value = "";
+      document.getElementById('desenho_rev').value = "0";
+      document.getElementById('metal_base').value = "";
+      document.getElementById('metal_adicao').value = "";
+      document.getElementById('espessura').value = "";
+
       dadosJuntas = [
         { junta: "JUNTA - 01", num: "", tipo: "-", cota: "", comp: "", result: "-", pos: "-", final: "-", obs: "", fotos: ["", "", ""] }
       ];
@@ -1245,8 +1259,17 @@
       document.getElementById('parecer_texto').value = "";
       document.getElementById('parecer_resultado').value = "";
 
+      fecharModalHistorico();
+      fecharModalAuth();
       aplicarPerfilNaInterface();
       renderizarTabelaForm();
+      
+      const statusEl = document.getElementById('saveStatus');
+      if (statusEl) {
+        statusEl.innerText = "Novo laudo pronto";
+        statusEl.className = 'text-xs text-slate-500 italic truncate';
+      }
+
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -1471,6 +1494,10 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       checarPerfilInicial();
+      const inputData = document.getElementById('data_ensaio');
+      if (inputData && !inputData.value) {
+        inputData.value = new Date().toISOString().split('T')[0];
+      }
       renderizarTabelaForm();
       atualizarStatusConexao();
     });
