@@ -305,14 +305,10 @@
         <h2 class="font-semibold text-xs sm:text-sm text-slate-800 mb-2 flex items-center gap-2">
           <i data-lucide="award" class="w-4 h-4 text-amber-500"></i> 2. Inspetor Responsável (Editável)
         </h2>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label class="block text-xs font-semibold text-slate-600 mb-1">Nome do Inspetor</label>
             <input type="text" id="inspetor_nome" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white font-bold">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Qualificações</label>
-            <input type="text" id="inspetor_qualif" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-600 mb-1">Registro / SNQC</label>
@@ -423,10 +419,6 @@
         <div>
           <label class="block text-xs font-semibold text-slate-600 mb-1">Nº Registro / SNQC</label>
           <input type="text" id="auth_snqc" placeholder="Digite o registro SNQC..." class="w-full p-2 border border-slate-300 rounded-lg text-sm bg-white">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Qualificações</label>
-          <input type="text" id="auth_qualif" placeholder="Ex: EVS / LP / ME" class="w-full p-2 border border-slate-300 rounded-lg text-sm bg-white">
         </div>
         <div>
           <label class="block text-xs font-semibold text-slate-600 mb-1">Senha de Sincronização (Opcional)</label>
@@ -595,7 +587,6 @@
             <td class="p-1 border-r border-black align-bottom">
               <div class="inline-block border-2 border-slate-700 rounded-lg p-1 text-slate-800 text-[8.5px] font-sans text-center bg-slate-50/50">
                 <div class="font-bold text-[10px]" id="p_inspetor_nome">-</div>
-                <div class="text-[8px]" id="p_inspetor_qualif">-</div>
                 <div class="text-[8px] font-semibold" id="p_inspetor_snqc">-</div>
               </div>
               <div class="text-[7.5px] text-slate-500 mt-0.5" id="p_data_ass">-</div>
@@ -652,8 +643,7 @@
         const usrPadrao = {
           id: 'USR-DEFAULT',
           nome: 'Inspetor Qualificado',
-          snqc: '00000',
-          qualif: 'LP-N2'
+          snqc: '00000'
         };
         listaUsuariosLocais.push(usrPadrao);
         localStorage.setItem('omega_usuarios_lista', JSON.stringify(listaUsuariosLocais));
@@ -671,7 +661,6 @@
       document.getElementById('headerUserTxt').innerText = `${usuarioLogado.nome} (SNQC: ${usuarioLogado.snqc})`;
       document.getElementById('inspetor_nome').value = usuarioLogado.nome;
       document.getElementById('inspetor_snqc').value = `SNQC: ${usuarioLogado.snqc}`;
-      document.getElementById('inspetor_qualif').value = usuarioLogado.qualif;
     }
 
     function abrirModalAuth() {
@@ -679,7 +668,6 @@
       if (usuarioLogado) {
         document.getElementById('auth_nome').value = usuarioLogado.nome || '';
         document.getElementById('auth_snqc').value = usuarioLogado.snqc || '';
-        document.getElementById('auth_qualif').value = usuarioLogado.qualif || '';
         document.getElementById('auth_senha').value = '';
         document.getElementById('selectUsuariosCadastrados').value = usuarioLogado.snqc;
       }
@@ -720,7 +708,6 @@
       if (selecionado) {
         document.getElementById('auth_nome').value = selecionado.nome;
         document.getElementById('auth_snqc').value = selecionado.snqc;
-        document.getElementById('auth_qualif').value = selecionado.qualif;
         document.getElementById('auth_senha').value = '';
       }
     }
@@ -729,7 +716,6 @@
       document.getElementById('selectUsuariosCadastrados').value = "NOVO";
       document.getElementById('auth_nome').value = '';
       document.getElementById('auth_snqc').value = '';
-      document.getElementById('auth_qualif').value = '';
       document.getElementById('auth_senha').value = '';
       document.getElementById('auth_nome').focus();
     }
@@ -737,7 +723,6 @@
     async function salvarPerfilLocalECloud() {
       const nome = document.getElementById('auth_nome').value.trim();
       const snqc = document.getElementById('auth_snqc').value.trim();
-      const qualif = document.getElementById('auth_qualif').value.trim();
       const senha = document.getElementById('auth_senha').value.trim();
 
       if (!nome || !snqc) {
@@ -749,8 +734,7 @@
       let novoUsr = {
         id: indexExistente !== -1 ? listaUsuariosLocais[indexExistente].id : ('USR-' + new Date().getTime()),
         nome: nome,
-        snqc: snqc,
-        qualif: qualif
+        snqc: snqc
       };
 
       if (indexExistente !== -1) {
@@ -776,7 +760,6 @@
               action: 'cadastrarUsuario',
               nome: nome,
               snqc: snqc,
-              qualificacoes: qualif,
               senha: senha
             })
           });
@@ -1192,7 +1175,6 @@
         },
         inspetor: {
           nome: document.getElementById('inspetor_nome').value,
-          qualif: document.getElementById('inspetor_qualif').value,
           snqc: document.getElementById('inspetor_snqc').value
         },
         usuario_id: usuarioLogado?.id || 'USR-DEFAULT',
@@ -1382,7 +1364,6 @@
 
       if (laudo.inspetor) {
         document.getElementById('inspetor_nome').value = laudo.inspetor.nome || '';
-        document.getElementById('inspetor_qualif').value = laudo.inspetor.qualif || '';
         document.getElementById('inspetor_snqc').value = laudo.inspetor.snqc || '';
       }
 
@@ -1491,7 +1472,6 @@
       document.getElementById('p_parecer_texto').innerText = document.getElementById('parecer_texto').value || '';
 
       document.getElementById('p_inspetor_nome').innerText = document.getElementById('inspetor_nome').value || '-';
-      document.getElementById('p_inspetor_qualif').innerText = document.getElementById('inspetor_qualif').value || '-';
       document.getElementById('p_inspetor_snqc').innerText = document.getElementById('inspetor_snqc').value || '-';
       document.getElementById('p_data_ass').innerText = formatarData(document.getElementById('data_ensaio').value);
 
@@ -1652,22 +1632,20 @@
     }
 
     // ==========================================================
-    // ENVIO DO ARQUIVO PDF DIRETO AO WHATSAPP (100% VISÍVEL & FIEL)
+    // COMPARTILHAMENTO E GERAÇÃO DIRETA DE PDF (WHATSAPP)
     // ==========================================================
     async function compartilharPdfWhatsapp() {
       const cliente = document.getElementById('cliente').value || '-';
-      const equipamento = document.getElementById('empreendimento').value || '-';
+      const equipamento = document.getElementById('empreendimento').value || 'Laudo_LP';
       const statusLaudo = document.getElementById('parecer_resultado').value || '-';
-      const nomeArquivo = `Laudo_LP_${(equipamento).replace(/[^a-zA-Z0-9]/g, '_')}`;
+      const nomeArquivo = `Laudo_LP_${(equipamento).replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
 
       const statusEl = document.getElementById('saveStatus');
       const statusAntigo = statusEl.innerHTML;
       statusEl.innerHTML = `<span class="text-emerald-600 font-bold animate-pulse">Gerando PDF A4...</span>`;
 
-      // 1. Preenche e monta os dados
       preencherDadosImpressao();
 
-      // 2. Cria container temporário visível no fluxo (para html2canvas capturar com 100% de precisão)
       const renderContainer = document.createElement('div');
       renderContainer.id = 'renderContainerTemp';
       renderContainer.style.cssText = 'position: absolute; left: 0; top: 0; width: 794px; background: #fff; z-index: 99999; padding: 0; margin: 0;';
@@ -1701,14 +1679,12 @@
       `;
       renderContainer.appendChild(styleEl);
 
-      // Clona o laudo principal
       const clonePrincipal = document.getElementById('paginaLaudoPrincipal').cloneNode(true);
       clonePrincipal.className = 'a4-render-page';
       const areaInutil = clonePrincipal.querySelector('.inutilizacao-area');
       if (areaInutil) areaInutil.className = 'a4-inutilizacao';
       renderContainer.appendChild(clonePrincipal);
 
-      // Clona anexos de fotos
       const fotosPages = document.getElementById('areaPaginasFotosPrint').children;
       for (let el of fotosPages) {
         const c = el.cloneNode(true);
@@ -1716,7 +1692,6 @@
         renderContainer.appendChild(c);
       }
 
-      // Clona anexos de descontinuidades
       const descPages = document.getElementById('areaPaginasDescontinuidadesPrint').children;
       for (let el of descPages) {
         const c = el.cloneNode(true);
@@ -1749,7 +1724,7 @@
         }
 
         const pdfBlob = pdf.output('blob');
-        const pdfFile = new File([pdfBlob], `${nomeArquivo}.pdf`, { type: 'application/pdf' });
+        const pdfFile = new File([pdfBlob], nomeArquivo, { type: 'application/pdf' });
 
         statusEl.innerHTML = statusAntigo;
 
@@ -1762,14 +1737,17 @@
             text: textoMensagem
           });
         } else {
+          // Fallback universal: download direto do arquivo + WhatsApp
           const urlDownload = URL.createObjectURL(pdfBlob);
           const link = document.createElement('a');
           link.href = urlDownload;
-          link.download = `${nomeArquivo}.pdf`;
+          link.download = nomeArquivo;
+          document.body.appendChild(link);
           link.click();
-          URL.revokeObjectURL(urlDownload);
+          document.body.removeChild(link);
+          setTimeout(() => URL.revokeObjectURL(urlDownload), 1000);
 
-          const textoEncoded = encodeURIComponent(`${textoMensagem}\n\n*(Arquivo PDF ${nomeArquivo}.pdf gerado)*`);
+          const textoEncoded = encodeURIComponent(`${textoMensagem}\n\n*(Arquivo PDF ${nomeArquivo} gerado e baixado no aparelho)*`);
           window.open(`https://api.whatsapp.com/send?text=${textoEncoded}`, '_blank');
         }
       } catch (err) {
